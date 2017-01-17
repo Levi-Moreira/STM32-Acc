@@ -8,6 +8,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "tm_stm32f4_lis302dl_lis3dsh.h"
+#include "TestSeries.h"
+#include "DTW.h"
+#include "LinkedList.h"
+#include "tm_stm32f4_usart.h"
 
 
 int main(void)
@@ -16,13 +20,9 @@ int main(void)
 
 	u_int8_t pressed = 1, done = 1;
 	u_int16_t time = 0;
-	int16_t dataXAxis[SAMPLEAMOUNT];
-	int16_t dataYAxis[SAMPLEAMOUNT];
-	int16_t dataZAxis[SAMPLEAMOUNT];
+	int16_t signal[SAMPLEAMOUNT];
 
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
-
-
 
 	SystemInit();
 
@@ -37,6 +37,10 @@ int main(void)
 
 	//start button
 	TM_DISCO_ButtonInit();
+
+	TM_USART_Init(USART1, TM_USART_PinsPack_1, 9600);
+
+	TM_USART_Puts(USART1, "Hello world\n\r");
 
 	//turn leds blue and orange to indicate the disc is mounted
 	TM_DISCO_LedOn(LED_BLUE | LED_ORANGE);
@@ -61,15 +65,16 @@ int main(void)
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
 
 		//save data to array
-		dataXAxis[i] = Axes_Data.X;
-		dataYAxis[i] = Axes_Data.Y;
-		dataZAxis[i++] = Axes_Data.Z;
+		signal[i] = Axes_Data.X;
+		signal[i+1] = Axes_Data.Y;
+		signal[i+2] = Axes_Data.Z;
+		i++;
 
 		//wait for the next sampling period
 		Delayms(SAMPLEPERIOD);
 
 		//increase the timer
-		time +=SAMPLEPERIOD;
+		time += SAMPLEPERIOD;
 
 		//if total sampling time is reached, leave loop
 		if(time>=SAMPLETOTALTIME)

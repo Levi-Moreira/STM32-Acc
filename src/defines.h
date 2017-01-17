@@ -7,10 +7,10 @@
 //sample period in ms
 #define SAMPLEPERIOD 20
 //total amount of samples
-#define SAMPLEAMOUNT 100
+#define SAMPLEAMOUNT 300
 
 //sample total time in ms
-#define SAMPLETOTALTIME SAMPLEAMOUNT*SAMPLEPERIOD
+#define SAMPLETOTALTIME (SAMPLEAMOUNT / 3) * SAMPLEPERIOD
 
 /* Put your global defines for all libraries here used in your project */
 
