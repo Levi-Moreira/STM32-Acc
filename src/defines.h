@@ -12,6 +12,6 @@
 //sample total time in ms
 #define SAMPLETOTALTIME (SAMPLEAMOUNT / 3) * SAMPLEPERIOD
 
-/* Put your global defines for all libraries here used in your project */
+#define EWMA_ALPHA 0.3
 
 #endif

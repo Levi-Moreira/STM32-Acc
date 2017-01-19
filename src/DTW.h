@@ -10,11 +10,12 @@
 
 #include <math.h>
 #include <stdio.h>
+#include "defines.h"
 
 void printArray(double *array, int size);
-double average(double *array, int begin, int end);
-void ewma(double alpha, double *array, int size, double *result);
+double average(int16_t *array, int begin, int end);
+void ewma(int16_t *array, int size, double *result);
 double dtwDistance(double *x, int sizeX, double *y, int sizeY);
-void knn(double *input, int size);
+int knn(double *input, int size);
 
 #endif /* DTW_H_ */
