@@ -16,7 +16,7 @@ void setup() {
 	SystemInit();
 	TM_DELAY_Init();
 	TM_DISCO_LedInit();
-	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_2G, TM_LIS3DSH_Filter_50Hz);
+	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_8G, TM_LIS3DSH_Filter_50Hz);
 	TM_DISCO_ButtonInit();
 }
 

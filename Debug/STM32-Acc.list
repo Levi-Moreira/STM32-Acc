@@ -23,21 +23,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 0000002a  00000000  00000000  0002076c  2**0
                   CONTENTS, READONLY
- 10 .debug_info   000073ce  00000000  00000000  00020796  2**0
+ 10 .debug_info   00007434  00000000  00000000  00020796  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_abbrev 00001786  00000000  00000000  00027b64  2**0
+ 11 .debug_abbrev 00001786  00000000  00000000  00027bca  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_aranges 000008c8  00000000  00000000  000292f0  2**3
+ 12 .debug_aranges 000008c8  00000000  00000000  00029350  2**3
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 000007e0  00000000  00000000  00029bb8  2**3
+ 13 .debug_ranges 000007e0  00000000  00000000  00029c18  2**3
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_line   000034ba  00000000  00000000  0002a398  2**0
+ 14 .debug_line   000034bb  00000000  00000000  0002a3f8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    00002e90  00000000  00000000  0002d852  2**0
+ 15 .debug_str    00002ecc  00000000  00000000  0002d8b3  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .comment      0000007e  00000000  00000000  000306e2  2**0
+ 16 .comment      0000007e  00000000  00000000  0003077f  2**0
                   CONTENTS, READONLY
- 17 .debug_frame  0000272c  00000000  00000000  00030760  2**2
+ 17 .debug_frame  0000272c  00000000  00000000  00030800  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -6362,7 +6362,7 @@ int knn(int16_t *inputX, int16_t *inputY, int16_t *inputZ, int size) {
  8002d40:	60b9      	str	r1, [r7, #8]
  8002d42:	607a      	str	r2, [r7, #4]
  8002d44:	603b      	str	r3, [r7, #0]
-	double distanceO = dtwDistance(smooth2Ox, smooth2Oy, smooth2Oz, 148, inputX, inputY, inputZ, size);
+	double distanceO = dtwDistance(smooth8Ox, smooth8Oy, smooth8Oz, 148, inputX, inputY, inputZ, size);
  8002d46:	683b      	ldr	r3, [r7, #0]
  8002d48:	9303      	str	r3, [sp, #12]
  8002d4a:	687b      	ldr	r3, [r7, #4]
@@ -6377,7 +6377,7 @@ int knn(int16_t *inputX, int16_t *inputY, int16_t *inputZ, int size) {
  8002d5c:	4816      	ldr	r0, [pc, #88]	; (8002db8 <knn+0x80>)
  8002d5e:	f7ff fd7f 	bl	8002860 <dtwDistance>
  8002d62:	e9c7 0106 	strd	r0, r1, [r7, #24]
-	double distanceL = dtwDistance(smooth2Lx, smooth2Ly, smooth2Lz, 148, inputX, inputY, inputZ, size);
+	double distanceL = dtwDistance(smooth8Lx, smooth8Ly, smooth8Lz, 148, inputX, inputY, inputZ, size);
  8002d66:	683b      	ldr	r3, [r7, #0]
  8002d68:	9303      	str	r3, [sp, #12]
  8002d6a:	687b      	ldr	r3, [r7, #4]
@@ -6519,9 +6519,9 @@ void setup() {
  8002e28:	f7fe fc9a 	bl	8001760 <TM_DELAY_Init>
 	TM_DISCO_LedInit();
  8002e2c:	f7fe fcc0 	bl	80017b0 <TM_DISCO_LedInit>
-	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_2G, TM_LIS3DSH_Filter_50Hz);
+	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_8G, TM_LIS3DSH_Filter_50Hz);
  8002e30:	2103      	movs	r1, #3
- 8002e32:	2000      	movs	r0, #0
+ 8002e32:	2003      	movs	r0, #3
  8002e34:	f7fe fe6a 	bl	8001b0c <TM_LIS302DL_LIS3DSH_Init>
 	TM_DISCO_ButtonInit();
  8002e38:	f7fe fcd2 	bl	80017e0 <TM_DISCO_ButtonInit>

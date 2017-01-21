@@ -1971,6 +1971,18 @@ Discarded input sections
  .bss           0x00000000        0x0 src\DTW.o
  .data.letterO  0x00000000      0x258 src\DTW.o
  .data.letterL  0x00000000      0x960 src\DTW.o
+ .data.smooth2Ox
+                0x00000000      0x128 src\DTW.o
+ .data.smooth2Oy
+                0x00000000      0x128 src\DTW.o
+ .data.smooth2Oz
+                0x00000000      0x128 src\DTW.o
+ .data.smooth2Lx
+                0x00000000      0x128 src\DTW.o
+ .data.smooth2Ly
+                0x00000000      0x128 src\DTW.o
+ .data.smooth2Lz
+                0x00000000      0x128 src\DTW.o
  .rodata        0x00000000        0xf src\DTW.o
  .text.printArray
                 0x00000000       0x40 src\DTW.o
@@ -2997,24 +3009,24 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib
  .data.AUDIO_MAL_DMA_FLAG_TC
                 0x2000000c        0x4 Utilities\STM32F4-Discovery\stm32f4_discovery_audio_codec.o
                 0x2000000c                AUDIO_MAL_DMA_FLAG_TC
- .data.smooth2Ox
+ .data.smooth8Ox
                 0x20000010      0x128 src\DTW.o
-                0x20000010                smooth2Ox
- .data.smooth2Oy
+                0x20000010                smooth8Ox
+ .data.smooth8Oy
                 0x20000138      0x128 src\DTW.o
-                0x20000138                smooth2Oy
- .data.smooth2Oz
+                0x20000138                smooth8Oy
+ .data.smooth8Oz
                 0x20000260      0x128 src\DTW.o
-                0x20000260                smooth2Oz
- .data.smooth2Lx
+                0x20000260                smooth8Oz
+ .data.smooth8Lx
                 0x20000388      0x128 src\DTW.o
-                0x20000388                smooth2Lx
- .data.smooth2Ly
+                0x20000388                smooth8Lx
+ .data.smooth8Ly
                 0x200004b0      0x128 src\DTW.o
-                0x200004b0                smooth2Ly
- .data.smooth2Lz
+                0x200004b0                smooth8Ly
+ .data.smooth8Lz
                 0x200005d8      0x128 src\DTW.o
-                0x200005d8                smooth2Lz
+                0x200005d8                smooth8Lz
  .data.SystemCoreClock
                 0x20000700        0x4 src\system_stm32f4xx.o
                 0x20000700                SystemCoreClock
@@ -3189,7 +3201,7 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib
                 0x00000707       0x1e c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7e-m/crtn.o
 OUTPUT(STM32-Acc.elf elf32-littlearm)
 
-.debug_info     0x00000000     0x73ce
+.debug_info     0x00000000     0x7434
  .debug_info    0x00000000      0x649 Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.o
  .debug_info    0x00000649      0x745 Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.o
  .debug_info    0x00000d8e      0x621 Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.o
@@ -3201,10 +3213,10 @@ OUTPUT(STM32-Acc.elf elf32-littlearm)
  .debug_info    0x0000488c      0x841 inc\tm_stm32f4_gpio.o
  .debug_info    0x000050cd      0x7e1 inc\tm_stm32f4_lis302dl_lis3dsh.o
  .debug_info    0x000058ae      0xb1b inc\tm_stm32f4_spi.o
- .debug_info    0x000063c9      0x4ad src\DTW.o
- .debug_info    0x00006876      0x4ff src\main.o
- .debug_info    0x00006d75       0x83 src\startup_stm32f40xx.o
- .debug_info    0x00006df8      0x5d6 src\system_stm32f4xx.o
+ .debug_info    0x000063c9      0x513 src\DTW.o
+ .debug_info    0x000068dc      0x4ff src\main.o
+ .debug_info    0x00006ddb       0x83 src\startup_stm32f40xx.o
+ .debug_info    0x00006e5e      0x5d6 src\system_stm32f4xx.o
 
 .debug_abbrev   0x00000000     0x1786
  .debug_abbrev  0x00000000      0x180 Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.o
@@ -3272,7 +3284,7 @@ OUTPUT(STM32-Acc.elf elf32-littlearm)
  .debug_ranges  0x000007a0       0x20 src\startup_stm32f40xx.o
  .debug_ranges  0x000007c0       0x20 src\system_stm32f4xx.o
 
-.debug_line     0x00000000     0x34ba
+.debug_line     0x00000000     0x34bb
  .debug_line    0x00000000      0x34d Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.o
  .debug_line    0x0000034d      0x425 Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.o
  .debug_line    0x00000772      0x35b Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.o
@@ -3284,12 +3296,12 @@ OUTPUT(STM32-Acc.elf elf32-littlearm)
  .debug_line    0x000020e0      0x35c inc\tm_stm32f4_gpio.o
  .debug_line    0x0000243c      0x3a0 inc\tm_stm32f4_lis302dl_lis3dsh.o
  .debug_line    0x000027dc      0x4ff inc\tm_stm32f4_spi.o
- .debug_line    0x00002cdb      0x271 src\DTW.o
- .debug_line    0x00002f4c      0x2f5 src\main.o
- .debug_line    0x00003241       0x7a src\startup_stm32f40xx.o
- .debug_line    0x000032bb      0x1ff src\system_stm32f4xx.o
+ .debug_line    0x00002cdb      0x272 src\DTW.o
+ .debug_line    0x00002f4d      0x2f5 src\main.o
+ .debug_line    0x00003242       0x7a src\startup_stm32f40xx.o
+ .debug_line    0x000032bc      0x1ff src\system_stm32f4xx.o
 
-.debug_str      0x00000000     0x2e90
+.debug_str      0x00000000     0x2ecc
  .debug_str     0x00000000      0x42f Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.o
                                 0x4a4 (size before relaxing)
  .debug_str     0x0000042f      0x384 Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.o
@@ -3312,11 +3324,11 @@ OUTPUT(STM32-Acc.elf elf32-littlearm)
                                 0x8d4 (size before relaxing)
  .debug_str     0x000029c8      0x287 inc\tm_stm32f4_spi.o
                                 0x7c5 (size before relaxing)
- .debug_str     0x00002c4f       0xf0 src\DTW.o
-                                0x28e (size before relaxing)
- .debug_str     0x00002d3f       0xc2 src\main.o
+ .debug_str     0x00002c4f      0x12c src\DTW.o
+                                0x2ca (size before relaxing)
+ .debug_str     0x00002d7b       0xc2 src\main.o
                                 0x4c5 (size before relaxing)
- .debug_str     0x00002e01       0x8f src\system_stm32f4xx.o
+ .debug_str     0x00002e3d       0x8f src\system_stm32f4xx.o
                                 0x3e3 (size before relaxing)
 
 .comment        0x00000000       0x7e
@@ -4716,6 +4728,12 @@ smooth2Lz                                         src\DTW.o
 smooth2Ox                                         src\DTW.o
 smooth2Oy                                         src\DTW.o
 smooth2Oz                                         src\DTW.o
+smooth8Lx                                         src\DTW.o
+smooth8Ly                                         src\DTW.o
+smooth8Lz                                         src\DTW.o
+smooth8Ox                                         src\DTW.o
+smooth8Oy                                         src\DTW.o
+smooth8Oz                                         src\DTW.o
 sqrt                                              c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libm.a(lib_a-w_sqrt.o)
                                                   src\DTW.o
 ts1                                               src\main.o
