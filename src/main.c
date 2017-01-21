@@ -26,8 +26,10 @@ int main(void)
 {
 
 	u_int16_t time = 0;
-	int16_t signal[SAMPLEAMOUNT];
-	double smoothedSignal[SAMPLEAMOUNT];
+
+	int16_t signalX[SAMPLEAMOUNT];
+	int16_t signalY[SAMPLEAMOUNT];
+	int16_t signalZ[SAMPLEAMOUNT];
 
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
 
@@ -45,10 +47,9 @@ int main(void)
 	do {
 
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
-		signal[i] = Axes_Data.X;
-		signal[i+1] = Axes_Data.Y;
-		signal[i+2] = Axes_Data.Z;
-		i++;
+		signalX[i] = Axes_Data.X;
+		signalY[i] = Axes_Data.Y;
+		signalZ[i++] = Axes_Data.Z;
 
 		Delayms(SAMPLEPERIOD);
 		time += SAMPLEPERIOD;
@@ -57,8 +58,15 @@ int main(void)
 
 	TM_DISCO_LedOff(LED_RED | LED_GREEN);
 
-	ewma(signal, SAMPLEAMOUNT, smoothedSignal);
-	int gesture = knn(smoothedSignal, SAMPLEAMOUNT);
+	int16_t smoothX[SAMPLEAMOUNT];
+	int16_t smoothY[SAMPLEAMOUNT];
+	int16_t smoothZ[SAMPLEAMOUNT];
+
+	ewma(signalX, SAMPLEAMOUNT, smoothX);
+	ewma(signalY, SAMPLEAMOUNT, smoothY);
+	ewma(signalZ, SAMPLEAMOUNT, smoothZ);
+
+	int gesture = knn(smoothX, smoothY, smoothZ, SAMPLEAMOUNT);
 
 	while(1) {
 		TM_DISCO_LedOn(gesture == 0 ? LED_ORANGE : LED_BLUE);
