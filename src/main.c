@@ -11,6 +11,8 @@
 #include "TestSeries.h"
 #include "DTW.h"
 #include "LinkedList.h"
+#include "serial.h"
+#include <math.h>
 
 //double smooth2Lx[148] = {0.18, 0.4, 0.37, 0.3, 0.3, 0.2, 0.17, 0.16, 0.1, 0.11, 0.17, 0.18, 0.18, 0.12, 0.08, 0.04, 0.11, 0.18, 0.06, 0.02, 0.08, 0.12, -0.01, -0.11, 0.0, 0.19, 0.18, 0.07, -0.05, -0.16, -0.1, -0.03, 0.05, 0.01, 0.02, 0.02, -0.13, -0.17, 0.07, 0.0, -0.04, 0.02, -0.13, -0.25, -0.27, -0.18, -0.27, -0.26, -0.21, -0.31, -0.36, -0.21, -0.15, -0.29, -0.35, -0.26, -0.22, -0.3, -0.32, -0.4, -0.53, -0.66, -0.75, -0.76, -0.75, -0.82, -0.73, -0.7, -0.73, -0.76, -0.72, -0.79, -0.68, -0.75, -0.96, -1.29, -1.62, -1.76, -1.74, -1.55, -1.27, -0.97, -0.85, -0.83, -0.83, -0.84, -0.91, -0.86, -0.93, -1.08, -1.23, -1.25, -1.31, -1.44, -1.36, -1.22, -1.12, -1.08, -1.19, -1.26, -1.19, -1.2, -1.15, -1.19, -1.01, -0.71, -0.5, -0.39, -0.37, -0.41, -0.41, -0.5, -0.54, -0.35, -0.2, -0.23, -0.35, -0.32, -0.35, -0.36, -0.12, 0.24, 0.42, 0.42, 0.45, 0.27, 0.14, 0.22, 0.26, 0.15, 0.0, 0.0, 0.09, 0.06, -0.1, -0.22, -0.23, -0.19, -0.2, -0.2, -0.21, -0.3, -0.33, -0.39, -0.39, -0.31, -0.27, -0.69};
 //double smooth2Ly[148] = {-9.8, -9.99, -9.88, -9.79, -9.8, -9.74, -9.66, -9.63, -9.58, -9.54, -9.55, -9.52, -9.53, -9.52, -9.49, -9.35, -9.14, -9.11, -9.15, -9.18, -9.24, -9.23, -9.21, -9.29, -9.27, -9.22, -9.22, -9.49, -9.73, -9.85, -9.9, -9.84, -9.62, -9.41, -9.44, -9.51, -9.42, -9.2, -9.05, -9.14, -9.17, -9.37, -9.64, -9.86, -9.96, -9.9, -9.86, -9.91, -9.93, -10.01, -9.95, -9.8, -9.76, -9.84, -9.9, -9.82, -9.76, -9.72, -9.69, -9.75, -9.88, -9.89, -9.93, -9.94, -9.96, -10.03, -10.08, -9.91, -9.7, -9.59, -9.56, -9.7, -9.97, -10.29, -11.0, -11.85, -12.49, -12.79, -12.78, -12.41, -11.76, -11.11, -10.61, -10.37, -10.11, -9.94, -9.8, -9.73, -9.65, -9.67, -9.72, -9.8, -9.86, -9.83, -9.83, -9.82, -9.85, -9.84, -9.74, -9.83, -10.01, -10.14, -10.07, -9.97, -9.81, -9.84, -9.97, -9.92, -9.86, -9.82, -9.73, -9.72, -9.76, -9.81, -9.9, -9.87, -9.88, -9.73, -9.58, -9.57, -9.66, -9.64, -9.81, -10.02, -9.98, -10.01, -10.07, -10.07, -9.97, -10.02, -9.99, -10.03, -9.95, -9.97, -10.0, -9.93, -9.91, -9.85, -9.8, -9.7, -9.72, -9.85, -9.98, -10.09, -10.15, -10.09, -9.96, -9.77};
@@ -28,65 +30,67 @@ void setup() {
 	TM_DISCO_ButtonInit();
 }
 
-
-
 int main(void) {
 
 	setup();
 
-	int count = 0;
+	init_USART1(9600); // initialize USART1 @ 9600 baud
 
-	// Raw signals
-	LinkedList *signalX = newLinkedList();
-	LinkedList *signalY = newLinkedList();
-	LinkedList *signalZ = newLinkedList();
+	USART_puts(USART1, "Hello, World!\n");
 
-	TM_LIS302DL_LIS3DSH_t Axes_Data;
-
-	// Waiting for blue button to start sampling
-	while(!TM_DISCO_ButtonPressed());
-
-	TM_DISCO_LedOn(LED_RED | LED_GREEN);
-
-	while(TM_DISCO_ButtonPressed()) {
-
-		// Adding accelerometer values
-		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
-		prependToLinkedList(signalX, (double) Axes_Data.X / ACCELEROMETER_DATA_DIVIDER);
-		prependToLinkedList(signalY, (double) Axes_Data.Y / ACCELEROMETER_DATA_DIVIDER);
-		prependToLinkedList(signalZ, (double) Axes_Data.Z / ACCELEROMETER_DATA_DIVIDER);
-		count++;
-
-		Delayms(SAMPLEPERIOD);
-
-	}
-
-	TM_DISCO_LedOff(LED_RED | LED_GREEN);
-
-	// Allocating the temporary arrays to store the raw signal
-	double *tempX = (double *) malloc(count * sizeof(double));
-	double *tempY = (double *) malloc(count * sizeof(double));
-	double *tempZ = (double *) malloc(count * sizeof(double));
-
-	// Filling up the temporary raw signal arrays
-	arrayFromLinkedList(signalX, tempX, count);
-	arrayFromLinkedList(signalY, tempY, count);
-	arrayFromLinkedList(signalZ, tempZ, count);
-
-	// Freeing the memory for the linked lists
-	freeLinkedList(signalX);
-	freeLinkedList(signalY);
-	freeLinkedList(signalZ);
-
-	// Allocating arrays for the smoothed signals
-	double *smoothX = (double *) malloc(count * sizeof(double));
-	double *smoothY = (double *) malloc(count * sizeof(double));
-	double *smoothZ = (double *) malloc(count * sizeof(double));
-
-	// Calculating the smoothed values
-	ewma(tempX, count, smoothX);
-	ewma(tempY, count, smoothY);
-	ewma(tempZ, count, smoothZ);
+	//	int count = 0;
+	//
+	//	// Raw signals
+	//	LinkedList *signalX = newLinkedList();
+	//	LinkedList *signalY = newLinkedList();
+	//	LinkedList *signalZ = newLinkedList();
+	//
+	//	TM_LIS302DL_LIS3DSH_t Axes_Data;
+	//
+	//	// Waiting for blue button to start sampling
+	//	while(!TM_DISCO_ButtonPressed());
+	//
+	//	TM_DISCO_LedOn(LED_RED | LED_GREEN);
+	//
+	//	while(TM_DISCO_ButtonPressed()) {
+	//
+	//		// Adding accelerometer values
+	//		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
+	//		prependToLinkedList(signalX, (double) Axes_Data.X / ACCELEROMETER_DATA_DIVIDER);
+	//		prependToLinkedList(signalY, (double) Axes_Data.Y / ACCELEROMETER_DATA_DIVIDER);
+	//		prependToLinkedList(signalZ, (double) Axes_Data.Z / ACCELEROMETER_DATA_DIVIDER);
+	//		count++;
+	//
+	//		Delayms(SAMPLEPERIOD);
+	//
+	//	}
+	//
+	//	TM_DISCO_LedOff(LED_RED | LED_GREEN);
+	//
+	//	// Allocating the temporary arrays to store the raw signal
+	//	double *tempX = (double *) malloc(count * sizeof(double));
+	//	double *tempY = (double *) malloc(count * sizeof(double));
+	//	double *tempZ = (double *) malloc(count * sizeof(double));
+	//
+	//	// Filling up the temporary raw signal arrays
+	//	arrayFromLinkedList(signalX, tempX, count);
+	//	arrayFromLinkedList(signalY, tempY, count);
+	//	arrayFromLinkedList(signalZ, tempZ, count);
+	//
+	//	// Freeing the memory for the linked lists
+	//	freeLinkedList(signalX);
+	//	freeLinkedList(signalY);
+	//	freeLinkedList(signalZ);
+	//
+	//	// Allocating arrays for the smoothed signals
+	//	double *smoothX = (double *) malloc(count * sizeof(double));
+	//	double *smoothY = (double *) malloc(count * sizeof(double));
+	//	double *smoothZ = (double *) malloc(count * sizeof(double));
+	//
+	//	// Calculating the smoothed values
+	//	ewma(tempX, count, smoothX);
+	//	ewma(tempY, count, smoothY);
+	//	ewma(tempZ, count, smoothZ);
 
 	while(1);
 
