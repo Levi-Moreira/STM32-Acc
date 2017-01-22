@@ -12,10 +12,9 @@
 #include <stdio.h>
 #include "defines.h"
 
-void printArray(double *array, int size);
-double average(double *array, int begin, int end);
-void ewma(double *array, int size, double *result);
-float dtwDistance(double *ax, double *ay, double *az, int sa, double *bx, double *by, double *bz, int sb);
+float average(float *array, int begin, int end);
+void ewma(float *array, int size, float *result);
+float dtwDistance(float *ax, float *ay, float *az, int sa, float *bx, float *by, float *bz, int sb);
 int knn(int16_t inputX[], int16_t inputY[], int16_t inputZ[], int size);
 
 #endif /* DTW_H_ */

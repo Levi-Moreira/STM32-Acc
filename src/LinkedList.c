@@ -23,7 +23,7 @@ void printLinkedList(LinkedList *head) {
     printf("\n");
 }
 
-void prependToLinkedList(LinkedList *head, double value) {
+void prependToLinkedList(LinkedList *head, float value) {
 
     if(!head) { return; }
 
@@ -34,7 +34,7 @@ void prependToLinkedList(LinkedList *head, double value) {
 
 }
 
-void appendToLinkedList(LinkedList *head, double value) {
+void appendToLinkedList(LinkedList *head, float value) {
 
     while (head) {
         head = head->next;
@@ -47,7 +47,7 @@ void appendToLinkedList(LinkedList *head, double value) {
 
 }
 
-void arrayFromLinkedList(LinkedList *head, double *destination, int size) {
+void arrayFromLinkedList(LinkedList *head, float *destination, int size) {
 
     if(!head) { return; }
 

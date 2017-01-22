@@ -14,15 +14,15 @@
 typedef struct LinkedList LinkedList;
 
 struct LinkedList {
-    double value;
+    float value;
     LinkedList *next;
 };
 
 LinkedList * newLinkedList();
 void printLinkedList(LinkedList *head);
-void prependToLinkedList(LinkedList *head, double value);
-void appendToLinkedList(LinkedList *head, double value);
-void arrayFromLinkedList(LinkedList *head, double *destination, int size);
+void prependToLinkedList(LinkedList *head, float value);
+void appendToLinkedList(LinkedList *head, float value);
+void arrayFromLinkedList(LinkedList *head, float *destination, int size);
 void freeLinkedList(LinkedList *head);
 
 #endif /* LINKEDLIST_H_ */
