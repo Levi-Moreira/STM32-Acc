@@ -23,6 +23,6 @@ void printLinkedList(LinkedList *head);
 void prependToLinkedList(LinkedList *head, double value);
 void appendToLinkedList(LinkedList *head, double value);
 void arrayFromLinkedList(LinkedList *head, double *destination, int size);
-void removeAllValuesFromLinkedList(LinkedList *head);
+void freeLinkedList(LinkedList *head);
 
 #endif /* LINKEDLIST_H_ */

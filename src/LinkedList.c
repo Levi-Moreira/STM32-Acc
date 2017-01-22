@@ -58,7 +58,7 @@ void arrayFromLinkedList(LinkedList *head, double *destination, int size) {
 
 }
 
-void removeAllValuesFromLinkedList(LinkedList *head) {
+void freeLinkedList(LinkedList *head) {
 
     if(!head) { return; }
 

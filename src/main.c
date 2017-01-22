@@ -30,66 +30,65 @@ void setup() {
 
 
 
-int main(void)
-{
+int main(void) {
 
-	int size = 500 * sizeof(int);
-	int *x = (int) malloc(size);
-	*x = 100;
+	setup();
 
-	double d = dtwDistance(smooth8Keinx, smooth8Keiny, smooth8Keinz, SAMPLEAMOUNT, smooth8Keinx, smooth8Keiny, smooth8Keinz, SAMPLEAMOUNT);
-	d += 1;
+	int count = 0;
 
-	//	float f =  pow(smooth8Keinx[0] - smooth2Lx[0], 2.0) + pow(smooth8Keiny[0] - smooth2Ly[0], 2.0) + pow(smooth8Keiny[0] - smooth2Ly[0], 2.0);
+	// Raw signals
+	LinkedList *signalX = newLinkedList();
+	LinkedList *signalY = newLinkedList();
+	LinkedList *signalZ = newLinkedList();
+
+	TM_LIS302DL_LIS3DSH_t Axes_Data;
+
+	// Waiting for blue button to start sampling
+	while(!TM_DISCO_ButtonPressed());
+
+	TM_DISCO_LedOn(LED_RED | LED_GREEN);
+
+	while(TM_DISCO_ButtonPressed()) {
+
+		// Adding accelerometer values
+		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
+		prependToLinkedList(signalX, (double) Axes_Data.X / ACCELEROMETER_DATA_DIVIDER);
+		prependToLinkedList(signalY, (double) Axes_Data.Y / ACCELEROMETER_DATA_DIVIDER);
+		prependToLinkedList(signalZ, (double) Axes_Data.Z / ACCELEROMETER_DATA_DIVIDER);
+		count++;
+
+		Delayms(SAMPLEPERIOD);
+
+	}
+
+	TM_DISCO_LedOff(LED_RED | LED_GREEN);
+
+	// Allocating the temporary arrays to store the raw signal
+	double *tempX = (double *) malloc(count * sizeof(double));
+	double *tempY = (double *) malloc(count * sizeof(double));
+	double *tempZ = (double *) malloc(count * sizeof(double));
+
+	// Filling up the temporary raw signal arrays
+	arrayFromLinkedList(signalX, tempX, count);
+	arrayFromLinkedList(signalY, tempY, count);
+	arrayFromLinkedList(signalZ, tempZ, count);
+
+	// Freeing the memory for the linked lists
+	freeLinkedList(signalX);
+	freeLinkedList(signalY);
+	freeLinkedList(signalZ);
+
+	// Allocating arrays for the smoothed signals
+	double *smoothX = (double *) malloc(count * sizeof(double));
+	double *smoothY = (double *) malloc(count * sizeof(double));
+	double *smoothZ = (double *) malloc(count * sizeof(double));
+
+	// Calculating the smoothed values
+	ewma(tempX, count, smoothX);
+	ewma(tempY, count, smoothY);
+	ewma(tempZ, count, smoothZ);
 
 	while(1);
-
-	//	u_int16_t time = 0;
-	//
-	//	double signalX[SAMPLEAMOUNT];
-	//	double signalY[SAMPLEAMOUNT];
-	//	double signalZ[SAMPLEAMOUNT];
-	//
-	//	TM_LIS302DL_LIS3DSH_t Axes_Data;
-	//
-	//	setup();
-	//
-	//	TM_DISCO_LedOn(LED_BLUE | LED_ORANGE);
-	//
-	//	// Waiting for blue button to start sampling
-	//	while(!TM_DISCO_ButtonPressed());
-	//
-	//	TM_DISCO_LedOff(LED_BLUE | LED_ORANGE);
-	//	TM_DISCO_LedOn(LED_RED | LED_GREEN);
-	//
-	//	int i = 0;
-	//	do {
-	//
-	//		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
-	//		signalX[i] = (double) Axes_Data.X / 100.0;
-	//		signalY[i] = (double) Axes_Data.Y / 100.0;
-	//		signalZ[i++] = (double) Axes_Data.Z / 100.0;
-	//
-	//		Delayms(SAMPLEPERIOD);
-	//		time += SAMPLEPERIOD;
-	//
-	//	} while(time < SAMPLETOTALTIME);
-	//
-	//	TM_DISCO_LedOff(LED_RED | LED_GREEN);
-	//
-	//	int16_t smoothX[SAMPLEAMOUNT];
-	//	int16_t smoothY[SAMPLEAMOUNT];
-	//	int16_t smoothZ[SAMPLEAMOUNT];
-	//
-	//	ewma(signalX, SAMPLEAMOUNT, smoothX);
-	//	ewma(signalY, SAMPLEAMOUNT, smoothY);
-	//	ewma(signalZ, SAMPLEAMOUNT, smoothZ);
-	//
-	//	int gesture = knn(smoothX, smoothY, smoothZ, SAMPLEAMOUNT);
-	//
-	//	while(1) {
-	//		TM_DISCO_LedOn(gesture == 0 ? LED_ORANGE : LED_BLUE);
-	//	}
 
 }
 
