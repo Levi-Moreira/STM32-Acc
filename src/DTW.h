@@ -15,7 +15,7 @@
 void printArray(double *array, int size);
 double average(double *array, int begin, int end);
 void ewma(double *array, int size, double *result);
-double dtwDistance(double *ax, double *ay, double *az, int sa, double *bx, double *by, double *bz, int sb);
+float dtwDistance(double *ax, double *ay, double *az, int sa, double *bx, double *by, double *bz, int sb);
 int knn(int16_t inputX[], int16_t inputY[], int16_t inputZ[], int size);
 
 #endif /* DTW_H_ */
