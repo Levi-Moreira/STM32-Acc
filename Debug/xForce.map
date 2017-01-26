@@ -3207,7 +3207,7 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib
                 0x000008e7       0x1e c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7e-m\libgcc.a(_arm_fixsfsi.o)
  .ARM.attributes
                 0x00000905       0x1e c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7e-m/crtn.o
-OUTPUT(Sampler.elf elf32-littlearm)
+OUTPUT(xForce.elf elf32-littlearm)
 
 .debug_info     0x00000000     0x8d01
  .debug_info    0x00000000      0x649 Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.o

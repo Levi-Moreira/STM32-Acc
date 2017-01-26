@@ -55,9 +55,9 @@
 									<listOptionValue builtIn="false" value="../Libraries/Device/STM32F4xx/Include"/>
 									<listOptionValue builtIn="false" value="../Libraries/STM32F4xx_StdPeriph_Driver/inc"/>
 									<listOptionValue builtIn="false" value="../Utilities/STM32F4-Discovery"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/STM32-Acc/inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/STM32-Acc/other}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/STM32-Acc/headers}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/headers}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/other}&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.1726700775" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.1009642327" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F407VG" valueType="enumerated"/>
