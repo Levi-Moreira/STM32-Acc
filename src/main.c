@@ -30,6 +30,24 @@ void setup() {
 	TM_DISCO_ButtonInit();
 }
 
+char askForAnswer() {
+
+	char c = -1;
+
+	// Waiting for the user to press the button
+	while(!TM_DISCO_ButtonPressed());
+
+	// User pressing the button
+	TM_DISCO_LedOff(LED_ORANGE | LED_BLUE);
+	while(TM_DISCO_ButtonPressed()) {
+		c++;
+		Delayms(500);
+	}
+
+	return !c;
+
+}
+
 int main(void) {
 
 	setup();
@@ -46,7 +64,7 @@ int main(void) {
 	// Waiting for blue button to start sampling
 	while(!TM_DISCO_ButtonPressed());
 
-	TM_DISCO_LedOn(LED_RED | LED_GREEN);
+	TM_DISCO_LedOn(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
 
 	while(TM_DISCO_ButtonPressed()) {
 
@@ -61,7 +79,7 @@ int main(void) {
 
 	}
 
-	TM_DISCO_LedOff(LED_RED | LED_GREEN);
+	TM_DISCO_LedOff(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
 
 	// Allocating the temporary arrays to store the raw signal
 	float *tempX = (float *) malloc(count * sizeof(float));
@@ -103,11 +121,17 @@ int main(void) {
 		TM_DISCO_LedOn(LED_BLUE);
 	}
 
+	// Getting the answer
+	char answer = askForAnswer();
+	if(answer) {
+		TM_DISCO_LedOn(LED_GREEN);
+	} else {
+		TM_DISCO_LedOn(LED_RED);
+	}
+
 	while(1);
 
 }
-
-
 
 /*
  * Callback used by stm32f4_discovery_audio_codec.c.
