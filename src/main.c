@@ -36,7 +36,7 @@ void testTimeOfDTW() {
 	int ms[101];
 	for(int l = 0; l <= 100; l++) {
 		TM_DELAY_SetTime(0);
-		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50);
+		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
 		ms[l] = TM_DELAY_Time();
 	}
 	ms[0] += 0; // Just to avoid the unused warning
@@ -108,14 +108,15 @@ int main(void) {
 	ewma(tempY, count, smoothY);
 	ewma(tempZ, count, smoothZ);
 
-	float o = dtwDistance(smoothX, smoothY, smoothZ, count, smooth2Ox, smooth2Oy, smooth2Oz, 140);
-	float z = dtwDistance(smoothX, smoothY, smoothZ, count, smooth2Zx, smooth2Zy, smooth2Zz, 140);
+	float window = max(140, count) * DTW_WINDOW_RATIO;
+	float o = dtwDistance(smoothX, smoothY, smoothZ, count, smooth2Ox, smooth2Oy, smooth2Oz, 140, window);
+	float z = dtwDistance(smoothX, smoothY, smoothZ, count, smooth2Zx, smooth2Zy, smooth2Zz, 140, window);
 
-	if(o != o) { // NaN
-		TM_DISCO_LedOn(LED_GREEN);
-	}
-	if(o == INFINITY) {
+	if(o != o || z != z) { // NaN
 		TM_DISCO_LedOn(LED_RED);
+	}
+	if(o == INFINITY || z == INFINITY) {
+		TM_DISCO_LedOn(LED_GREEN);
 	}
 	if(o < z) {
 		USART_puts(USART1, "0");
