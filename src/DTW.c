@@ -158,21 +158,17 @@ int knn(float inputX[], float inputY[], float inputZ[], int size) {
 	float minDistance = INFINITY;
 
 	// Normal O
-	float window = max(100, size) * DTW_WINDOW_RATIO;
+	float window = 30;//max(100, size) * DTW_WINDOW_RATIO;
 	distances[0] = dtwDistance(inputX, inputY, inputZ, size, normalOx, normalOy, normalOz, 100, window);
 
 	// Fast O
-	window = max(35, size) * DTW_WINDOW_RATIO;
 	distances[1] = dtwDistance(inputX, inputY, inputZ, size, fastOx, fastOy, fastOz, 35, window);
 
 	// Normal Z
-	window = max(91, size) * DTW_WINDOW_RATIO;
 	distances[2] = dtwDistance(inputX, inputY, inputZ, size, normalZx, normalZy, normalZz, 91, window);
 
 	// Fast Z
-	window = max(34, size) * DTW_WINDOW_RATIO;
 	distances[3] = dtwDistance(inputX, inputY, inputZ, size, fastZx, fastZy, fastZz, 34, window);
-
 
 	// Checking for minor distance
 	for(int i = 0; i < signals; i++) {
