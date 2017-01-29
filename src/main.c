@@ -27,7 +27,8 @@ void testTimeOfDTW() {
 	int ms[101];
 	for(int l = 0; l <= 100; l++) {
 		TM_DELAY_SetTime(0);
-		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
+//		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
+		knn(ts1, ts2, ts3, l + 50);
 		ms[l] = TM_DELAY_Time();
 	}
 	ms[0] += 0; // Just to avoid the unused warning
@@ -38,6 +39,8 @@ int main(void) {
 	setup();
 
 	init_USART1(9600);
+
+//	testTimeOfDTW();
 
 	int count = 0;
 
@@ -110,8 +113,10 @@ int main(void) {
 		}
 		if(klass < 2) {
 			TM_DISCO_LedOn(LED_ORANGE);
+			USART_puts(USART1, "0");
 		} else {
 			TM_DISCO_LedOn(LED_BLUE);
+			USART_puts(USART1, "1");
 		}
 	}
 

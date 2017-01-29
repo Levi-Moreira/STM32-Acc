@@ -7,13 +7,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00005058  08000188  08000188  00010188  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       000000b0  080051e0  080051e0  000151e0  2**3
+  2 .rodata       000000b8  080051e0  080051e0  000151e0  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .init_array   00000004  08005290  08005290  00015290  2**2
+  3 .init_array   00000004  08005298  08005298  00015298  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  4 .fini_array   00000004  08005294  08005294  00015294  2**2
+  4 .fini_array   00000004  0800529c  0800529c  0001529c  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  5 .data         00000cbc  20000000  08005298  00020000  2**2
+  5 .data         00000cbc  20000000  080052a0  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
   6 .ccmram       00000000  10000000  10000000  00020cbc  2**0
                   CONTENTS
@@ -23,21 +23,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 0000002a  00000000  00000000  00020cbc  2**0
                   CONTENTS, READONLY
- 10 .debug_info   0000959f  00000000  00000000  00020ce6  2**0
+ 10 .debug_info   000096f9  00000000  00000000  00020ce6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_abbrev 00001dd9  00000000  00000000  0002a285  2**0
+ 11 .debug_abbrev 00001df5  00000000  00000000  0002a3df  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_aranges 00000b48  00000000  00000000  0002c060  2**3
+ 12 .debug_aranges 00000b50  00000000  00000000  0002c1d8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000a28  00000000  00000000  0002cba8  2**3
+ 13 .debug_ranges 00000a30  00000000  00000000  0002cd28  2**3
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_line   000041ba  00000000  00000000  0002d5d0  2**0
+ 14 .debug_line   000041cd  00000000  00000000  0002d758  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    000036d7  00000000  00000000  0003178a  2**0
+ 15 .debug_str    000036e4  00000000  00000000  00031925  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .comment      0000007e  00000000  00000000  00034e61  2**0
+ 16 .comment      0000007e  00000000  00000000  00035009  2**0
                   CONTENTS, READONLY
- 17 .debug_frame  000032ac  00000000  00000000  00034ee0  2**2
+ 17 .debug_frame  000032cc  00000000  00000000  00035088  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -7172,7 +7172,7 @@ LoopFillZerobss:
  8002fbe:	f000 ff99 	bl	8003ef4 <__libc_init_array>
 /* Call the application's entry point.*/
   bl  main
- 8002fc2:	f000 fe3d 	bl	8003c40 <main>
+ 8002fc2:	f000 fe2f 	bl	8003c24 <main>
   bx  lr    
  8002fc6:	4770      	bx	lr
 
@@ -7188,7 +7188,7 @@ Reset_Handler:
 
 CopyDataInit:
   ldr  r3, =_sidata
- 8002fcc:	08005298 	.word	0x08005298
+ 8002fcc:	080052a0 	.word	0x080052a0
   ldr  r3, [r3, r1]
   str  r3, [r0, r1]
   adds  r1, r1, #4
@@ -7611,6 +7611,10 @@ float max(float a, float b) {
  80031ea:	bf00      	nop
 
 080031ec <average>:
+		if(array[i] > max) { max = array[i]; }
+	}
+	return max;
+}
 
 float average(float *array, int begin, int end) {
  80031ec:	b590      	push	{r4, r7, lr}
@@ -7784,6 +7788,10 @@ void ewma(float *array, int size, float *result) {
  8003314:	3fe66666 	.word	0x3fe66666
 
 08003318 <dtwDistance>:
+
+    return 0;
+
+}
 
 float dtwDistance(float *ax, float *ay, float *az, int sa, float *bx, float *by, float *bz, int sb, int window) {
  8003318:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -8555,833 +8563,834 @@ int knn(float inputX[], float inputY[], float inputZ[], int size) {
  800397c:	62bb      	str	r3, [r7, #40]	; 0x28
 
 	// Normal O
-	float window = 30;//max(100, size) * DTW_WINDOW_RATIO;
- 800397e:	4b4b      	ldr	r3, [pc, #300]	; (8003aac <knn+0x190>)
+	int window = 30;//max(100, size) * DTW_WINDOW_RATIO;
+ 800397e:	231e      	movs	r3, #30
  8003980:	617b      	str	r3, [r7, #20]
 	distances[0] = dtwDistance(inputX, inputY, inputZ, size, normalOx, normalOy, normalOz, 100, window);
- 8003982:	6978      	ldr	r0, [r7, #20]
- 8003984:	f7fd fbac 	bl	80010e0 <__aeabi_f2iz>
- 8003988:	4603      	mov	r3, r0
- 800398a:	9304      	str	r3, [sp, #16]
- 800398c:	2364      	movs	r3, #100	; 0x64
- 800398e:	9303      	str	r3, [sp, #12]
- 8003990:	4b47      	ldr	r3, [pc, #284]	; (8003ab0 <knn+0x194>)
- 8003992:	9302      	str	r3, [sp, #8]
- 8003994:	4b47      	ldr	r3, [pc, #284]	; (8003ab4 <knn+0x198>)
- 8003996:	9301      	str	r3, [sp, #4]
- 8003998:	4b47      	ldr	r3, [pc, #284]	; (8003ab8 <knn+0x19c>)
- 800399a:	9300      	str	r3, [sp, #0]
- 800399c:	683b      	ldr	r3, [r7, #0]
- 800399e:	687a      	ldr	r2, [r7, #4]
- 80039a0:	68b9      	ldr	r1, [r7, #8]
- 80039a2:	68f8      	ldr	r0, [r7, #12]
- 80039a4:	f7ff fcb8 	bl	8003318 <dtwDistance>
- 80039a8:	4602      	mov	r2, r0
- 80039aa:	69bb      	ldr	r3, [r7, #24]
- 80039ac:	601a      	str	r2, [r3, #0]
+ 8003982:	697b      	ldr	r3, [r7, #20]
+ 8003984:	9304      	str	r3, [sp, #16]
+ 8003986:	2364      	movs	r3, #100	; 0x64
+ 8003988:	9303      	str	r3, [sp, #12]
+ 800398a:	4b42      	ldr	r3, [pc, #264]	; (8003a94 <knn+0x178>)
+ 800398c:	9302      	str	r3, [sp, #8]
+ 800398e:	4b42      	ldr	r3, [pc, #264]	; (8003a98 <knn+0x17c>)
+ 8003990:	9301      	str	r3, [sp, #4]
+ 8003992:	4b42      	ldr	r3, [pc, #264]	; (8003a9c <knn+0x180>)
+ 8003994:	9300      	str	r3, [sp, #0]
+ 8003996:	683b      	ldr	r3, [r7, #0]
+ 8003998:	687a      	ldr	r2, [r7, #4]
+ 800399a:	68b9      	ldr	r1, [r7, #8]
+ 800399c:	68f8      	ldr	r0, [r7, #12]
+ 800399e:	f7ff fcbb 	bl	8003318 <dtwDistance>
+ 80039a2:	4602      	mov	r2, r0
+ 80039a4:	69bb      	ldr	r3, [r7, #24]
+ 80039a6:	601a      	str	r2, [r3, #0]
 
 	// Fast O
-//	window = max(35, size) * DTW_WINDOW_RATIO;
 	distances[1] = dtwDistance(inputX, inputY, inputZ, size, fastOx, fastOy, fastOz, 35, window);
- 80039ae:	6978      	ldr	r0, [r7, #20]
- 80039b0:	f7fd fb96 	bl	80010e0 <__aeabi_f2iz>
- 80039b4:	4603      	mov	r3, r0
- 80039b6:	9304      	str	r3, [sp, #16]
- 80039b8:	2323      	movs	r3, #35	; 0x23
- 80039ba:	9303      	str	r3, [sp, #12]
- 80039bc:	4b3f      	ldr	r3, [pc, #252]	; (8003abc <knn+0x1a0>)
- 80039be:	9302      	str	r3, [sp, #8]
- 80039c0:	4b3f      	ldr	r3, [pc, #252]	; (8003ac0 <knn+0x1a4>)
- 80039c2:	9301      	str	r3, [sp, #4]
- 80039c4:	4b3f      	ldr	r3, [pc, #252]	; (8003ac4 <knn+0x1a8>)
- 80039c6:	9300      	str	r3, [sp, #0]
- 80039c8:	683b      	ldr	r3, [r7, #0]
- 80039ca:	687a      	ldr	r2, [r7, #4]
- 80039cc:	68b9      	ldr	r1, [r7, #8]
- 80039ce:	68f8      	ldr	r0, [r7, #12]
- 80039d0:	f7ff fca2 	bl	8003318 <dtwDistance>
- 80039d4:	4602      	mov	r2, r0
- 80039d6:	69bb      	ldr	r3, [r7, #24]
- 80039d8:	605a      	str	r2, [r3, #4]
+ 80039a8:	697b      	ldr	r3, [r7, #20]
+ 80039aa:	9304      	str	r3, [sp, #16]
+ 80039ac:	2323      	movs	r3, #35	; 0x23
+ 80039ae:	9303      	str	r3, [sp, #12]
+ 80039b0:	4b3b      	ldr	r3, [pc, #236]	; (8003aa0 <knn+0x184>)
+ 80039b2:	9302      	str	r3, [sp, #8]
+ 80039b4:	4b3b      	ldr	r3, [pc, #236]	; (8003aa4 <knn+0x188>)
+ 80039b6:	9301      	str	r3, [sp, #4]
+ 80039b8:	4b3b      	ldr	r3, [pc, #236]	; (8003aa8 <knn+0x18c>)
+ 80039ba:	9300      	str	r3, [sp, #0]
+ 80039bc:	683b      	ldr	r3, [r7, #0]
+ 80039be:	687a      	ldr	r2, [r7, #4]
+ 80039c0:	68b9      	ldr	r1, [r7, #8]
+ 80039c2:	68f8      	ldr	r0, [r7, #12]
+ 80039c4:	f7ff fca8 	bl	8003318 <dtwDistance>
+ 80039c8:	4602      	mov	r2, r0
+ 80039ca:	69bb      	ldr	r3, [r7, #24]
+ 80039cc:	605a      	str	r2, [r3, #4]
 
 	// Normal Z
-//	window = max(91, size) * DTW_WINDOW_RATIO;
 	distances[2] = dtwDistance(inputX, inputY, inputZ, size, normalZx, normalZy, normalZz, 91, window);
- 80039da:	6978      	ldr	r0, [r7, #20]
- 80039dc:	f7fd fb80 	bl	80010e0 <__aeabi_f2iz>
- 80039e0:	4603      	mov	r3, r0
- 80039e2:	9304      	str	r3, [sp, #16]
- 80039e4:	235b      	movs	r3, #91	; 0x5b
- 80039e6:	9303      	str	r3, [sp, #12]
- 80039e8:	4b37      	ldr	r3, [pc, #220]	; (8003ac8 <knn+0x1ac>)
- 80039ea:	9302      	str	r3, [sp, #8]
- 80039ec:	4b37      	ldr	r3, [pc, #220]	; (8003acc <knn+0x1b0>)
- 80039ee:	9301      	str	r3, [sp, #4]
- 80039f0:	4b37      	ldr	r3, [pc, #220]	; (8003ad0 <knn+0x1b4>)
- 80039f2:	9300      	str	r3, [sp, #0]
- 80039f4:	683b      	ldr	r3, [r7, #0]
- 80039f6:	687a      	ldr	r2, [r7, #4]
- 80039f8:	68b9      	ldr	r1, [r7, #8]
- 80039fa:	68f8      	ldr	r0, [r7, #12]
- 80039fc:	f7ff fc8c 	bl	8003318 <dtwDistance>
- 8003a00:	4602      	mov	r2, r0
- 8003a02:	69bb      	ldr	r3, [r7, #24]
- 8003a04:	609a      	str	r2, [r3, #8]
+ 80039ce:	697b      	ldr	r3, [r7, #20]
+ 80039d0:	9304      	str	r3, [sp, #16]
+ 80039d2:	235b      	movs	r3, #91	; 0x5b
+ 80039d4:	9303      	str	r3, [sp, #12]
+ 80039d6:	4b35      	ldr	r3, [pc, #212]	; (8003aac <knn+0x190>)
+ 80039d8:	9302      	str	r3, [sp, #8]
+ 80039da:	4b35      	ldr	r3, [pc, #212]	; (8003ab0 <knn+0x194>)
+ 80039dc:	9301      	str	r3, [sp, #4]
+ 80039de:	4b35      	ldr	r3, [pc, #212]	; (8003ab4 <knn+0x198>)
+ 80039e0:	9300      	str	r3, [sp, #0]
+ 80039e2:	683b      	ldr	r3, [r7, #0]
+ 80039e4:	687a      	ldr	r2, [r7, #4]
+ 80039e6:	68b9      	ldr	r1, [r7, #8]
+ 80039e8:	68f8      	ldr	r0, [r7, #12]
+ 80039ea:	f7ff fc95 	bl	8003318 <dtwDistance>
+ 80039ee:	4602      	mov	r2, r0
+ 80039f0:	69bb      	ldr	r3, [r7, #24]
+ 80039f2:	609a      	str	r2, [r3, #8]
 
 	// Fast Z
-//	window = max(34, size) * DTW_WINDOW_RATIO;
 	distances[3] = dtwDistance(inputX, inputY, inputZ, size, fastZx, fastZy, fastZz, 34, window);
- 8003a06:	6978      	ldr	r0, [r7, #20]
- 8003a08:	f7fd fb6a 	bl	80010e0 <__aeabi_f2iz>
- 8003a0c:	4603      	mov	r3, r0
- 8003a0e:	9304      	str	r3, [sp, #16]
- 8003a10:	2322      	movs	r3, #34	; 0x22
- 8003a12:	9303      	str	r3, [sp, #12]
- 8003a14:	4b2f      	ldr	r3, [pc, #188]	; (8003ad4 <knn+0x1b8>)
- 8003a16:	9302      	str	r3, [sp, #8]
- 8003a18:	4b2f      	ldr	r3, [pc, #188]	; (8003ad8 <knn+0x1bc>)
- 8003a1a:	9301      	str	r3, [sp, #4]
- 8003a1c:	4b2f      	ldr	r3, [pc, #188]	; (8003adc <knn+0x1c0>)
- 8003a1e:	9300      	str	r3, [sp, #0]
- 8003a20:	683b      	ldr	r3, [r7, #0]
- 8003a22:	687a      	ldr	r2, [r7, #4]
- 8003a24:	68b9      	ldr	r1, [r7, #8]
- 8003a26:	68f8      	ldr	r0, [r7, #12]
- 8003a28:	f7ff fc76 	bl	8003318 <dtwDistance>
- 8003a2c:	4602      	mov	r2, r0
- 8003a2e:	69bb      	ldr	r3, [r7, #24]
- 8003a30:	60da      	str	r2, [r3, #12]
+ 80039f4:	697b      	ldr	r3, [r7, #20]
+ 80039f6:	9304      	str	r3, [sp, #16]
+ 80039f8:	2322      	movs	r3, #34	; 0x22
+ 80039fa:	9303      	str	r3, [sp, #12]
+ 80039fc:	4b2e      	ldr	r3, [pc, #184]	; (8003ab8 <knn+0x19c>)
+ 80039fe:	9302      	str	r3, [sp, #8]
+ 8003a00:	4b2e      	ldr	r3, [pc, #184]	; (8003abc <knn+0x1a0>)
+ 8003a02:	9301      	str	r3, [sp, #4]
+ 8003a04:	4b2e      	ldr	r3, [pc, #184]	; (8003ac0 <knn+0x1a4>)
+ 8003a06:	9300      	str	r3, [sp, #0]
+ 8003a08:	683b      	ldr	r3, [r7, #0]
+ 8003a0a:	687a      	ldr	r2, [r7, #4]
+ 8003a0c:	68b9      	ldr	r1, [r7, #8]
+ 8003a0e:	68f8      	ldr	r0, [r7, #12]
+ 8003a10:	f7ff fc82 	bl	8003318 <dtwDistance>
+ 8003a14:	4602      	mov	r2, r0
+ 8003a16:	69bb      	ldr	r3, [r7, #24]
+ 8003a18:	60da      	str	r2, [r3, #12]
 
 	// Checking for minor distance
 	for(int i = 0; i < signals; i++) {
- 8003a32:	2300      	movs	r3, #0
- 8003a34:	627b      	str	r3, [r7, #36]	; 0x24
- 8003a36:	e014      	b.n	8003a62 <knn+0x146>
+ 8003a1a:	2300      	movs	r3, #0
+ 8003a1c:	627b      	str	r3, [r7, #36]	; 0x24
+ 8003a1e:	e014      	b.n	8003a4a <knn+0x12e>
 		if(distances[i] < minDistance) {
- 8003a38:	69bb      	ldr	r3, [r7, #24]
- 8003a3a:	6a7a      	ldr	r2, [r7, #36]	; 0x24
- 8003a3c:	f853 3022 	ldr.w	r3, [r3, r2, lsl #2]
- 8003a40:	6ab9      	ldr	r1, [r7, #40]	; 0x28
- 8003a42:	4618      	mov	r0, r3
- 8003a44:	f7fd fb24 	bl	8001090 <__aeabi_fcmplt>
- 8003a48:	4603      	mov	r3, r0
- 8003a4a:	2b00      	cmp	r3, #0
- 8003a4c:	d006      	beq.n	8003a5c <knn+0x140>
+ 8003a20:	69bb      	ldr	r3, [r7, #24]
+ 8003a22:	6a7a      	ldr	r2, [r7, #36]	; 0x24
+ 8003a24:	f853 3022 	ldr.w	r3, [r3, r2, lsl #2]
+ 8003a28:	6ab9      	ldr	r1, [r7, #40]	; 0x28
+ 8003a2a:	4618      	mov	r0, r3
+ 8003a2c:	f7fd fb30 	bl	8001090 <__aeabi_fcmplt>
+ 8003a30:	4603      	mov	r3, r0
+ 8003a32:	2b00      	cmp	r3, #0
+ 8003a34:	d006      	beq.n	8003a44 <knn+0x128>
 			minDistance = distances[i];
- 8003a4e:	69bb      	ldr	r3, [r7, #24]
- 8003a50:	6a7a      	ldr	r2, [r7, #36]	; 0x24
- 8003a52:	f853 3022 	ldr.w	r3, [r3, r2, lsl #2]
- 8003a56:	62bb      	str	r3, [r7, #40]	; 0x28
+ 8003a36:	69bb      	ldr	r3, [r7, #24]
+ 8003a38:	6a7a      	ldr	r2, [r7, #36]	; 0x24
+ 8003a3a:	f853 3022 	ldr.w	r3, [r3, r2, lsl #2]
+ 8003a3e:	62bb      	str	r3, [r7, #40]	; 0x28
 			index = i;
- 8003a58:	6a7b      	ldr	r3, [r7, #36]	; 0x24
- 8003a5a:	62fb      	str	r3, [r7, #44]	; 0x2c
+ 8003a40:	6a7b      	ldr	r3, [r7, #36]	; 0x24
+ 8003a42:	62fb      	str	r3, [r7, #44]	; 0x2c
+
 	// Fast Z
-//	window = max(34, size) * DTW_WINDOW_RATIO;
 	distances[3] = dtwDistance(inputX, inputY, inputZ, size, fastZx, fastZy, fastZz, 34, window);
 
 	// Checking for minor distance
 	for(int i = 0; i < signals; i++) {
- 8003a5c:	6a7b      	ldr	r3, [r7, #36]	; 0x24
- 8003a5e:	3301      	adds	r3, #1
- 8003a60:	627b      	str	r3, [r7, #36]	; 0x24
- 8003a62:	6a7a      	ldr	r2, [r7, #36]	; 0x24
- 8003a64:	6a3b      	ldr	r3, [r7, #32]
- 8003a66:	429a      	cmp	r2, r3
- 8003a68:	dbe6      	blt.n	8003a38 <knn+0x11c>
+ 8003a44:	6a7b      	ldr	r3, [r7, #36]	; 0x24
+ 8003a46:	3301      	adds	r3, #1
+ 8003a48:	627b      	str	r3, [r7, #36]	; 0x24
+ 8003a4a:	6a7a      	ldr	r2, [r7, #36]	; 0x24
+ 8003a4c:	6a3b      	ldr	r3, [r7, #32]
+ 8003a4e:	429a      	cmp	r2, r3
+ 8003a50:	dbe6      	blt.n	8003a20 <knn+0x104>
 			minDistance = distances[i];
 			index = i;
 		}
 	}
 
 	if(minDistance != minDistance) { //Nan
- 8003a6a:	6ab9      	ldr	r1, [r7, #40]	; 0x28
- 8003a6c:	6ab8      	ldr	r0, [r7, #40]	; 0x28
- 8003a6e:	f7fd fb05 	bl	800107c <__aeabi_fcmpeq>
- 8003a72:	4603      	mov	r3, r0
- 8003a74:	2b00      	cmp	r3, #0
- 8003a76:	d104      	bne.n	8003a82 <knn+0x166>
+ 8003a52:	6ab9      	ldr	r1, [r7, #40]	; 0x28
+ 8003a54:	6ab8      	ldr	r0, [r7, #40]	; 0x28
+ 8003a56:	f7fd fb11 	bl	800107c <__aeabi_fcmpeq>
+ 8003a5a:	4603      	mov	r3, r0
+ 8003a5c:	2b00      	cmp	r3, #0
+ 8003a5e:	d104      	bne.n	8003a6a <knn+0x14e>
 		return minDistance;
- 8003a78:	6ab8      	ldr	r0, [r7, #40]	; 0x28
- 8003a7a:	f7fd fb31 	bl	80010e0 <__aeabi_f2iz>
- 8003a7e:	4603      	mov	r3, r0
- 8003a80:	e00d      	b.n	8003a9e <knn+0x182>
+ 8003a60:	6ab8      	ldr	r0, [r7, #40]	; 0x28
+ 8003a62:	f7fd fb3d 	bl	80010e0 <__aeabi_f2iz>
+ 8003a66:	4603      	mov	r3, r0
+ 8003a68:	e00d      	b.n	8003a86 <knn+0x16a>
 	}
 
 	// Negative if the distance is infinity
 	return index * (minDistance == INFINITY ? -1 : 1);
- 8003a82:	4917      	ldr	r1, [pc, #92]	; (8003ae0 <knn+0x1c4>)
- 8003a84:	6ab8      	ldr	r0, [r7, #40]	; 0x28
- 8003a86:	f7fd fb21 	bl	80010cc <__aeabi_fcmpgt>
- 8003a8a:	4603      	mov	r3, r0
- 8003a8c:	2b00      	cmp	r3, #0
- 8003a8e:	d002      	beq.n	8003a96 <knn+0x17a>
- 8003a90:	f04f 33ff 	mov.w	r3, #4294967295
- 8003a94:	e000      	b.n	8003a98 <knn+0x17c>
- 8003a96:	2301      	movs	r3, #1
- 8003a98:	6afa      	ldr	r2, [r7, #44]	; 0x2c
- 8003a9a:	fb02 f303 	mul.w	r3, r2, r3
- 8003a9e:	46b5      	mov	sp, r6
+ 8003a6a:	4916      	ldr	r1, [pc, #88]	; (8003ac4 <knn+0x1a8>)
+ 8003a6c:	6ab8      	ldr	r0, [r7, #40]	; 0x28
+ 8003a6e:	f7fd fb2d 	bl	80010cc <__aeabi_fcmpgt>
+ 8003a72:	4603      	mov	r3, r0
+ 8003a74:	2b00      	cmp	r3, #0
+ 8003a76:	d002      	beq.n	8003a7e <knn+0x162>
+ 8003a78:	f04f 33ff 	mov.w	r3, #4294967295
+ 8003a7c:	e000      	b.n	8003a80 <knn+0x164>
+ 8003a7e:	2301      	movs	r3, #1
+ 8003a80:	6afa      	ldr	r2, [r7, #44]	; 0x2c
+ 8003a82:	fb02 f303 	mul.w	r3, r2, r3
+ 8003a86:	46b5      	mov	sp, r6
 
 }
- 8003aa0:	4618      	mov	r0, r3
- 8003aa2:	3734      	adds	r7, #52	; 0x34
- 8003aa4:	46bd      	mov	sp, r7
- 8003aa6:	e8bd 83f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, pc}
- 8003aaa:	bf00      	nop
- 8003aac:	41f00000 	.word	0x41f00000
- 8003ab0:	20000344 	.word	0x20000344
- 8003ab4:	200001b4 	.word	0x200001b4
- 8003ab8:	20000024 	.word	0x20000024
- 8003abc:	200005ec 	.word	0x200005ec
- 8003ac0:	20000560 	.word	0x20000560
- 8003ac4:	200004d4 	.word	0x200004d4
- 8003ac8:	20000950 	.word	0x20000950
- 8003acc:	200007e4 	.word	0x200007e4
- 8003ad0:	20000678 	.word	0x20000678
- 8003ad4:	20000bcc 	.word	0x20000bcc
- 8003ad8:	20000b44 	.word	0x20000b44
- 8003adc:	20000abc 	.word	0x20000abc
- 8003ae0:	7f7fffff 	.word	0x7f7fffff
+ 8003a88:	4618      	mov	r0, r3
+ 8003a8a:	3734      	adds	r7, #52	; 0x34
+ 8003a8c:	46bd      	mov	sp, r7
+ 8003a8e:	e8bd 83f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, pc}
+ 8003a92:	bf00      	nop
+ 8003a94:	20000344 	.word	0x20000344
+ 8003a98:	200001b4 	.word	0x200001b4
+ 8003a9c:	20000024 	.word	0x20000024
+ 8003aa0:	200005ec 	.word	0x200005ec
+ 8003aa4:	20000560 	.word	0x20000560
+ 8003aa8:	200004d4 	.word	0x200004d4
+ 8003aac:	20000950 	.word	0x20000950
+ 8003ab0:	200007e4 	.word	0x200007e4
+ 8003ab4:	20000678 	.word	0x20000678
+ 8003ab8:	20000bcc 	.word	0x20000bcc
+ 8003abc:	20000b44 	.word	0x20000b44
+ 8003ac0:	20000abc 	.word	0x20000abc
+ 8003ac4:	7f7fffff 	.word	0x7f7fffff
 
-08003ae4 <newLinkedList>:
+08003ac8 <newLinkedList>:
  *      Author: Alan
  */
 
 #include "LinkedList.h"
 
 LinkedList * newLinkedList() {
- 8003ae4:	b580      	push	{r7, lr}
- 8003ae6:	b082      	sub	sp, #8
- 8003ae8:	af00      	add	r7, sp, #0
+ 8003ac8:	b580      	push	{r7, lr}
+ 8003aca:	b082      	sub	sp, #8
+ 8003acc:	af00      	add	r7, sp, #0
     LinkedList *list = (LinkedList *) malloc(sizeof(LinkedList));
- 8003aea:	2008      	movs	r0, #8
- 8003aec:	f000 fa28 	bl	8003f40 <malloc>
- 8003af0:	4603      	mov	r3, r0
- 8003af2:	607b      	str	r3, [r7, #4]
+ 8003ace:	2008      	movs	r0, #8
+ 8003ad0:	f000 fa36 	bl	8003f40 <malloc>
+ 8003ad4:	4603      	mov	r3, r0
+ 8003ad6:	607b      	str	r3, [r7, #4]
     list->value = 0.0;
- 8003af4:	687b      	ldr	r3, [r7, #4]
- 8003af6:	f04f 0200 	mov.w	r2, #0
- 8003afa:	601a      	str	r2, [r3, #0]
+ 8003ad8:	687b      	ldr	r3, [r7, #4]
+ 8003ada:	f04f 0200 	mov.w	r2, #0
+ 8003ade:	601a      	str	r2, [r3, #0]
     list->next = NULL;
- 8003afc:	687b      	ldr	r3, [r7, #4]
- 8003afe:	2200      	movs	r2, #0
- 8003b00:	605a      	str	r2, [r3, #4]
+ 8003ae0:	687b      	ldr	r3, [r7, #4]
+ 8003ae2:	2200      	movs	r2, #0
+ 8003ae4:	605a      	str	r2, [r3, #4]
     return list;
- 8003b02:	687b      	ldr	r3, [r7, #4]
+ 8003ae6:	687b      	ldr	r3, [r7, #4]
 }
- 8003b04:	4618      	mov	r0, r3
- 8003b06:	3708      	adds	r7, #8
- 8003b08:	46bd      	mov	sp, r7
- 8003b0a:	bd80      	pop	{r7, pc}
+ 8003ae8:	4618      	mov	r0, r3
+ 8003aea:	3708      	adds	r7, #8
+ 8003aec:	46bd      	mov	sp, r7
+ 8003aee:	bd80      	pop	{r7, pc}
 
-08003b0c <prependToLinkedList>:
+08003af0 <prependToLinkedList>:
         head = head->next;
     }
     printf("\n");
 }
 
 void prependToLinkedList(LinkedList *head, float value) {
- 8003b0c:	b580      	push	{r7, lr}
- 8003b0e:	b084      	sub	sp, #16
- 8003b10:	af00      	add	r7, sp, #0
- 8003b12:	6078      	str	r0, [r7, #4]
- 8003b14:	6039      	str	r1, [r7, #0]
+ 8003af0:	b580      	push	{r7, lr}
+ 8003af2:	b084      	sub	sp, #16
+ 8003af4:	af00      	add	r7, sp, #0
+ 8003af6:	6078      	str	r0, [r7, #4]
+ 8003af8:	6039      	str	r1, [r7, #0]
 
     if(!head) { return; }
- 8003b16:	687b      	ldr	r3, [r7, #4]
- 8003b18:	2b00      	cmp	r3, #0
- 8003b1a:	d00d      	beq.n	8003b38 <prependToLinkedList+0x2c>
+ 8003afa:	687b      	ldr	r3, [r7, #4]
+ 8003afc:	2b00      	cmp	r3, #0
+ 8003afe:	d00d      	beq.n	8003b1c <prependToLinkedList+0x2c>
 
     LinkedList *new = newLinkedList();
- 8003b1c:	f7ff ffe2 	bl	8003ae4 <newLinkedList>
- 8003b20:	60f8      	str	r0, [r7, #12]
+ 8003b00:	f7ff ffe2 	bl	8003ac8 <newLinkedList>
+ 8003b04:	60f8      	str	r0, [r7, #12]
     new->value = value;
- 8003b22:	68fb      	ldr	r3, [r7, #12]
- 8003b24:	683a      	ldr	r2, [r7, #0]
- 8003b26:	601a      	str	r2, [r3, #0]
+ 8003b06:	68fb      	ldr	r3, [r7, #12]
+ 8003b08:	683a      	ldr	r2, [r7, #0]
+ 8003b0a:	601a      	str	r2, [r3, #0]
     new->next = head->next;
- 8003b28:	687b      	ldr	r3, [r7, #4]
- 8003b2a:	685a      	ldr	r2, [r3, #4]
- 8003b2c:	68fb      	ldr	r3, [r7, #12]
- 8003b2e:	605a      	str	r2, [r3, #4]
+ 8003b0c:	687b      	ldr	r3, [r7, #4]
+ 8003b0e:	685a      	ldr	r2, [r3, #4]
+ 8003b10:	68fb      	ldr	r3, [r7, #12]
+ 8003b12:	605a      	str	r2, [r3, #4]
     head->next = new;
- 8003b30:	687b      	ldr	r3, [r7, #4]
- 8003b32:	68fa      	ldr	r2, [r7, #12]
- 8003b34:	605a      	str	r2, [r3, #4]
- 8003b36:	e000      	b.n	8003b3a <prependToLinkedList+0x2e>
+ 8003b14:	687b      	ldr	r3, [r7, #4]
+ 8003b16:	68fa      	ldr	r2, [r7, #12]
+ 8003b18:	605a      	str	r2, [r3, #4]
+ 8003b1a:	e000      	b.n	8003b1e <prependToLinkedList+0x2e>
     printf("\n");
 }
 
 void prependToLinkedList(LinkedList *head, float value) {
 
     if(!head) { return; }
- 8003b38:	bf00      	nop
+ 8003b1c:	bf00      	nop
     LinkedList *new = newLinkedList();
     new->value = value;
     new->next = head->next;
     head->next = new;
 
 }
- 8003b3a:	3710      	adds	r7, #16
- 8003b3c:	46bd      	mov	sp, r7
- 8003b3e:	bd80      	pop	{r7, pc}
+ 8003b1e:	3710      	adds	r7, #16
+ 8003b20:	46bd      	mov	sp, r7
+ 8003b22:	bd80      	pop	{r7, pc}
 
-08003b40 <arrayFromLinkedList>:
+08003b24 <arrayFromLinkedList>:
     new->value = value;
     head->next = new;
 
 }
 
 void arrayFromLinkedList(LinkedList *head, float *destination, int size) {
- 8003b40:	b480      	push	{r7}
- 8003b42:	b085      	sub	sp, #20
- 8003b44:	af00      	add	r7, sp, #0
- 8003b46:	60f8      	str	r0, [r7, #12]
- 8003b48:	60b9      	str	r1, [r7, #8]
- 8003b4a:	607a      	str	r2, [r7, #4]
+ 8003b24:	b480      	push	{r7}
+ 8003b26:	b085      	sub	sp, #20
+ 8003b28:	af00      	add	r7, sp, #0
+ 8003b2a:	60f8      	str	r0, [r7, #12]
+ 8003b2c:	60b9      	str	r1, [r7, #8]
+ 8003b2e:	607a      	str	r2, [r7, #4]
 
     if(!head) { return; }
- 8003b4c:	68fb      	ldr	r3, [r7, #12]
- 8003b4e:	2b00      	cmp	r3, #0
- 8003b50:	d015      	beq.n	8003b7e <arrayFromLinkedList+0x3e>
+ 8003b30:	68fb      	ldr	r3, [r7, #12]
+ 8003b32:	2b00      	cmp	r3, #0
+ 8003b34:	d015      	beq.n	8003b62 <arrayFromLinkedList+0x3e>
 
     while (head->next && size > 0) {
- 8003b52:	e00c      	b.n	8003b6e <arrayFromLinkedList+0x2e>
+ 8003b36:	e00c      	b.n	8003b52 <arrayFromLinkedList+0x2e>
         head = head->next;
- 8003b54:	68fb      	ldr	r3, [r7, #12]
- 8003b56:	685b      	ldr	r3, [r3, #4]
- 8003b58:	60fb      	str	r3, [r7, #12]
+ 8003b38:	68fb      	ldr	r3, [r7, #12]
+ 8003b3a:	685b      	ldr	r3, [r3, #4]
+ 8003b3c:	60fb      	str	r3, [r7, #12]
         destination[--size] = head->value;
+ 8003b3e:	687b      	ldr	r3, [r7, #4]
+ 8003b40:	3b01      	subs	r3, #1
+ 8003b42:	607b      	str	r3, [r7, #4]
+ 8003b44:	687b      	ldr	r3, [r7, #4]
+ 8003b46:	009b      	lsls	r3, r3, #2
+ 8003b48:	68ba      	ldr	r2, [r7, #8]
+ 8003b4a:	4413      	add	r3, r2
+ 8003b4c:	68fa      	ldr	r2, [r7, #12]
+ 8003b4e:	6812      	ldr	r2, [r2, #0]
+ 8003b50:	601a      	str	r2, [r3, #0]
+
+void arrayFromLinkedList(LinkedList *head, float *destination, int size) {
+
+    if(!head) { return; }
+
+    while (head->next && size > 0) {
+ 8003b52:	68fb      	ldr	r3, [r7, #12]
+ 8003b54:	685b      	ldr	r3, [r3, #4]
+ 8003b56:	2b00      	cmp	r3, #0
+ 8003b58:	d004      	beq.n	8003b64 <arrayFromLinkedList+0x40>
  8003b5a:	687b      	ldr	r3, [r7, #4]
- 8003b5c:	3b01      	subs	r3, #1
- 8003b5e:	607b      	str	r3, [r7, #4]
- 8003b60:	687b      	ldr	r3, [r7, #4]
- 8003b62:	009b      	lsls	r3, r3, #2
- 8003b64:	68ba      	ldr	r2, [r7, #8]
- 8003b66:	4413      	add	r3, r2
- 8003b68:	68fa      	ldr	r2, [r7, #12]
- 8003b6a:	6812      	ldr	r2, [r2, #0]
- 8003b6c:	601a      	str	r2, [r3, #0]
-
-void arrayFromLinkedList(LinkedList *head, float *destination, int size) {
-
-    if(!head) { return; }
-
-    while (head->next && size > 0) {
- 8003b6e:	68fb      	ldr	r3, [r7, #12]
- 8003b70:	685b      	ldr	r3, [r3, #4]
- 8003b72:	2b00      	cmp	r3, #0
- 8003b74:	d004      	beq.n	8003b80 <arrayFromLinkedList+0x40>
- 8003b76:	687b      	ldr	r3, [r7, #4]
- 8003b78:	2b00      	cmp	r3, #0
- 8003b7a:	dceb      	bgt.n	8003b54 <arrayFromLinkedList+0x14>
- 8003b7c:	e000      	b.n	8003b80 <arrayFromLinkedList+0x40>
+ 8003b5c:	2b00      	cmp	r3, #0
+ 8003b5e:	dceb      	bgt.n	8003b38 <arrayFromLinkedList+0x14>
+ 8003b60:	e000      	b.n	8003b64 <arrayFromLinkedList+0x40>
 
 }
 
 void arrayFromLinkedList(LinkedList *head, float *destination, int size) {
 
     if(!head) { return; }
- 8003b7e:	bf00      	nop
+ 8003b62:	bf00      	nop
     while (head->next && size > 0) {
         head = head->next;
         destination[--size] = head->value;
     }
 
 }
- 8003b80:	3714      	adds	r7, #20
- 8003b82:	46bd      	mov	sp, r7
- 8003b84:	bc80      	pop	{r7}
- 8003b86:	4770      	bx	lr
+ 8003b64:	3714      	adds	r7, #20
+ 8003b66:	46bd      	mov	sp, r7
+ 8003b68:	bc80      	pop	{r7}
+ 8003b6a:	4770      	bx	lr
 
-08003b88 <freeLinkedList>:
+08003b6c <freeLinkedList>:
 
 void freeLinkedList(LinkedList *head) {
- 8003b88:	b580      	push	{r7, lr}
- 8003b8a:	b084      	sub	sp, #16
- 8003b8c:	af00      	add	r7, sp, #0
- 8003b8e:	6078      	str	r0, [r7, #4]
+ 8003b6c:	b580      	push	{r7, lr}
+ 8003b6e:	b084      	sub	sp, #16
+ 8003b70:	af00      	add	r7, sp, #0
+ 8003b72:	6078      	str	r0, [r7, #4]
 
     if(!head) { return; }
- 8003b90:	687b      	ldr	r3, [r7, #4]
- 8003b92:	2b00      	cmp	r3, #0
- 8003b94:	d014      	beq.n	8003bc0 <freeLinkedList+0x38>
+ 8003b74:	687b      	ldr	r3, [r7, #4]
+ 8003b76:	2b00      	cmp	r3, #0
+ 8003b78:	d014      	beq.n	8003ba4 <freeLinkedList+0x38>
 
     LinkedList *current;
     current = head;
- 8003b96:	687b      	ldr	r3, [r7, #4]
- 8003b98:	60fb      	str	r3, [r7, #12]
+ 8003b7a:	687b      	ldr	r3, [r7, #4]
+ 8003b7c:	60fb      	str	r3, [r7, #12]
     head = head->next;
- 8003b9a:	687b      	ldr	r3, [r7, #4]
- 8003b9c:	685b      	ldr	r3, [r3, #4]
- 8003b9e:	607b      	str	r3, [r7, #4]
+ 8003b7e:	687b      	ldr	r3, [r7, #4]
+ 8003b80:	685b      	ldr	r3, [r3, #4]
+ 8003b82:	607b      	str	r3, [r7, #4]
     current->next = NULL;
- 8003ba0:	68fb      	ldr	r3, [r7, #12]
- 8003ba2:	2200      	movs	r2, #0
- 8003ba4:	605a      	str	r2, [r3, #4]
+ 8003b84:	68fb      	ldr	r3, [r7, #12]
+ 8003b86:	2200      	movs	r2, #0
+ 8003b88:	605a      	str	r2, [r3, #4]
 
     while (head) {
- 8003ba6:	e007      	b.n	8003bb8 <freeLinkedList+0x30>
+ 8003b8a:	e007      	b.n	8003b9c <freeLinkedList+0x30>
         current = head;
- 8003ba8:	687b      	ldr	r3, [r7, #4]
- 8003baa:	60fb      	str	r3, [r7, #12]
+ 8003b8c:	687b      	ldr	r3, [r7, #4]
+ 8003b8e:	60fb      	str	r3, [r7, #12]
         head = head->next;
- 8003bac:	687b      	ldr	r3, [r7, #4]
- 8003bae:	685b      	ldr	r3, [r3, #4]
- 8003bb0:	607b      	str	r3, [r7, #4]
+ 8003b90:	687b      	ldr	r3, [r7, #4]
+ 8003b92:	685b      	ldr	r3, [r3, #4]
+ 8003b94:	607b      	str	r3, [r7, #4]
         free(current);
- 8003bb2:	68f8      	ldr	r0, [r7, #12]
- 8003bb4:	f000 f9cc 	bl	8003f50 <free>
+ 8003b96:	68f8      	ldr	r0, [r7, #12]
+ 8003b98:	f000 f9da 	bl	8003f50 <free>
     LinkedList *current;
     current = head;
     head = head->next;
     current->next = NULL;
 
     while (head) {
- 8003bb8:	687b      	ldr	r3, [r7, #4]
- 8003bba:	2b00      	cmp	r3, #0
- 8003bbc:	d1f4      	bne.n	8003ba8 <freeLinkedList+0x20>
- 8003bbe:	e000      	b.n	8003bc2 <freeLinkedList+0x3a>
+ 8003b9c:	687b      	ldr	r3, [r7, #4]
+ 8003b9e:	2b00      	cmp	r3, #0
+ 8003ba0:	d1f4      	bne.n	8003b8c <freeLinkedList+0x20>
+ 8003ba2:	e000      	b.n	8003ba6 <freeLinkedList+0x3a>
 
 }
 
 void freeLinkedList(LinkedList *head) {
 
     if(!head) { return; }
- 8003bc0:	bf00      	nop
+ 8003ba4:	bf00      	nop
         current = head;
         head = head->next;
         free(current);
     }
 
 }
- 8003bc2:	3710      	adds	r7, #16
- 8003bc4:	46bd      	mov	sp, r7
- 8003bc6:	bd80      	pop	{r7, pc}
+ 8003ba6:	3710      	adds	r7, #16
+ 8003ba8:	46bd      	mov	sp, r7
+ 8003baa:	bd80      	pop	{r7, pc}
 
-08003bc8 <Delayms>:
+08003bac <Delayms>:
  * @param  Delays for specific amount of milliseconds
  * @param  millis: Time in milliseconds for delay
  * @retval None
  * @note   Declared as static inline
  */
 static __INLINE void Delayms(uint32_t millis) {
- 8003bc8:	b480      	push	{r7}
- 8003bca:	b085      	sub	sp, #20
- 8003bcc:	af00      	add	r7, sp, #0
- 8003bce:	6078      	str	r0, [r7, #4]
+ 8003bac:	b480      	push	{r7}
+ 8003bae:	b085      	sub	sp, #20
+ 8003bb0:	af00      	add	r7, sp, #0
+ 8003bb2:	6078      	str	r0, [r7, #4]
 	volatile uint32_t timer = TM_Time;
- 8003bd0:	4b11      	ldr	r3, [pc, #68]	; (8003c18 <Delayms+0x50>)
- 8003bd2:	681b      	ldr	r3, [r3, #0]
- 8003bd4:	60bb      	str	r3, [r7, #8]
+ 8003bb4:	4b11      	ldr	r3, [pc, #68]	; (8003bfc <Delayms+0x50>)
+ 8003bb6:	681b      	ldr	r3, [r3, #0]
+ 8003bb8:	60bb      	str	r3, [r7, #8]
  */
 __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_IPSR(void)
 {
   uint32_t result;
 
   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
- 8003bd6:	f3ef 8305 	mrs	r3, IPSR
- 8003bda:	60fb      	str	r3, [r7, #12]
+ 8003bba:	f3ef 8305 	mrs	r3, IPSR
+ 8003bbe:	60fb      	str	r3, [r7, #12]
   return(result);
- 8003bdc:	68fb      	ldr	r3, [r7, #12]
+ 8003bc0:	68fb      	ldr	r3, [r7, #12]
 
 	/* Called from thread */
 	if (!__get_IPSR()) {
- 8003bde:	2b00      	cmp	r3, #0
- 8003be0:	d111      	bne.n	8003c06 <Delayms+0x3e>
+ 8003bc2:	2b00      	cmp	r3, #0
+ 8003bc4:	d111      	bne.n	8003bea <Delayms+0x3e>
 		/* Wait for timer to count milliseconds */
 		while ((TM_Time - timer) < millis) {
- 8003be2:	bf00      	nop
- 8003be4:	4b0c      	ldr	r3, [pc, #48]	; (8003c18 <Delayms+0x50>)
- 8003be6:	681a      	ldr	r2, [r3, #0]
- 8003be8:	68bb      	ldr	r3, [r7, #8]
- 8003bea:	1ad2      	subs	r2, r2, r3
- 8003bec:	687b      	ldr	r3, [r7, #4]
- 8003bee:	429a      	cmp	r2, r3
- 8003bf0:	d3f8      	bcc.n	8003be4 <Delayms+0x1c>
+ 8003bc6:	bf00      	nop
+ 8003bc8:	4b0c      	ldr	r3, [pc, #48]	; (8003bfc <Delayms+0x50>)
+ 8003bca:	681a      	ldr	r2, [r3, #0]
+ 8003bcc:	68bb      	ldr	r3, [r7, #8]
+ 8003bce:	1ad2      	subs	r2, r2, r3
+ 8003bd0:	687b      	ldr	r3, [r7, #4]
+ 8003bd2:	429a      	cmp	r2, r3
+ 8003bd4:	d3f8      	bcc.n	8003bc8 <Delayms+0x1c>
 			if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) {
 				millis--;
 			}
 		}
 	}
 }
- 8003bf2:	e00b      	b.n	8003c0c <Delayms+0x44>
+ 8003bd6:	e00b      	b.n	8003bf0 <Delayms+0x44>
 #endif
 		}
 	} else {
 		/* Called from interrupt */
 		while (millis) {
 			if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) {
- 8003bf4:	4b09      	ldr	r3, [pc, #36]	; (8003c1c <Delayms+0x54>)
- 8003bf6:	681b      	ldr	r3, [r3, #0]
- 8003bf8:	f403 3380 	and.w	r3, r3, #65536	; 0x10000
- 8003bfc:	2b00      	cmp	r3, #0
- 8003bfe:	d002      	beq.n	8003c06 <Delayms+0x3e>
+ 8003bd8:	4b09      	ldr	r3, [pc, #36]	; (8003c00 <Delayms+0x54>)
+ 8003bda:	681b      	ldr	r3, [r3, #0]
+ 8003bdc:	f403 3380 	and.w	r3, r3, #65536	; 0x10000
+ 8003be0:	2b00      	cmp	r3, #0
+ 8003be2:	d002      	beq.n	8003bea <Delayms+0x3e>
 				millis--;
- 8003c00:	687b      	ldr	r3, [r7, #4]
- 8003c02:	3b01      	subs	r3, #1
- 8003c04:	607b      	str	r3, [r7, #4]
+ 8003be4:	687b      	ldr	r3, [r7, #4]
+ 8003be6:	3b01      	subs	r3, #1
+ 8003be8:	607b      	str	r3, [r7, #4]
 			__WFI();
 #endif
 		}
 	} else {
 		/* Called from interrupt */
 		while (millis) {
- 8003c06:	687b      	ldr	r3, [r7, #4]
- 8003c08:	2b00      	cmp	r3, #0
- 8003c0a:	d1f3      	bne.n	8003bf4 <Delayms+0x2c>
+ 8003bea:	687b      	ldr	r3, [r7, #4]
+ 8003bec:	2b00      	cmp	r3, #0
+ 8003bee:	d1f3      	bne.n	8003bd8 <Delayms+0x2c>
 			if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) {
 				millis--;
 			}
 		}
 	}
 }
- 8003c0c:	bf00      	nop
- 8003c0e:	3714      	adds	r7, #20
- 8003c10:	46bd      	mov	sp, r7
- 8003c12:	bc80      	pop	{r7}
- 8003c14:	4770      	bx	lr
- 8003c16:	bf00      	nop
- 8003c18:	20000cdc 	.word	0x20000cdc
- 8003c1c:	e000e010 	.word	0xe000e010
+ 8003bf0:	bf00      	nop
+ 8003bf2:	3714      	adds	r7, #20
+ 8003bf4:	46bd      	mov	sp, r7
+ 8003bf6:	bc80      	pop	{r7}
+ 8003bf8:	4770      	bx	lr
+ 8003bfa:	bf00      	nop
+ 8003bfc:	20000cdc 	.word	0x20000cdc
+ 8003c00:	e000e010 	.word	0xe000e010
 
-08003c20 <setup>:
+08003c04 <setup>:
 #include "LinkedList.h"
 #include "serial.h"
 #include "time.h"
 
 
 void setup() {
- 8003c20:	b580      	push	{r7, lr}
- 8003c22:	af00      	add	r7, sp, #0
+ 8003c04:	b580      	push	{r7, lr}
+ 8003c06:	af00      	add	r7, sp, #0
 	SystemInit();
- 8003c24:	f7ff fa12 	bl	800304c <SystemInit>
+ 8003c08:	f7ff fa20 	bl	800304c <SystemInit>
 	TM_DELAY_Init();
- 8003c28:	f7fe f9ea 	bl	8002000 <TM_DELAY_Init>
+ 8003c0c:	f7fe f9f8 	bl	8002000 <TM_DELAY_Init>
 	TM_DISCO_LedInit();
- 8003c2c:	f7fe fa10 	bl	8002050 <TM_DISCO_LedInit>
+ 8003c10:	f7fe fa1e 	bl	8002050 <TM_DISCO_LedInit>
 	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_2G, TM_LIS3DSH_Filter_50Hz);
- 8003c30:	2103      	movs	r1, #3
- 8003c32:	2000      	movs	r0, #0
- 8003c34:	f7fe fbba 	bl	80023ac <TM_LIS302DL_LIS3DSH_Init>
+ 8003c14:	2103      	movs	r1, #3
+ 8003c16:	2000      	movs	r0, #0
+ 8003c18:	f7fe fbc8 	bl	80023ac <TM_LIS302DL_LIS3DSH_Init>
 	TM_DISCO_ButtonInit();
- 8003c38:	f7fe fa22 	bl	8002080 <TM_DISCO_ButtonInit>
+ 8003c1c:	f7fe fa30 	bl	8002080 <TM_DISCO_ButtonInit>
 }
- 8003c3c:	bf00      	nop
- 8003c3e:	bd80      	pop	{r7, pc}
+ 8003c20:	bf00      	nop
+ 8003c22:	bd80      	pop	{r7, pc}
 
-08003c40 <main>:
+08003c24 <main>:
 		ms[l] = TM_DELAY_Time();
 	}
 	ms[0] += 0; // Just to avoid the unused warning
 }
 
 int main(void) {
- 8003c40:	b590      	push	{r4, r7, lr}
- 8003c42:	f6ad 1d94 	subw	sp, sp, #2452	; 0x994
- 8003c46:	af00      	add	r7, sp, #0
+ 8003c24:	b590      	push	{r4, r7, lr}
+ 8003c26:	f6ad 1d94 	subw	sp, sp, #2452	; 0x994
+ 8003c2a:	af00      	add	r7, sp, #0
 
 	setup();
- 8003c48:	f7ff ffea 	bl	8003c20 <setup>
+ 8003c2c:	f7ff ffea 	bl	8003c04 <setup>
 
 	init_USART1(9600);
- 8003c4c:	f44f 5016 	mov.w	r0, #9600	; 0x2580
- 8003c50:	f7fe f85e 	bl	8001d10 <init_USART1>
+ 8003c30:	f44f 5016 	mov.w	r0, #9600	; 0x2580
+ 8003c34:	f7fe f86c 	bl	8001d10 <init_USART1>
+
+//	testTimeOfDTW();
 
 	int count = 0;
- 8003c54:	2300      	movs	r3, #0
- 8003c56:	f8c7 398c 	str.w	r3, [r7, #2444]	; 0x98c
+ 8003c38:	2300      	movs	r3, #0
+ 8003c3a:	f8c7 398c 	str.w	r3, [r7, #2444]	; 0x98c
 
 	// Raw signals
 	LinkedList *signalX = newLinkedList();
- 8003c5a:	f7ff ff43 	bl	8003ae4 <newLinkedList>
- 8003c5e:	f8c7 097c 	str.w	r0, [r7, #2428]	; 0x97c
+ 8003c3e:	f7ff ff43 	bl	8003ac8 <newLinkedList>
+ 8003c42:	f8c7 097c 	str.w	r0, [r7, #2428]	; 0x97c
 	LinkedList *signalY = newLinkedList();
- 8003c62:	f7ff ff3f 	bl	8003ae4 <newLinkedList>
- 8003c66:	f8c7 0978 	str.w	r0, [r7, #2424]	; 0x978
+ 8003c46:	f7ff ff3f 	bl	8003ac8 <newLinkedList>
+ 8003c4a:	f8c7 0978 	str.w	r0, [r7, #2424]	; 0x978
 	LinkedList *signalZ = newLinkedList();
- 8003c6a:	f7ff ff3b 	bl	8003ae4 <newLinkedList>
- 8003c6e:	f8c7 0974 	str.w	r0, [r7, #2420]	; 0x974
+ 8003c4e:	f7ff ff3b 	bl	8003ac8 <newLinkedList>
+ 8003c52:	f8c7 0974 	str.w	r0, [r7, #2420]	; 0x974
 
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
 
 	// Waiting for blue button to start sampling
 	while(!TM_DISCO_ButtonPressed());
- 8003c72:	bf00      	nop
- 8003c74:	4b92      	ldr	r3, [pc, #584]	; (8003ec0 <main+0x280>)
- 8003c76:	691b      	ldr	r3, [r3, #16]
- 8003c78:	f003 0301 	and.w	r3, r3, #1
- 8003c7c:	2b00      	cmp	r3, #0
- 8003c7e:	d0f9      	beq.n	8003c74 <main+0x34>
+ 8003c56:	bf00      	nop
+ 8003c58:	4b96      	ldr	r3, [pc, #600]	; (8003eb4 <main+0x290>)
+ 8003c5a:	691b      	ldr	r3, [r3, #16]
+ 8003c5c:	f003 0301 	and.w	r3, r3, #1
+ 8003c60:	2b00      	cmp	r3, #0
+ 8003c62:	d0f9      	beq.n	8003c58 <main+0x34>
 
 	TM_DISCO_LedOn(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
- 8003c80:	4b90      	ldr	r3, [pc, #576]	; (8003ec4 <main+0x284>)
- 8003c82:	f44f 4270 	mov.w	r2, #61440	; 0xf000
- 8003c86:	831a      	strh	r2, [r3, #24]
+ 8003c64:	4b94      	ldr	r3, [pc, #592]	; (8003eb8 <main+0x294>)
+ 8003c66:	f44f 4270 	mov.w	r2, #61440	; 0xf000
+ 8003c6a:	831a      	strh	r2, [r3, #24]
 
 	while(TM_DISCO_ButtonPressed()) {
- 8003c88:	e03c      	b.n	8003d04 <main+0xc4>
+ 8003c6c:	e03c      	b.n	8003ce8 <main+0xc4>
 
 		// Adding accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
- 8003c8a:	f507 6316 	add.w	r3, r7, #2400	; 0x960
- 8003c8e:	4618      	mov	r0, r3
- 8003c90:	f7fe fbbc 	bl	800240c <TM_LIS302DL_LIS3DSH_ReadAxes>
+ 8003c6e:	f507 6316 	add.w	r3, r7, #2400	; 0x960
+ 8003c72:	4618      	mov	r0, r3
+ 8003c74:	f7fe fbca 	bl	800240c <TM_LIS302DL_LIS3DSH_ReadAxes>
 		prependToLinkedList(signalX, (float) Axes_Data.X / ACCELEROMETER_DATA_DIVIDER);
- 8003c94:	f9b7 3960 	ldrsh.w	r3, [r7, #2400]	; 0x960
- 8003c98:	4618      	mov	r0, r3
- 8003c9a:	f7fd f807 	bl	8000cac <__aeabi_i2f>
- 8003c9e:	4603      	mov	r3, r0
- 8003ca0:	4989      	ldr	r1, [pc, #548]	; (8003ec8 <main+0x288>)
- 8003ca2:	4618      	mov	r0, r3
- 8003ca4:	f7fd f90a 	bl	8000ebc <__aeabi_fdiv>
- 8003ca8:	4603      	mov	r3, r0
- 8003caa:	4619      	mov	r1, r3
- 8003cac:	f8d7 097c 	ldr.w	r0, [r7, #2428]	; 0x97c
- 8003cb0:	f7ff ff2c 	bl	8003b0c <prependToLinkedList>
+ 8003c78:	f9b7 3960 	ldrsh.w	r3, [r7, #2400]	; 0x960
+ 8003c7c:	4618      	mov	r0, r3
+ 8003c7e:	f7fd f815 	bl	8000cac <__aeabi_i2f>
+ 8003c82:	4603      	mov	r3, r0
+ 8003c84:	498d      	ldr	r1, [pc, #564]	; (8003ebc <main+0x298>)
+ 8003c86:	4618      	mov	r0, r3
+ 8003c88:	f7fd f918 	bl	8000ebc <__aeabi_fdiv>
+ 8003c8c:	4603      	mov	r3, r0
+ 8003c8e:	4619      	mov	r1, r3
+ 8003c90:	f8d7 097c 	ldr.w	r0, [r7, #2428]	; 0x97c
+ 8003c94:	f7ff ff2c 	bl	8003af0 <prependToLinkedList>
 		prependToLinkedList(signalY, (float) Axes_Data.Y / ACCELEROMETER_DATA_DIVIDER);
- 8003cb4:	f9b7 3962 	ldrsh.w	r3, [r7, #2402]	; 0x962
- 8003cb8:	4618      	mov	r0, r3
- 8003cba:	f7fc fff7 	bl	8000cac <__aeabi_i2f>
- 8003cbe:	4603      	mov	r3, r0
- 8003cc0:	4981      	ldr	r1, [pc, #516]	; (8003ec8 <main+0x288>)
- 8003cc2:	4618      	mov	r0, r3
- 8003cc4:	f7fd f8fa 	bl	8000ebc <__aeabi_fdiv>
- 8003cc8:	4603      	mov	r3, r0
- 8003cca:	4619      	mov	r1, r3
- 8003ccc:	f8d7 0978 	ldr.w	r0, [r7, #2424]	; 0x978
- 8003cd0:	f7ff ff1c 	bl	8003b0c <prependToLinkedList>
+ 8003c98:	f9b7 3962 	ldrsh.w	r3, [r7, #2402]	; 0x962
+ 8003c9c:	4618      	mov	r0, r3
+ 8003c9e:	f7fd f805 	bl	8000cac <__aeabi_i2f>
+ 8003ca2:	4603      	mov	r3, r0
+ 8003ca4:	4985      	ldr	r1, [pc, #532]	; (8003ebc <main+0x298>)
+ 8003ca6:	4618      	mov	r0, r3
+ 8003ca8:	f7fd f908 	bl	8000ebc <__aeabi_fdiv>
+ 8003cac:	4603      	mov	r3, r0
+ 8003cae:	4619      	mov	r1, r3
+ 8003cb0:	f8d7 0978 	ldr.w	r0, [r7, #2424]	; 0x978
+ 8003cb4:	f7ff ff1c 	bl	8003af0 <prependToLinkedList>
 		prependToLinkedList(signalZ, (float) Axes_Data.Z / ACCELEROMETER_DATA_DIVIDER);
- 8003cd4:	f9b7 3964 	ldrsh.w	r3, [r7, #2404]	; 0x964
- 8003cd8:	4618      	mov	r0, r3
- 8003cda:	f7fc ffe7 	bl	8000cac <__aeabi_i2f>
- 8003cde:	4603      	mov	r3, r0
- 8003ce0:	4979      	ldr	r1, [pc, #484]	; (8003ec8 <main+0x288>)
- 8003ce2:	4618      	mov	r0, r3
- 8003ce4:	f7fd f8ea 	bl	8000ebc <__aeabi_fdiv>
- 8003ce8:	4603      	mov	r3, r0
- 8003cea:	4619      	mov	r1, r3
- 8003cec:	f8d7 0974 	ldr.w	r0, [r7, #2420]	; 0x974
- 8003cf0:	f7ff ff0c 	bl	8003b0c <prependToLinkedList>
+ 8003cb8:	f9b7 3964 	ldrsh.w	r3, [r7, #2404]	; 0x964
+ 8003cbc:	4618      	mov	r0, r3
+ 8003cbe:	f7fc fff5 	bl	8000cac <__aeabi_i2f>
+ 8003cc2:	4603      	mov	r3, r0
+ 8003cc4:	497d      	ldr	r1, [pc, #500]	; (8003ebc <main+0x298>)
+ 8003cc6:	4618      	mov	r0, r3
+ 8003cc8:	f7fd f8f8 	bl	8000ebc <__aeabi_fdiv>
+ 8003ccc:	4603      	mov	r3, r0
+ 8003cce:	4619      	mov	r1, r3
+ 8003cd0:	f8d7 0974 	ldr.w	r0, [r7, #2420]	; 0x974
+ 8003cd4:	f7ff ff0c 	bl	8003af0 <prependToLinkedList>
 		count++;
- 8003cf4:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
- 8003cf8:	3301      	adds	r3, #1
- 8003cfa:	f8c7 398c 	str.w	r3, [r7, #2444]	; 0x98c
+ 8003cd8:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
+ 8003cdc:	3301      	adds	r3, #1
+ 8003cde:	f8c7 398c 	str.w	r3, [r7, #2444]	; 0x98c
 
 		Delayms(SAMPLEPERIOD);
- 8003cfe:	2014      	movs	r0, #20
- 8003d00:	f7ff ff62 	bl	8003bc8 <Delayms>
+ 8003ce2:	2014      	movs	r0, #20
+ 8003ce4:	f7ff ff62 	bl	8003bac <Delayms>
 	// Waiting for blue button to start sampling
 	while(!TM_DISCO_ButtonPressed());
 
 	TM_DISCO_LedOn(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
 
 	while(TM_DISCO_ButtonPressed()) {
- 8003d04:	4b6e      	ldr	r3, [pc, #440]	; (8003ec0 <main+0x280>)
- 8003d06:	691b      	ldr	r3, [r3, #16]
- 8003d08:	f003 0301 	and.w	r3, r3, #1
- 8003d0c:	2b00      	cmp	r3, #0
- 8003d0e:	d1bc      	bne.n	8003c8a <main+0x4a>
+ 8003ce8:	4b72      	ldr	r3, [pc, #456]	; (8003eb4 <main+0x290>)
+ 8003cea:	691b      	ldr	r3, [r3, #16]
+ 8003cec:	f003 0301 	and.w	r3, r3, #1
+ 8003cf0:	2b00      	cmp	r3, #0
+ 8003cf2:	d1bc      	bne.n	8003c6e <main+0x4a>
 
 		Delayms(SAMPLEPERIOD);
 
 	}
 
 	TM_DISCO_LedOff(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
- 8003d10:	4b6c      	ldr	r3, [pc, #432]	; (8003ec4 <main+0x284>)
- 8003d12:	f44f 4270 	mov.w	r2, #61440	; 0xf000
- 8003d16:	835a      	strh	r2, [r3, #26]
+ 8003cf4:	4b70      	ldr	r3, [pc, #448]	; (8003eb8 <main+0x294>)
+ 8003cf6:	f44f 4270 	mov.w	r2, #61440	; 0xf000
+ 8003cfa:	835a      	strh	r2, [r3, #26]
 
 	// Allocating the temporary arrays to store the raw signal
 	float *tempX = (float *) malloc(count * sizeof(float));
- 8003d18:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
- 8003d1c:	009b      	lsls	r3, r3, #2
- 8003d1e:	4618      	mov	r0, r3
- 8003d20:	f000 f90e 	bl	8003f40 <malloc>
- 8003d24:	4603      	mov	r3, r0
- 8003d26:	f8c7 3970 	str.w	r3, [r7, #2416]	; 0x970
+ 8003cfc:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
+ 8003d00:	009b      	lsls	r3, r3, #2
+ 8003d02:	4618      	mov	r0, r3
+ 8003d04:	f000 f91c 	bl	8003f40 <malloc>
+ 8003d08:	4603      	mov	r3, r0
+ 8003d0a:	f8c7 3970 	str.w	r3, [r7, #2416]	; 0x970
 	float *tempY = (float *) malloc(count * sizeof(float));
- 8003d2a:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
- 8003d2e:	009b      	lsls	r3, r3, #2
- 8003d30:	4618      	mov	r0, r3
- 8003d32:	f000 f905 	bl	8003f40 <malloc>
- 8003d36:	4603      	mov	r3, r0
- 8003d38:	f8c7 396c 	str.w	r3, [r7, #2412]	; 0x96c
+ 8003d0e:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
+ 8003d12:	009b      	lsls	r3, r3, #2
+ 8003d14:	4618      	mov	r0, r3
+ 8003d16:	f000 f913 	bl	8003f40 <malloc>
+ 8003d1a:	4603      	mov	r3, r0
+ 8003d1c:	f8c7 396c 	str.w	r3, [r7, #2412]	; 0x96c
 	float *tempZ = (float *) malloc(count * sizeof(float));
- 8003d3c:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
- 8003d40:	009b      	lsls	r3, r3, #2
- 8003d42:	4618      	mov	r0, r3
- 8003d44:	f000 f8fc 	bl	8003f40 <malloc>
- 8003d48:	4603      	mov	r3, r0
- 8003d4a:	f8c7 3968 	str.w	r3, [r7, #2408]	; 0x968
+ 8003d20:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
+ 8003d24:	009b      	lsls	r3, r3, #2
+ 8003d26:	4618      	mov	r0, r3
+ 8003d28:	f000 f90a 	bl	8003f40 <malloc>
+ 8003d2c:	4603      	mov	r3, r0
+ 8003d2e:	f8c7 3968 	str.w	r3, [r7, #2408]	; 0x968
 
 	// Filling up the temporary raw signal arrays
 	arrayFromLinkedList(signalX, tempX, count);
- 8003d4e:	f8d7 298c 	ldr.w	r2, [r7, #2444]	; 0x98c
- 8003d52:	f8d7 1970 	ldr.w	r1, [r7, #2416]	; 0x970
- 8003d56:	f8d7 097c 	ldr.w	r0, [r7, #2428]	; 0x97c
- 8003d5a:	f7ff fef1 	bl	8003b40 <arrayFromLinkedList>
+ 8003d32:	f8d7 298c 	ldr.w	r2, [r7, #2444]	; 0x98c
+ 8003d36:	f8d7 1970 	ldr.w	r1, [r7, #2416]	; 0x970
+ 8003d3a:	f8d7 097c 	ldr.w	r0, [r7, #2428]	; 0x97c
+ 8003d3e:	f7ff fef1 	bl	8003b24 <arrayFromLinkedList>
 	arrayFromLinkedList(signalY, tempY, count);
- 8003d5e:	f8d7 298c 	ldr.w	r2, [r7, #2444]	; 0x98c
- 8003d62:	f8d7 196c 	ldr.w	r1, [r7, #2412]	; 0x96c
- 8003d66:	f8d7 0978 	ldr.w	r0, [r7, #2424]	; 0x978
- 8003d6a:	f7ff fee9 	bl	8003b40 <arrayFromLinkedList>
+ 8003d42:	f8d7 298c 	ldr.w	r2, [r7, #2444]	; 0x98c
+ 8003d46:	f8d7 196c 	ldr.w	r1, [r7, #2412]	; 0x96c
+ 8003d4a:	f8d7 0978 	ldr.w	r0, [r7, #2424]	; 0x978
+ 8003d4e:	f7ff fee9 	bl	8003b24 <arrayFromLinkedList>
 	arrayFromLinkedList(signalZ, tempZ, count);
- 8003d6e:	f8d7 298c 	ldr.w	r2, [r7, #2444]	; 0x98c
- 8003d72:	f8d7 1968 	ldr.w	r1, [r7, #2408]	; 0x968
- 8003d76:	f8d7 0974 	ldr.w	r0, [r7, #2420]	; 0x974
- 8003d7a:	f7ff fee1 	bl	8003b40 <arrayFromLinkedList>
+ 8003d52:	f8d7 298c 	ldr.w	r2, [r7, #2444]	; 0x98c
+ 8003d56:	f8d7 1968 	ldr.w	r1, [r7, #2408]	; 0x968
+ 8003d5a:	f8d7 0974 	ldr.w	r0, [r7, #2420]	; 0x974
+ 8003d5e:	f7ff fee1 	bl	8003b24 <arrayFromLinkedList>
 
 	// Freeing the memory for the linked lists
 	freeLinkedList(signalX);
- 8003d7e:	f8d7 097c 	ldr.w	r0, [r7, #2428]	; 0x97c
- 8003d82:	f7ff ff01 	bl	8003b88 <freeLinkedList>
+ 8003d62:	f8d7 097c 	ldr.w	r0, [r7, #2428]	; 0x97c
+ 8003d66:	f7ff ff01 	bl	8003b6c <freeLinkedList>
 	freeLinkedList(signalY);
- 8003d86:	f8d7 0978 	ldr.w	r0, [r7, #2424]	; 0x978
- 8003d8a:	f7ff fefd 	bl	8003b88 <freeLinkedList>
+ 8003d6a:	f8d7 0978 	ldr.w	r0, [r7, #2424]	; 0x978
+ 8003d6e:	f7ff fefd 	bl	8003b6c <freeLinkedList>
 	freeLinkedList(signalZ);
- 8003d8e:	f8d7 0974 	ldr.w	r0, [r7, #2420]	; 0x974
- 8003d92:	f7ff fef9 	bl	8003b88 <freeLinkedList>
+ 8003d72:	f8d7 0974 	ldr.w	r0, [r7, #2420]	; 0x974
+ 8003d76:	f7ff fef9 	bl	8003b6c <freeLinkedList>
 
 	// Allocating arrays for the smoothed signals
 	float smoothX[200];
 	float smoothY[200];
 	float smoothZ[200];
 	int i = 0;
- 8003d96:	2300      	movs	r3, #0
- 8003d98:	f8c7 3988 	str.w	r3, [r7, #2440]	; 0x988
+ 8003d7a:	2300      	movs	r3, #0
+ 8003d7c:	f8c7 3988 	str.w	r3, [r7, #2440]	; 0x988
 	for(i = 0; i < 200; i++) {
- 8003d9c:	2300      	movs	r3, #0
- 8003d9e:	f8c7 3988 	str.w	r3, [r7, #2440]	; 0x988
- 8003da2:	e018      	b.n	8003dd6 <main+0x196>
+ 8003d80:	2300      	movs	r3, #0
+ 8003d82:	f8c7 3988 	str.w	r3, [r7, #2440]	; 0x988
+ 8003d86:	e018      	b.n	8003dba <main+0x196>
 		smoothX[i] = 666.666;
- 8003da4:	f507 63c8 	add.w	r3, r7, #1600	; 0x640
- 8003da8:	f8d7 2988 	ldr.w	r2, [r7, #2440]	; 0x988
- 8003dac:	4947      	ldr	r1, [pc, #284]	; (8003ecc <main+0x28c>)
- 8003dae:	f843 1022 	str.w	r1, [r3, r2, lsl #2]
+ 8003d88:	f507 63c8 	add.w	r3, r7, #1600	; 0x640
+ 8003d8c:	f8d7 2988 	ldr.w	r2, [r7, #2440]	; 0x988
+ 8003d90:	494b      	ldr	r1, [pc, #300]	; (8003ec0 <main+0x29c>)
+ 8003d92:	f843 1022 	str.w	r1, [r3, r2, lsl #2]
 		smoothY[i] = 666.666;
- 8003db2:	f507 7348 	add.w	r3, r7, #800	; 0x320
- 8003db6:	f8d7 2988 	ldr.w	r2, [r7, #2440]	; 0x988
- 8003dba:	4944      	ldr	r1, [pc, #272]	; (8003ecc <main+0x28c>)
- 8003dbc:	f843 1022 	str.w	r1, [r3, r2, lsl #2]
+ 8003d96:	f507 7348 	add.w	r3, r7, #800	; 0x320
+ 8003d9a:	f8d7 2988 	ldr.w	r2, [r7, #2440]	; 0x988
+ 8003d9e:	4948      	ldr	r1, [pc, #288]	; (8003ec0 <main+0x29c>)
+ 8003da0:	f843 1022 	str.w	r1, [r3, r2, lsl #2]
 		smoothZ[i] = 666.666;
- 8003dc0:	463b      	mov	r3, r7
- 8003dc2:	f8d7 2988 	ldr.w	r2, [r7, #2440]	; 0x988
- 8003dc6:	4941      	ldr	r1, [pc, #260]	; (8003ecc <main+0x28c>)
- 8003dc8:	f843 1022 	str.w	r1, [r3, r2, lsl #2]
+ 8003da4:	463b      	mov	r3, r7
+ 8003da6:	f8d7 2988 	ldr.w	r2, [r7, #2440]	; 0x988
+ 8003daa:	4945      	ldr	r1, [pc, #276]	; (8003ec0 <main+0x29c>)
+ 8003dac:	f843 1022 	str.w	r1, [r3, r2, lsl #2]
 	// Allocating arrays for the smoothed signals
 	float smoothX[200];
 	float smoothY[200];
 	float smoothZ[200];
 	int i = 0;
 	for(i = 0; i < 200; i++) {
- 8003dcc:	f8d7 3988 	ldr.w	r3, [r7, #2440]	; 0x988
- 8003dd0:	3301      	adds	r3, #1
- 8003dd2:	f8c7 3988 	str.w	r3, [r7, #2440]	; 0x988
- 8003dd6:	f8d7 3988 	ldr.w	r3, [r7, #2440]	; 0x988
- 8003dda:	2bc7      	cmp	r3, #199	; 0xc7
- 8003ddc:	dde2      	ble.n	8003da4 <main+0x164>
+ 8003db0:	f8d7 3988 	ldr.w	r3, [r7, #2440]	; 0x988
+ 8003db4:	3301      	adds	r3, #1
+ 8003db6:	f8c7 3988 	str.w	r3, [r7, #2440]	; 0x988
+ 8003dba:	f8d7 3988 	ldr.w	r3, [r7, #2440]	; 0x988
+ 8003dbe:	2bc7      	cmp	r3, #199	; 0xc7
+ 8003dc0:	dde2      	ble.n	8003d88 <main+0x164>
 		smoothY[i] = 666.666;
 		smoothZ[i] = 666.666;
 	}
 
 	// Calculating the smoothed values
 	ewma(tempX, count, smoothX);
- 8003dde:	f507 63c8 	add.w	r3, r7, #1600	; 0x640
- 8003de2:	461a      	mov	r2, r3
- 8003de4:	f8d7 198c 	ldr.w	r1, [r7, #2444]	; 0x98c
- 8003de8:	f8d7 0970 	ldr.w	r0, [r7, #2416]	; 0x970
- 8003dec:	f7ff fa34 	bl	8003258 <ewma>
+ 8003dc2:	f507 63c8 	add.w	r3, r7, #1600	; 0x640
+ 8003dc6:	461a      	mov	r2, r3
+ 8003dc8:	f8d7 198c 	ldr.w	r1, [r7, #2444]	; 0x98c
+ 8003dcc:	f8d7 0970 	ldr.w	r0, [r7, #2416]	; 0x970
+ 8003dd0:	f7ff fa42 	bl	8003258 <ewma>
 	ewma(tempY, count, smoothY);
- 8003df0:	f507 7348 	add.w	r3, r7, #800	; 0x320
- 8003df4:	461a      	mov	r2, r3
- 8003df6:	f8d7 198c 	ldr.w	r1, [r7, #2444]	; 0x98c
- 8003dfa:	f8d7 096c 	ldr.w	r0, [r7, #2412]	; 0x96c
- 8003dfe:	f7ff fa2b 	bl	8003258 <ewma>
+ 8003dd4:	f507 7348 	add.w	r3, r7, #800	; 0x320
+ 8003dd8:	461a      	mov	r2, r3
+ 8003dda:	f8d7 198c 	ldr.w	r1, [r7, #2444]	; 0x98c
+ 8003dde:	f8d7 096c 	ldr.w	r0, [r7, #2412]	; 0x96c
+ 8003de2:	f7ff fa39 	bl	8003258 <ewma>
 	ewma(tempZ, count, smoothZ);
- 8003e02:	463b      	mov	r3, r7
- 8003e04:	461a      	mov	r2, r3
- 8003e06:	f8d7 198c 	ldr.w	r1, [r7, #2444]	; 0x98c
- 8003e0a:	f8d7 0968 	ldr.w	r0, [r7, #2408]	; 0x968
- 8003e0e:	f7ff fa23 	bl	8003258 <ewma>
+ 8003de6:	463b      	mov	r3, r7
+ 8003de8:	461a      	mov	r2, r3
+ 8003dea:	f8d7 198c 	ldr.w	r1, [r7, #2444]	; 0x98c
+ 8003dee:	f8d7 0968 	ldr.w	r0, [r7, #2408]	; 0x968
+ 8003df2:	f7ff fa31 	bl	8003258 <ewma>
 
 	double klass = knn(smoothX, smoothY, smoothZ, count);
- 8003e12:	463a      	mov	r2, r7
- 8003e14:	f507 7148 	add.w	r1, r7, #800	; 0x320
- 8003e18:	f507 60c8 	add.w	r0, r7, #1600	; 0x640
- 8003e1c:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
- 8003e20:	f7ff fd7c 	bl	800391c <knn>
- 8003e24:	4603      	mov	r3, r0
- 8003e26:	4618      	mov	r0, r3
- 8003e28:	f7fc fb20 	bl	800046c <__aeabi_i2d>
- 8003e2c:	4603      	mov	r3, r0
- 8003e2e:	460c      	mov	r4, r1
- 8003e30:	f507 6218 	add.w	r2, r7, #2432	; 0x980
- 8003e34:	e882 0018 	stmia.w	r2, {r3, r4}
+ 8003df6:	463a      	mov	r2, r7
+ 8003df8:	f507 7148 	add.w	r1, r7, #800	; 0x320
+ 8003dfc:	f507 60c8 	add.w	r0, r7, #1600	; 0x640
+ 8003e00:	f8d7 398c 	ldr.w	r3, [r7, #2444]	; 0x98c
+ 8003e04:	f7ff fd8a 	bl	800391c <knn>
+ 8003e08:	4603      	mov	r3, r0
+ 8003e0a:	4618      	mov	r0, r3
+ 8003e0c:	f7fc fb2e 	bl	800046c <__aeabi_i2d>
+ 8003e10:	4603      	mov	r3, r0
+ 8003e12:	460c      	mov	r4, r1
+ 8003e14:	f507 6218 	add.w	r2, r7, #2432	; 0x980
+ 8003e18:	e882 0018 	stmia.w	r2, {r3, r4}
 
 	if(klass != klass) { //NaN
- 8003e38:	f507 6318 	add.w	r3, r7, #2432	; 0x980
- 8003e3c:	e9d3 2300 	ldrd	r2, r3, [r3]
- 8003e40:	f507 6118 	add.w	r1, r7, #2432	; 0x980
- 8003e44:	e9d1 0100 	ldrd	r0, r1, [r1]
- 8003e48:	f7fc fdde 	bl	8000a08 <__aeabi_dcmpeq>
- 8003e4c:	4603      	mov	r3, r0
- 8003e4e:	2b00      	cmp	r3, #0
- 8003e50:	d104      	bne.n	8003e5c <main+0x21c>
+ 8003e1c:	f507 6318 	add.w	r3, r7, #2432	; 0x980
+ 8003e20:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 8003e24:	f507 6118 	add.w	r1, r7, #2432	; 0x980
+ 8003e28:	e9d1 0100 	ldrd	r0, r1, [r1]
+ 8003e2c:	f7fc fdec 	bl	8000a08 <__aeabi_dcmpeq>
+ 8003e30:	4603      	mov	r3, r0
+ 8003e32:	2b00      	cmp	r3, #0
+ 8003e34:	d104      	bne.n	8003e40 <main+0x21c>
 		TM_DISCO_LedOn(LED_RED);
- 8003e52:	4b1c      	ldr	r3, [pc, #112]	; (8003ec4 <main+0x284>)
- 8003e54:	f44f 4280 	mov.w	r2, #16384	; 0x4000
- 8003e58:	831a      	strh	r2, [r3, #24]
- 8003e5a:	e030      	b.n	8003ebe <main+0x27e>
+ 8003e36:	4b20      	ldr	r3, [pc, #128]	; (8003eb8 <main+0x294>)
+ 8003e38:	f44f 4280 	mov.w	r2, #16384	; 0x4000
+ 8003e3c:	831a      	strh	r2, [r3, #24]
+ 8003e3e:	e038      	b.n	8003eb2 <main+0x28e>
 	} else {
 		if(klass < 0) {
- 8003e5c:	f04f 0200 	mov.w	r2, #0
- 8003e60:	f04f 0300 	mov.w	r3, #0
- 8003e64:	f507 6118 	add.w	r1, r7, #2432	; 0x980
- 8003e68:	e9d1 0100 	ldrd	r0, r1, [r1]
- 8003e6c:	f7fc fdd6 	bl	8000a1c <__aeabi_dcmplt>
- 8003e70:	4603      	mov	r3, r0
- 8003e72:	2b00      	cmp	r3, #0
- 8003e74:	d00d      	beq.n	8003e92 <main+0x252>
+ 8003e40:	f04f 0200 	mov.w	r2, #0
+ 8003e44:	f04f 0300 	mov.w	r3, #0
+ 8003e48:	f507 6118 	add.w	r1, r7, #2432	; 0x980
+ 8003e4c:	e9d1 0100 	ldrd	r0, r1, [r1]
+ 8003e50:	f7fc fde4 	bl	8000a1c <__aeabi_dcmplt>
+ 8003e54:	4603      	mov	r3, r0
+ 8003e56:	2b00      	cmp	r3, #0
+ 8003e58:	d00d      	beq.n	8003e76 <main+0x252>
 			TM_DISCO_LedOn(LED_GREEN);
- 8003e76:	4b13      	ldr	r3, [pc, #76]	; (8003ec4 <main+0x284>)
- 8003e78:	f44f 5280 	mov.w	r2, #4096	; 0x1000
- 8003e7c:	831a      	strh	r2, [r3, #24]
+ 8003e5a:	4b17      	ldr	r3, [pc, #92]	; (8003eb8 <main+0x294>)
+ 8003e5c:	f44f 5280 	mov.w	r2, #4096	; 0x1000
+ 8003e60:	831a      	strh	r2, [r3, #24]
 			klass *= -1;
- 8003e7e:	f8d7 3980 	ldr.w	r3, [r7, #2432]	; 0x980
- 8003e82:	f8c7 3980 	str.w	r3, [r7, #2432]	; 0x980
- 8003e86:	f8d7 3984 	ldr.w	r3, [r7, #2436]	; 0x984
- 8003e8a:	f083 4300 	eor.w	r3, r3, #2147483648	; 0x80000000
- 8003e8e:	f8c7 3984 	str.w	r3, [r7, #2436]	; 0x984
+ 8003e62:	f8d7 3980 	ldr.w	r3, [r7, #2432]	; 0x980
+ 8003e66:	f8c7 3980 	str.w	r3, [r7, #2432]	; 0x980
+ 8003e6a:	f8d7 3984 	ldr.w	r3, [r7, #2436]	; 0x984
+ 8003e6e:	f083 4300 	eor.w	r3, r3, #2147483648	; 0x80000000
+ 8003e72:	f8c7 3984 	str.w	r3, [r7, #2436]	; 0x984
 		}
 		if(klass < 2) {
- 8003e92:	f04f 0200 	mov.w	r2, #0
- 8003e96:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
- 8003e9a:	f507 6118 	add.w	r1, r7, #2432	; 0x980
- 8003e9e:	e9d1 0100 	ldrd	r0, r1, [r1]
- 8003ea2:	f7fc fdbb 	bl	8000a1c <__aeabi_dcmplt>
- 8003ea6:	4603      	mov	r3, r0
- 8003ea8:	2b00      	cmp	r3, #0
- 8003eaa:	d004      	beq.n	8003eb6 <main+0x276>
+ 8003e76:	f04f 0200 	mov.w	r2, #0
+ 8003e7a:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
+ 8003e7e:	f507 6118 	add.w	r1, r7, #2432	; 0x980
+ 8003e82:	e9d1 0100 	ldrd	r0, r1, [r1]
+ 8003e86:	f7fc fdc9 	bl	8000a1c <__aeabi_dcmplt>
+ 8003e8a:	4603      	mov	r3, r0
+ 8003e8c:	2b00      	cmp	r3, #0
+ 8003e8e:	d008      	beq.n	8003ea2 <main+0x27e>
 			TM_DISCO_LedOn(LED_ORANGE);
- 8003eac:	4b05      	ldr	r3, [pc, #20]	; (8003ec4 <main+0x284>)
- 8003eae:	f44f 5200 	mov.w	r2, #8192	; 0x2000
- 8003eb2:	831a      	strh	r2, [r3, #24]
- 8003eb4:	e003      	b.n	8003ebe <main+0x27e>
+ 8003e90:	4b09      	ldr	r3, [pc, #36]	; (8003eb8 <main+0x294>)
+ 8003e92:	f44f 5200 	mov.w	r2, #8192	; 0x2000
+ 8003e96:	831a      	strh	r2, [r3, #24]
+			USART_puts(USART1, "0");
+ 8003e98:	490a      	ldr	r1, [pc, #40]	; (8003ec4 <main+0x2a0>)
+ 8003e9a:	480b      	ldr	r0, [pc, #44]	; (8003ec8 <main+0x2a4>)
+ 8003e9c:	f7fd ff94 	bl	8001dc8 <USART_puts>
+ 8003ea0:	e007      	b.n	8003eb2 <main+0x28e>
 		} else {
 			TM_DISCO_LedOn(LED_BLUE);
- 8003eb6:	4b03      	ldr	r3, [pc, #12]	; (8003ec4 <main+0x284>)
- 8003eb8:	f44f 4200 	mov.w	r2, #32768	; 0x8000
- 8003ebc:	831a      	strh	r2, [r3, #24]
+ 8003ea2:	4b05      	ldr	r3, [pc, #20]	; (8003eb8 <main+0x294>)
+ 8003ea4:	f44f 4200 	mov.w	r2, #32768	; 0x8000
+ 8003ea8:	831a      	strh	r2, [r3, #24]
+			USART_puts(USART1, "1");
+ 8003eaa:	4908      	ldr	r1, [pc, #32]	; (8003ecc <main+0x2a8>)
+ 8003eac:	4806      	ldr	r0, [pc, #24]	; (8003ec8 <main+0x2a4>)
+ 8003eae:	f7fd ff8b 	bl	8001dc8 <USART_puts>
 		}
 	}
 
 	while(1);
- 8003ebe:	e7fe      	b.n	8003ebe <main+0x27e>
- 8003ec0:	40020000 	.word	0x40020000
- 8003ec4:	40020c00 	.word	0x40020c00
- 8003ec8:	42c80000 	.word	0x42c80000
- 8003ecc:	4426aaa0 	.word	0x4426aaa0
+ 8003eb2:	e7fe      	b.n	8003eb2 <main+0x28e>
+ 8003eb4:	40020000 	.word	0x40020000
+ 8003eb8:	40020c00 	.word	0x40020c00
+ 8003ebc:	42c80000 	.word	0x42c80000
+ 8003ec0:	4426aaa0 	.word	0x4426aaa0
+ 8003ec4:	080051e0 	.word	0x080051e0
+ 8003ec8:	40011000 	.word	0x40011000
+ 8003ecc:	080051e4 	.word	0x080051e4
 
 08003ed0 <EVAL_AUDIO_TransferComplete_CallBack>:
 
@@ -9450,10 +9459,10 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  8003f2a:	3501      	adds	r5, #1
  8003f2c:	e7f8      	b.n	8003f20 <__libc_init_array+0x2c>
  8003f2e:	bd70      	pop	{r4, r5, r6, pc}
- 8003f30:	08005290 	.word	0x08005290
- 8003f34:	08005290 	.word	0x08005290
- 8003f38:	08005294 	.word	0x08005294
- 8003f3c:	08005290 	.word	0x08005290
+ 8003f30:	08005298 	.word	0x08005298
+ 8003f34:	08005298 	.word	0x08005298
+ 8003f38:	0800529c 	.word	0x0800529c
+ 8003f3c:	08005298 	.word	0x08005298
 
 08003f40 <malloc>:
  8003f40:	4b02      	ldr	r3, [pc, #8]	; (8003f4c <malloc+0xc>)
@@ -9917,7 +9926,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  800437e:	e9dd 0100 	ldrd	r0, r1, [sp]
  8004382:	b00f      	add	sp, #60	; 0x3c
  8004384:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
- 8004388:	08005242 	.word	0x08005242
+ 8004388:	0800524a 	.word	0x0800524a
  800438c:	3ff00000 	.word	0x3ff00000
  8004390:	fff00000 	.word	0xfff00000
  8004394:	47efffff 	.word	0x47efffff
@@ -9991,7 +10000,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  800444a:	b00b      	add	sp, #44	; 0x2c
  800444c:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
  8004450:	20000cb8 	.word	0x20000cb8
- 8004454:	08005246 	.word	0x08005246
+ 8004454:	0800524e 	.word	0x0800524e
 
 08004458 <__ieee754_pow>:
  8004458:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -10283,7 +10292,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  8004768:	652b82fe 	.word	0x652b82fe
  800476c:	3ff71547 	.word	0x3ff71547
  8004770:	7ff00000 	.word	0x7ff00000
- 8004774:	08005241 	.word	0x08005241
+ 8004774:	08005249 	.word	0x08005249
  8004778:	433fffff 	.word	0x433fffff
  800477c:	3fefffff 	.word	0x3fefffff
  8004780:	3ff00000 	.word	0x3ff00000
@@ -10597,11 +10606,11 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  8004ae4:	3feec709 	.word	0x3feec709
  8004ae8:	145b01f5 	.word	0x145b01f5
  8004aec:	be3e2fe0 	.word	0xbe3e2fe0
- 8004af0:	08005270 	.word	0x08005270
+ 8004af0:	08005278 	.word	0x08005278
  8004af4:	3ff00000 	.word	0x3ff00000
  8004af8:	40080000 	.word	0x40080000
- 8004afc:	08005260 	.word	0x08005260
- 8004b00:	08005250 	.word	0x08005250
+ 8004afc:	08005268 	.word	0x08005268
+ 8004b00:	08005258 	.word	0x08005258
  8004b04:	bff00000 	.word	0xbff00000
  8004b08:	4602      	mov	r2, r0
  8004b0a:	460b      	mov	r3, r1
@@ -11149,7 +11158,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  80050c2:	4619      	mov	r1, r3
  80050c4:	b003      	add	sp, #12
  80050c6:	bdf0      	pop	{r4, r5, r6, r7, pc}
- 80050c8:	08005280 	.word	0x08005280
+ 80050c8:	08005288 	.word	0x08005288
  80050cc:	000fffff 	.word	0x000fffff
 
 080050d0 <scalbn>:

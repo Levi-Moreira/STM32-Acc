@@ -35,6 +35,22 @@ float max(float a, float b) {
 	return a > b ? a : b;
 }
 
+float minArray(float *array, int begin, int end) {
+	float min = array[begin];
+	for (int i = begin + 1; i < end; i++) {
+		if(array[i] < min) { min = array[i]; }
+	}
+	return min;
+}
+
+float maxArray(float *array, int begin, int end) {
+	double max = array[begin];
+	for (int i = begin + 1; i < end; i++) {
+		if(array[i] > max) { max = array[i]; }
+	}
+	return max;
+}
+
 float average(float *array, int begin, int end) {
 	float sum = 0;
 	int i;
@@ -57,6 +73,43 @@ void ewma(float *array, int size, float *result) {
 		forecasted = smoothed;
 		result[i - 1] = smoothed;
 	}
+
+}
+
+double dtwDistance1(float *ax, float *ay, float *az, int sa, float *bx, float *by, float *bz, int sb, int window) {
+
+//	float acc[sb][sa];
+//	float dist;
+//
+//    acc[0][0] = pow(ax[0] - bx[0], 2.0) + pow(ay[0] - by[0], 2.0) + pow(az[0] - bz[0], 2.0);
+//
+//    // Accumulated distance - Row 0
+//    for (int i = 1; i < sa; i++) {
+//        dist = pow(ax[i] - bx[0], 2.0) + pow(ay[i] - by[0], 2.0) + pow(az[i] - bz[0], 2.0);
+//        acc[0][i] = acc[0][i - 1] + dist;
+//    }
+//
+//    // Accumulated distance - Row 0
+//    for (int i = 1; i < sb; i++) {
+//        dist = pow(ax[0] - bx[i], 2.0) + pow(ay[0] - by[i], 2.0) + pow(az[0] - bz[i], 2.0);
+//        acc[i][0] = acc[i - 1][0] + dist;
+//    }
+//
+//    // Accumlated distance - Remaining
+//    float m;
+//    for (int i = 1; i < sb; i++) {
+//        for (int j = 1; j < sa; j++) {
+//            dist = pow(ax[j] - bx[i], 2.0) + pow(ay[j] - by[i], 2.0) + pow(az[j] - bz[i], 2.0);
+//            m = min(min(acc[i - 1][j - 1],
+//                    acc[i - 1][j]),
+//                    acc[i][j - 1]);
+//            acc[i][j] = m + dist;
+//        }
+//    }
+//
+//    return sqrt(acc[sb - 1][sa - 1]);
+
+    return 0;
 
 }
 
@@ -109,22 +162,6 @@ float dtwDistance(float *ax, float *ay, float *az, int sa, float *bx, float *by,
 
 }
 
-float minArray(float *array, int begin, int end) {
-	float min = array[begin];
-	for (int i = begin + 1; i < end; i++) {
-		if(array[i] < min) { min = array[i]; }
-	}
-	return min;
-}
-
-float maxArray(float *array, int begin, int end) {
-	double max = array[begin];
-	for (int i = begin + 1; i < end; i++) {
-		if(array[i] > max) { max = array[i]; }
-	}
-	return max;
-}
-
 float LBKeogh(float *x, int sx, float *y, int sy, int r) {
 
 	double sum = 0;
@@ -158,7 +195,7 @@ int knn(float inputX[], float inputY[], float inputZ[], int size) {
 	float minDistance = INFINITY;
 
 	// Normal O
-	float window = 30;//max(100, size) * DTW_WINDOW_RATIO;
+	int window = 30;//max(100, size) * DTW_WINDOW_RATIO;
 	distances[0] = dtwDistance(inputX, inputY, inputZ, size, normalOx, normalOy, normalOz, 100, window);
 
 	// Fast O
