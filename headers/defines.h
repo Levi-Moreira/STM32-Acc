@@ -17,5 +17,6 @@
 
 #define EWMA_ALPHA 0.3
 #define DTW_WINDOW_RATIO 0.6
+#define NUMBER_OF_GESTURES 4
 
 #endif

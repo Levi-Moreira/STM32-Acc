@@ -27,7 +27,7 @@ void testTimeOfDTW() {
 	int ms[101];
 	for(int l = 0; l <= 100; l++) {
 		TM_DELAY_SetTime(0);
-//		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
+		//		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
 		knn(ts1, ts2, ts3, l + 50);
 		ms[l] = TM_DELAY_Time();
 	}
@@ -40,7 +40,7 @@ int main(void) {
 
 	init_USART1(9600);
 
-//	testTimeOfDTW();
+	//	testTimeOfDTW();
 
 	int count = 0;
 
@@ -87,15 +87,18 @@ int main(void) {
 	freeLinkedList(signalZ);
 
 	// Allocating arrays for the smoothed signals
-	float smoothX[200];
-	float smoothY[200];
-	float smoothZ[200];
-	int i = 0;
-	for(i = 0; i < 200; i++) {
-		smoothX[i] = 666.666;
-		smoothY[i] = 666.666;
-		smoothZ[i] = 666.666;
-	}
+	float *smoothX = (float *) malloc(count * sizeof(float));
+	float *smoothY = (float *) malloc(count * sizeof(float));
+	float *smoothZ = (float *) malloc(count * sizeof(float));
+//	float smoothX[200];
+//	float smoothY[200];
+//	float smoothZ[200];
+//	int i = 0;
+//	for(i = 0; i < 200; i++) {
+//		smoothX[i] = 666.666;
+//		smoothY[i] = 666.666;
+//		smoothZ[i] = 666.666;
+//	}
 
 	// Calculating the smoothed values
 	ewma(tempX, count, smoothX);
