@@ -87,18 +87,18 @@ int main(void) {
 	freeLinkedList(signalZ);
 
 	// Allocating arrays for the smoothed signals
-	float *smoothX = (float *) malloc(count * sizeof(float));
-	float *smoothY = (float *) malloc(count * sizeof(float));
-	float *smoothZ = (float *) malloc(count * sizeof(float));
-//	float smoothX[200];
-//	float smoothY[200];
-//	float smoothZ[200];
-//	int i = 0;
-//	for(i = 0; i < 200; i++) {
-//		smoothX[i] = 666.666;
-//		smoothY[i] = 666.666;
-//		smoothZ[i] = 666.666;
-//	}
+//	float *smoothX = (float *) malloc(count * sizeof(float));
+//	float *smoothY = (float *) malloc(count * sizeof(float));
+//	float *smoothZ = (float *) malloc(count * sizeof(float));
+	float smoothX[200];
+	float smoothY[200];
+	float smoothZ[200];
+	int i = 0;
+	for(i = 0; i < 200; i++) {
+		smoothX[i] = 666.666;
+		smoothY[i] = 666.666;
+		smoothZ[i] = 666.666;
+	}
 
 	// Calculating the smoothed values
 	ewma(tempX, count, smoothX);
@@ -108,18 +108,25 @@ int main(void) {
 	double klass = knn(smoothX, smoothY, smoothZ, count);
 
 	if(klass != klass) { //NaN
-		TM_DISCO_LedOn(LED_RED);
+		TM_DISCO_LedOff(LED_GREEN | LED_RED | LED_ORANGE | LED_BLUE);
+		while(1);
 	} else {
 		if(klass < 0) {
-			TM_DISCO_LedOn(LED_GREEN);
+			TM_DISCO_LedOn(LED_GREEN | LED_RED | LED_ORANGE | LED_BLUE);
 			klass *= -1;
 		}
-		if(klass < 2) {
-			TM_DISCO_LedOn(LED_ORANGE);
+		if(klass == 0) { // Door Open
+			TM_DISCO_LedOn(LED_RED);
 			USART_puts(USART1, "0");
-		} else {
-			TM_DISCO_LedOn(LED_BLUE);
+		} else if(klass == 1) { // Door Close
+			TM_DISCO_LedOn(LED_GREEN);
 			USART_puts(USART1, "1");
+		} else if(klass == 2) { // Light Up
+			TM_DISCO_LedOn(LED_ORANGE);
+			USART_puts(USART1, "2");
+		} else if(klass == 3) { // Light Down
+			TM_DISCO_LedOn(LED_BLUE);
+			USART_puts(USART1, "3");
 		}
 	}
 
