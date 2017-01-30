@@ -24,11 +24,11 @@ void setup() {
 }
 
 void testTimeOfDTW() {
-	int ms[101];
-	for(int l = 0; l <= 100; l++) {
+	int ms[121];
+	for(int l = 0; l <= 120; l++) {
 		TM_DELAY_SetTime(0);
 		//		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
-		knn(ts1, ts2, ts3, l + 50);
+		knn(ts1, ts2, ts3, l + 30);
 		ms[l] = TM_DELAY_Time();
 	}
 	ms[0] += 0; // Just to avoid the unused warning
@@ -40,7 +40,7 @@ int main(void) {
 
 	init_USART1(9600);
 
-	//	testTimeOfDTW();
+//	testTimeOfDTW();
 
 	int count = 0;
 
