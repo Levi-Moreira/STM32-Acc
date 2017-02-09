@@ -14,6 +14,8 @@
 #include "serial.h"
 #include "time.h"
 
+#define SIZE 10
+#define OFFSET 1000
 
 void setup() {
 	SystemInit();
@@ -34,13 +36,22 @@ void testTimeOfDTW() {
 	ms[0] += 0; // Just to avoid the unused warning
 }
 
+float variance(float *array, int size) {
+	float avg = average(array, 0, size);
+	float sum = 0.0;
+	for(int i = 0; i < size; i++) {
+		sum += pow(array[i] - avg, 2.0);
+	}
+	return sum / size;
+}
+
 int main(void) {
 
 	setup();
 
 	init_USART1(9600);
 
-//	testTimeOfDTW();
+	//	testTimeOfDTW();
 
 	int count = 0;
 
@@ -51,30 +62,77 @@ int main(void) {
 
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
 
+	float valuesx[SIZE], valuesy[SIZE], valuesz[SIZE];
+	float ex[SIZE], ey[SIZE], ez[SIZE];
+	float vx, vy, vz;
+	int moving = 0;
+
+	int v = 0;
+
+
 	// Waiting for blue button to start sampling
-	while(!TM_DISCO_ButtonPressed());
+//	while(!TM_DISCO_ButtonPressed());
 
-	TM_DISCO_LedOn(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
+//	TM_DISCO_LedOn(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
 
-	while(TM_DISCO_ButtonPressed()) {
-
-		// Adding accelerometer values
-		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
-		prependToLinkedList(signalX, (float) Axes_Data.X / ACCELEROMETER_DATA_DIVIDER);
-		prependToLinkedList(signalY, (float) Axes_Data.Y / ACCELEROMETER_DATA_DIVIDER);
-		prependToLinkedList(signalZ, (float) Axes_Data.Z / ACCELEROMETER_DATA_DIVIDER);
-		count++;
+	while(1) {
 
 		Delayms(SAMPLEPERIOD);
 
+		// Adding accelerometer values
+		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
+		//		prependToLinkedList(signalX, (float) Axes_Data.X / ACCELEROMETER_DATA_DIVIDER);
+		//		prependToLinkedList(signalY, (float) Axes_Data.Y / ACCELEROMETER_DATA_DIVIDER);
+		//		prependToLinkedList(signalZ, (float) Axes_Data.Z / ACCELEROMETER_DATA_DIVIDER);
+		//		count++;
+
+		valuesx[v] = (float) Axes_Data.X;
+		valuesy[v] = (float) Axes_Data.Y;
+		valuesz[v] = (float) Axes_Data.Z;
+
+		if((v + 1) == SIZE) {
+
+			ewma(valuesx, SIZE, ex);
+			ewma(valuesy, SIZE, ey);
+			ewma(valuesz, SIZE, ez);
+
+			vx = variance(ex, SIZE);
+			vy = variance(ey, SIZE);
+			vz = variance(ex, SIZE);
+
+			moving = (vx > OFFSET) || (vy > OFFSET) || (vz > OFFSET);
+
+			if(moving) {
+				TM_DISCO_LedOn(LED_GREEN);
+			} else {
+				TM_DISCO_LedOff(LED_GREEN);
+			}
+
+			for(int i = 1; i < SIZE; i++) {
+				valuesx[i - 1] = valuesx[i];
+				valuesy[i - 1] = valuesy[i];
+				valuesz[i - 1] = valuesz[i];
+			}
+
+		} else {
+			v++;
+		}
+
 	}
 
-	TM_DISCO_LedOff(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
+//	TM_DISCO_LedOff(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
+
+	while(1);
 
 	// Allocating the temporary arrays to store the raw signal
-	float *tempX = (float *) malloc(count * sizeof(float));
-	float *tempY = (float *) malloc(count * sizeof(float));
-	float *tempZ = (float *) malloc(count * sizeof(float));
+	float tempX[200];// = (float *) malloc(count * sizeof(float));
+	float tempY[200];// = (float *) malloc(count * sizeof(float));
+	float tempZ[200];// = (float *) malloc(count * sizeof(float));
+	for(int i = 0; i < 200; i++) {
+		tempX[i] = 666.666;
+		tempY[i] = 666.666;
+		tempZ[i] = 666.666;
+	}
 
 	// Filling up the temporary raw signal arrays
 	arrayFromLinkedList(signalX, tempX, count);
@@ -87,14 +145,13 @@ int main(void) {
 	freeLinkedList(signalZ);
 
 	// Allocating arrays for the smoothed signals
-//	float *smoothX = (float *) malloc(count * sizeof(float));
-//	float *smoothY = (float *) malloc(count * sizeof(float));
-//	float *smoothZ = (float *) malloc(count * sizeof(float));
+	//	float *smoothX = (float *) malloc(count * sizeof(float));
+	//	float *smoothY = (float *) malloc(count * sizeof(float));
+	//	float *smoothZ = (float *) malloc(count * sizeof(float));
 	float smoothX[200];
 	float smoothY[200];
 	float smoothZ[200];
-	int i = 0;
-	for(i = 0; i < 200; i++) {
+	for(int i = 0; i < 200; i++) {
 		smoothX[i] = 666.666;
 		smoothY[i] = 666.666;
 		smoothZ[i] = 666.666;
