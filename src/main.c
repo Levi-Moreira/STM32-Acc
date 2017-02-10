@@ -14,7 +14,8 @@
 #include "serial.h"
 #include "time.h"
 
-#define SIZE 10
+#define SIZE 200
+#define AVG_SIZE 6
 #define OFFSET 1000
 
 void setup() {
@@ -62,65 +63,80 @@ int main(void) {
 
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
 
-	float valuesx[SIZE], valuesy[SIZE], valuesz[SIZE];
+	float rx[SIZE], ry[SIZE], rz[SIZE];
 	float ex[SIZE], ey[SIZE], ez[SIZE];
-	float vx, vy, vz;
-	int moving = 0;
+	//	float vx, vy, vz;
+	//	int moving = 0;
+
+	float fx;
+	float fy;
+	float fz;
 
 	int v = 0;
 
+	// Getting values for the initial average
+	for(int i = 0; i < AVG_SIZE; i++) {
+		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
+		rx[i] = (float) Axes_Data.X;
+		ry[i] = (float) Axes_Data.Y;
+		rz[i] = (float) Axes_Data.Z;
+		Delayms(SAMPLEPERIOD);
+	}
 
-	// Waiting for blue button to start sampling
-//	while(!TM_DISCO_ButtonPressed());
+	// Calculating the average
+	fx = average(rx, 0, AVG_SIZE);
+	fy = average(ry, 0, AVG_SIZE);
+	fz = average(rz, 0, AVG_SIZE);
 
-//	TM_DISCO_LedOn(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
-
-	while(1) {
+	while(v < SIZE) {
 
 		Delayms(SAMPLEPERIOD);
 
 		// Adding accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
+
 		//		prependToLinkedList(signalX, (float) Axes_Data.X / ACCELEROMETER_DATA_DIVIDER);
 		//		prependToLinkedList(signalY, (float) Axes_Data.Y / ACCELEROMETER_DATA_DIVIDER);
 		//		prependToLinkedList(signalZ, (float) Axes_Data.Z / ACCELEROMETER_DATA_DIVIDER);
 		//		count++;
 
-		valuesx[v] = (float) Axes_Data.X;
-		valuesy[v] = (float) Axes_Data.Y;
-		valuesz[v] = (float) Axes_Data.Z;
+		rx[v] = (float) Axes_Data.X;
+		ry[v] = (float) Axes_Data.Y;
+		rz[v] = (float) Axes_Data.Z;
 
-		if((v + 1) == SIZE) {
+		// Calculating ewma
+		ex[v] = EWMA_ALPHA * rx[v] + (1.0 - EWMA_ALPHA) * fx;
+		fx = ex[v];
 
-			ewma(valuesx, SIZE, ex);
-			ewma(valuesy, SIZE, ey);
-			ewma(valuesz, SIZE, ez);
+		ey[v] = EWMA_ALPHA * ry[v] + (1.0 - EWMA_ALPHA) * fy;
+		fy = ey[v];
 
-			vx = variance(ex, SIZE);
-			vy = variance(ey, SIZE);
-			vz = variance(ex, SIZE);
+		ez[v] = EWMA_ALPHA * rz[v] + (1.0 - EWMA_ALPHA) * fz;
+		fz = ez[v];
 
-			moving = (vx > OFFSET) || (vy > OFFSET) || (vz > OFFSET);
+		v++;
 
-			if(moving) {
-				TM_DISCO_LedOn(LED_GREEN);
-			} else {
-				TM_DISCO_LedOff(LED_GREEN);
-			}
+		//		vx = variance(ex, SIZE);
+		//		vy = variance(ey, SIZE);
+		//		vz = variance(ex, SIZE);
+		//
+		//		moving = (vx > OFFSET) || (vy > OFFSET) || (vz > OFFSET);
+		//
+		//		if(moving) {
+		//			TM_DISCO_LedOn(LED_GREEN);
+		//		} else {
+		//			TM_DISCO_LedOff(LED_GREEN);
+		//		}
 
-			for(int i = 1; i < SIZE; i++) {
-				valuesx[i - 1] = valuesx[i];
-				valuesy[i - 1] = valuesy[i];
-				valuesz[i - 1] = valuesz[i];
-			}
-
-		} else {
-			v++;
-		}
+		//		for(int i = 1; i < SIZE; i++) {
+		//			valuesx[i - 1] = valuesx[i];
+		//			valuesy[i - 1] = valuesy[i];
+		//			valuesz[i - 1] = valuesz[i];
+		//		}
 
 	}
 
-//	TM_DISCO_LedOff(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
+	TM_DISCO_LedOff(LED_RED | LED_GREEN | LED_ORANGE | LED_BLUE);
 
 	while(1);
 
