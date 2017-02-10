@@ -57,7 +57,7 @@ float average(float *array, int begin, int end) {
 	for(i = begin; i < end; i++) {
 		sum += array[i];
 	}
-	return sum / (float) end - begin;
+	return sum / (float) (end - begin);
 }
 
 void ewma(float *array, int size, float *result) {

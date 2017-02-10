@@ -14,9 +14,9 @@
 #include "serial.h"
 #include "time.h"
 
-#define SIZE 200
+#define SIZE 10
 #define AVG_SIZE 6
-#define OFFSET 1000
+#define OFFSET 8000 //1300 //1000
 
 void setup() {
 	SystemInit();
@@ -37,13 +37,13 @@ void testTimeOfDTW() {
 	ms[0] += 0; // Just to avoid the unused warning
 }
 
-float variance(float *array, int size) {
-	float avg = average(array, 0, size);
+float variance(float *array, int begin, int end) {
+	float avg = average(array, begin, end);
 	float sum = 0.0;
-	for(int i = 0; i < size; i++) {
+	for(int i = begin; i < end; i++) {
 		sum += pow(array[i] - avg, 2.0);
 	}
-	return sum / size;
+	return sum / (end - begin);
 }
 
 int main(void) {
@@ -63,32 +63,36 @@ int main(void) {
 
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
 
-	float rx[SIZE], ry[SIZE], rz[SIZE];
+	float x, y, z;
+	float ax[AVG_SIZE], ay[AVG_SIZE], az[AVG_SIZE];
 	float ex[SIZE], ey[SIZE], ez[SIZE];
-	//	float vx, vy, vz;
-	//	int moving = 0;
+	float vx[SIZE], vy[SIZE], vz[SIZE];
+	int moving = 0;
 
-	float fx;
-	float fy;
-	float fz;
+	float fx, fy, fz;
+	float fvx, fvy, fvz;
+
+	fvx = 1;
+	fvy = 1;
+	fvz = 1;
 
 	int v = 0;
 
 	// Getting values for the initial average
 	for(int i = 0; i < AVG_SIZE; i++) {
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
-		rx[i] = (float) Axes_Data.X;
-		ry[i] = (float) Axes_Data.Y;
-		rz[i] = (float) Axes_Data.Z;
+		ax[i] = (float) Axes_Data.X;
+		ay[i] = (float) Axes_Data.Y;
+		az[i] = (float) Axes_Data.Z;
 		Delayms(SAMPLEPERIOD);
 	}
 
 	// Calculating the average
-	fx = average(rx, 0, AVG_SIZE);
-	fy = average(ry, 0, AVG_SIZE);
-	fz = average(rz, 0, AVG_SIZE);
+	fx = average(ax, 0, AVG_SIZE);
+	fy = average(ay, 0, AVG_SIZE);
+	fz = average(az, 0, AVG_SIZE);
 
-	while(v < SIZE) {
+	while(1) {
 
 		Delayms(SAMPLEPERIOD);
 
@@ -100,39 +104,55 @@ int main(void) {
 		//		prependToLinkedList(signalZ, (float) Axes_Data.Z / ACCELEROMETER_DATA_DIVIDER);
 		//		count++;
 
-		rx[v] = (float) Axes_Data.X;
-		ry[v] = (float) Axes_Data.Y;
-		rz[v] = (float) Axes_Data.Z;
+		x = (float) Axes_Data.X;
+		y = (float) Axes_Data.Y;
+		z = (float) Axes_Data.Z;
 
-		// Calculating ewma
-		ex[v] = EWMA_ALPHA * rx[v] + (1.0 - EWMA_ALPHA) * fx;
+		// Calculating EWMA
+		ex[v] = EWMA_ALPHA * x + (1.0 - EWMA_ALPHA) * fx;
 		fx = ex[v];
-
-		ey[v] = EWMA_ALPHA * ry[v] + (1.0 - EWMA_ALPHA) * fy;
+		ey[v] = EWMA_ALPHA * y + (1.0 - EWMA_ALPHA) * fy;
 		fy = ey[v];
-
-		ez[v] = EWMA_ALPHA * rz[v] + (1.0 - EWMA_ALPHA) * fz;
+		ez[v] = EWMA_ALPHA * z + (1.0 - EWMA_ALPHA) * fz;
 		fz = ez[v];
 
-		v++;
+		// Calculating variance
+		vx[v] = variance(ex, 0, v + 1);
+		vy[v] = variance(ey, 0, v + 1);
+		vz[v] = variance(ez, 0, v + 1);
 
-		//		vx = variance(ex, SIZE);
-		//		vy = variance(ey, SIZE);
-		//		vz = variance(ex, SIZE);
-		//
-		//		moving = (vx > OFFSET) || (vy > OFFSET) || (vz > OFFSET);
-		//
-		//		if(moving) {
-		//			TM_DISCO_LedOn(LED_GREEN);
-		//		} else {
-		//			TM_DISCO_LedOff(LED_GREEN);
-		//		}
+		// Calculating EWMA for variance
+		vx[v] = EWMA_ALPHA * vx[v] + (1.0 - EWMA_ALPHA) * fvx;
+		fvx = vx[v];
+		vy[v] = EWMA_ALPHA * vy[v] + (1.0 - EWMA_ALPHA) * fvy;
+		fvy = vy[v];
+		vz[v] = EWMA_ALPHA * vz[v] + (1.0 - EWMA_ALPHA) * fvz;
+		fvz = vz[v];
 
-		//		for(int i = 1; i < SIZE; i++) {
-		//			valuesx[i - 1] = valuesx[i];
-		//			valuesy[i - 1] = valuesy[i];
-		//			valuesz[i - 1] = valuesz[i];
-		//		}
+		// Filled up the arrays
+		if((v + 1) < SIZE) {
+			v++;
+		} else {
+
+			// Checking movement
+			moving = (vx[v] > OFFSET) || (vy[v] > OFFSET) || (vz[v] > OFFSET);
+			if(moving) {
+				TM_DISCO_LedOn(LED_GREEN);
+			} else {
+				TM_DISCO_LedOff(LED_GREEN);
+			}
+
+			// Pushing guys left
+			for(int i = 1; i < SIZE; i++) {
+				ex[i - 1] = ex[i];
+				ey[i - 1] = ey[i];
+				ez[i - 1] = ez[i];
+				vx[i - 1] = vx[i];
+				vy[i - 1] = vy[i];
+				vz[i - 1] = vz[i];
+			}
+
+		}
 
 	}
 
