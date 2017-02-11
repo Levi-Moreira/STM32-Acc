@@ -2977,7 +2977,7 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib
                 [!provide]                PROVIDE (__fini_array_end, .)
                 0x08005488                _sidata = LOADADDR (.data)
 
-.data           0x20000000      0x704 load address 0x08005488
+.data           0x20000000      0x518 load address 0x08005488
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _sdata = .
  *(.data)
@@ -3000,58 +3000,58 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib
                 0x20000020        0x4 other\system_stm32f4xx.o
                 0x20000020                SystemCoreClock
  .data.doorOpenX
-                0x20000024       0x74 src\DTW.o
+                0x20000024       0x60 src\DTW.o
                 0x20000024                doorOpenX
  .data.doorOpenY
-                0x20000098       0x74 src\DTW.o
-                0x20000098                doorOpenY
+                0x20000084       0x60 src\DTW.o
+                0x20000084                doorOpenY
  .data.doorOpenZ
-                0x2000010c       0x74 src\DTW.o
-                0x2000010c                doorOpenZ
+                0x200000e4       0x60 src\DTW.o
+                0x200000e4                doorOpenZ
  .data.doorCloseX
-                0x20000180       0xac src\DTW.o
-                0x20000180                doorCloseX
+                0x20000144       0x74 src\DTW.o
+                0x20000144                doorCloseX
  .data.doorCloseY
-                0x2000022c       0xac src\DTW.o
-                0x2000022c                doorCloseY
+                0x200001b8       0x74 src\DTW.o
+                0x200001b8                doorCloseY
  .data.doorCloseZ
-                0x200002d8       0xac src\DTW.o
-                0x200002d8                doorCloseZ
+                0x2000022c       0x74 src\DTW.o
+                0x2000022c                doorCloseZ
  .data.lightUpX
-                0x20000384       0x6c src\DTW.o
-                0x20000384                lightUpX
+                0x200002a0       0x54 src\DTW.o
+                0x200002a0                lightUpX
  .data.lightUpY
-                0x200003f0       0x6c src\DTW.o
-                0x200003f0                lightUpY
+                0x200002f4       0x54 src\DTW.o
+                0x200002f4                lightUpY
  .data.lightUpZ
-                0x2000045c       0x6c src\DTW.o
-                0x2000045c                lightUpZ
+                0x20000348       0x54 src\DTW.o
+                0x20000348                lightUpZ
  .data.lightDownX
-                0x200004c8       0x9c src\DTW.o
-                0x200004c8                lightDownX
+                0x2000039c       0x5c src\DTW.o
+                0x2000039c                lightDownX
  .data.lightDownY
-                0x20000564       0x9c src\DTW.o
-                0x20000564                lightDownY
+                0x200003f8       0x5c src\DTW.o
+                0x200003f8                lightDownY
  .data.lightDownZ
-                0x20000600       0x9c src\DTW.o
-                0x20000600                lightDownZ
+                0x20000454       0x5c src\DTW.o
+                0x20000454                lightDownZ
  .data.impure_data
-                0x2000069c       0x60 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-impure.o)
+                0x200004b0       0x60 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-impure.o)
  .data._impure_ptr
-                0x200006fc        0x4 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-impure.o)
-                0x200006fc                _impure_ptr
+                0x20000510        0x4 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-impure.o)
+                0x20000510                _impure_ptr
  .data.__fdlib_version
-                0x20000700        0x1 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libm.a(lib_a-s_lib_ver.o)
-                0x20000700                __fdlib_version
-                0x20000704                . = ALIGN (0x4)
- *fill*         0x20000701        0x3 
-                0x20000704                _edata = .
-                0x08005b8c                _siccmram = LOADADDR (.ccmram)
+                0x20000514        0x1 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libm.a(lib_a-s_lib_ver.o)
+                0x20000514                __fdlib_version
+                0x20000518                . = ALIGN (0x4)
+ *fill*         0x20000515        0x3 
+                0x20000518                _edata = .
+                0x080059a0                _siccmram = LOADADDR (.ccmram)
 
-.igot.plt       0x20000704        0x0 load address 0x08005b8c
- .igot.plt      0x20000704        0x0 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7e-m/crtbegin.o
+.igot.plt       0x20000518        0x0 load address 0x080059a0
+ .igot.plt      0x20000518        0x0 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7e-m/crtbegin.o
 
-.ccmram         0x10000000        0x0 load address 0x08005b8c
+.ccmram         0x10000000        0x0 load address 0x080059a0
                 0x10000000                . = ALIGN (0x4)
                 0x10000000                _sccmram = .
  *(.ccmram)
@@ -3060,67 +3060,67 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib
                 0x10000000                _eccmram = .
                 0x10000000                . = ALIGN (0x4)
 
-.bss            0x20000704      0x100
-                0x20000704                _sbss = .
-                0x20000704                __bss_start__ = _sbss
+.bss            0x20000518      0x100
+                0x20000518                _sbss = .
+                0x20000518                __bss_start__ = _sbss
  *(.bss)
- .bss           0x20000704       0x1c c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7e-m/crtbegin.o
+ .bss           0x20000518       0x1c c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7e-m/crtbegin.o
  *(.bss*)
- .bss.cnt.7587  0x20000720        0x1 inc\serial.o
- *fill*         0x20000721        0x3 
- .bss.TM_Time   0x20000724        0x4 inc\tm_stm32f4_delay.o
-                0x20000724                TM_Time
- .bss.TM_Time2  0x20000728        0x4 inc\tm_stm32f4_delay.o
-                0x20000728                TM_Time2
+ .bss.cnt.7587  0x20000534        0x1 inc\serial.o
+ *fill*         0x20000535        0x3 
+ .bss.TM_Time   0x20000538        0x4 inc\tm_stm32f4_delay.o
+                0x20000538                TM_Time
+ .bss.TM_Time2  0x2000053c        0x4 inc\tm_stm32f4_delay.o
+                0x2000053c                TM_Time2
  .bss.TM_DELAY_Initialized
-                0x2000072c        0x1 inc\tm_stm32f4_delay.o
-                0x2000072c                TM_DELAY_Initialized
- *fill*         0x2000072d        0x3 
+                0x20000540        0x1 inc\tm_stm32f4_delay.o
+                0x20000540                TM_DELAY_Initialized
+ *fill*         0x20000541        0x3 
  .bss.CustomTimers
-                0x20000730       0x18 inc\tm_stm32f4_delay.o
+                0x20000544       0x18 inc\tm_stm32f4_delay.o
  .bss.GPIO_UsedPins
-                0x20000748       0x16 inc\tm_stm32f4_gpio.o
+                0x2000055c       0x16 inc\tm_stm32f4_gpio.o
  .bss.TM_LIS302DL_LIS3DSH_INT_Device
-                0x2000075e        0x1 inc\tm_stm32f4_lis302dl_lis3dsh.o
-                0x2000075e                TM_LIS302DL_LIS3DSH_INT_Device
+                0x20000572        0x1 inc\tm_stm32f4_lis302dl_lis3dsh.o
+                0x20000572                TM_LIS302DL_LIS3DSH_INT_Device
  .bss.initialized.7789
-                0x2000075f        0x1 inc\tm_stm32f4_lis302dl_lis3dsh.o
+                0x20000573        0x1 inc\tm_stm32f4_lis302dl_lis3dsh.o
  .bss.heap_end.5899
-                0x20000760        0x4 other\syscalls.o
+                0x20000574        0x4 other\syscalls.o
  .bss.__malloc_sbrk_start
-                0x20000764        0x4 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-nano-mallocr.o)
-                0x20000764                __malloc_sbrk_start
+                0x20000578        0x4 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-nano-mallocr.o)
+                0x20000578                __malloc_sbrk_start
  .bss.__malloc_free_list
-                0x20000768        0x4 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-nano-mallocr.o)
-                0x20000768                __malloc_free_list
+                0x2000057c        0x4 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-nano-mallocr.o)
+                0x2000057c                __malloc_free_list
  *(COMMON)
- COMMON         0x2000076c       0x7c Utilities\STM32F4-Discovery\stm32f4_discovery_audio_codec.o
-                0x2000076c                CurrentPos
-                0x20000770                AUDIO_MAL_DMA_InitStructure
-                0x200007ac                DMA_InitStructure
- COMMON         0x200007e8        0xd inc\serial.o
-                0x200007e8                received_string
- *fill*         0x200007f5        0x3 
- COMMON         0x200007f8        0x4 inc\tm_stm32f4_delay.o
-                0x200007f8                mult
- COMMON         0x200007fc        0x4 inc\tm_stm32f4_lis302dl_lis3dsh.o
-                0x200007fc                TM_LIS3DSH_INT_Sensitivity
- COMMON         0x20000800        0x4 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-reent.o)
-                0x20000800                errno
-                0x20000804                . = ALIGN (0x4)
-                0x20000804                _ebss = .
-                0x20000804                __bss_end__ = _ebss
+ COMMON         0x20000580       0x7c Utilities\STM32F4-Discovery\stm32f4_discovery_audio_codec.o
+                0x20000580                CurrentPos
+                0x20000584                AUDIO_MAL_DMA_InitStructure
+                0x200005c0                DMA_InitStructure
+ COMMON         0x200005fc        0xd inc\serial.o
+                0x200005fc                received_string
+ *fill*         0x20000609        0x3 
+ COMMON         0x2000060c        0x4 inc\tm_stm32f4_delay.o
+                0x2000060c                mult
+ COMMON         0x20000610        0x4 inc\tm_stm32f4_lis302dl_lis3dsh.o
+                0x20000610                TM_LIS3DSH_INT_Sensitivity
+ COMMON         0x20000614        0x4 c:/program files (x86)/atollic/truestudio for arm 7.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7e-m\libc_nano.a(lib_a-reent.o)
+                0x20000614                errno
+                0x20000618                . = ALIGN (0x4)
+                0x20000618                _ebss = .
+                0x20000618                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x20000804     0x5400
-                0x20000804                . = ALIGN (0x4)
-                0x20000804                PROVIDE (end, .)
+                0x20000618     0x5400
+                0x20000618                . = ALIGN (0x4)
+                0x20000618                PROVIDE (end, .)
                 [!provide]                PROVIDE (_end, .)
-                0x20005804                . = (. + _Min_Heap_Size)
- *fill*         0x20000804     0x5000 
-                0x20005c04                . = (. + _Min_Stack_Size)
- *fill*         0x20005804      0x400 
-                0x20005c04                . = ALIGN (0x4)
+                0x20005618                . = (. + _Min_Heap_Size)
+ *fill*         0x20000618     0x5000 
+                0x20005a18                . = (. + _Min_Stack_Size)
+ *fill*         0x20005618      0x400 
+                0x20005a18                . = ALIGN (0x4)
 
 .memory_b1_text
  *(.mb1text)
@@ -3354,7 +3354,7 @@ OUTPUT(xForce.elf elf32-littlearm)
  .debug_ranges  0x000009c8       0x38 src\LinkedList.o
  .debug_ranges  0x00000a00       0x38 src\main.o
 
-.debug_line     0x00000000     0x426f
+.debug_line     0x00000000     0x4272
  .debug_line    0x00000000      0x239 Libraries\STM32F4xx_StdPeriph_Driver\src\misc.o
  .debug_line    0x00000239      0x34d Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.o
  .debug_line    0x00000586      0x425 Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.o
@@ -3372,9 +3372,9 @@ OUTPUT(xForce.elf elf32-littlearm)
  .debug_line    0x0000360e       0x7c other\startup_stm32f40xx.o
  .debug_line    0x0000368a      0x2b5 other\syscalls.o
  .debug_line    0x0000393f      0x201 other\system_stm32f4xx.o
- .debug_line    0x00003b40      0x2f2 src\DTW.o
- .debug_line    0x00003e32       0xfc src\LinkedList.o
- .debug_line    0x00003f2e      0x341 src\main.o
+ .debug_line    0x00003b40      0x2f5 src\DTW.o
+ .debug_line    0x00003e35       0xfc src\LinkedList.o
+ .debug_line    0x00003f31      0x341 src\main.o
 
 .debug_str      0x00000000     0x3725
  .debug_str     0x00000000      0x3b2 Libraries\STM32F4xx_StdPeriph_Driver\src\misc.o

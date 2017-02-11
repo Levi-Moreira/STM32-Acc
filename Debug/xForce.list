@@ -13,31 +13,31 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   4 .fini_array   00000004  08005484  08005484  00015484  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  5 .data         00000704  20000000  08005488  00020000  2**2
+  5 .data         00000518  20000000  08005488  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .ccmram       00000000  10000000  10000000  00020704  2**0
+  6 .ccmram       00000000  10000000  10000000  00020518  2**0
                   CONTENTS
-  7 .bss          00000100  20000704  20000704  00020704  2**2
+  7 .bss          00000100  20000518  20000518  00020518  2**2
                   ALLOC
-  8 ._user_heap_stack 00005400  20000804  20000804  00020704  2**0
+  8 ._user_heap_stack 00005400  20000618  20000618  00020518  2**0
                   ALLOC
-  9 .ARM.attributes 0000002a  00000000  00000000  00020704  2**0
+  9 .ARM.attributes 0000002a  00000000  00000000  00020518  2**0
                   CONTENTS, READONLY
- 10 .debug_info   000098a1  00000000  00000000  0002072e  2**0
+ 10 .debug_info   000098a1  00000000  00000000  00020542  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_abbrev 00001dd9  00000000  00000000  00029fcf  2**0
+ 11 .debug_abbrev 00001dd9  00000000  00000000  00029de3  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_aranges 00000b58  00000000  00000000  0002bda8  2**3
+ 12 .debug_aranges 00000b58  00000000  00000000  0002bbc0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000a38  00000000  00000000  0002c900  2**3
+ 13 .debug_ranges 00000a38  00000000  00000000  0002c718  2**3
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_line   0000426f  00000000  00000000  0002d338  2**0
+ 14 .debug_line   00004272  00000000  00000000  0002d150  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    00003725  00000000  00000000  000315a7  2**0
+ 15 .debug_str    00003725  00000000  00000000  000313c2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .comment      0000007e  00000000  00000000  00034ccc  2**0
+ 16 .comment      0000007e  00000000  00000000  00034ae7  2**0
                   CONTENTS, READONLY
- 17 .debug_frame  000032f4  00000000  00000000  00034d4c  2**2
+ 17 .debug_frame  000032f4  00000000  00000000  00034b68  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -54,7 +54,7 @@ Disassembly of section .text:
  800019a:	2301      	movs	r3, #1
  800019c:	7023      	strb	r3, [r4, #0]
  800019e:	bd10      	pop	{r4, pc}
- 80001a0:	20000704 	.word	0x20000704
+ 80001a0:	20000518 	.word	0x20000518
  80001a4:	00000000 	.word	0x00000000
  80001a8:	08005368 	.word	0x08005368
 
@@ -67,7 +67,7 @@ Disassembly of section .text:
  80001b6:	f3af 8000 	nop.w
  80001ba:	bd08      	pop	{r3, pc}
  80001bc:	00000000 	.word	0x00000000
- 80001c0:	20000708 	.word	0x20000708
+ 80001c0:	2000051c 	.word	0x2000051c
  80001c4:	08005368 	.word	0x08005368
 
 080001c8 <__aeabi_drsub>:
@@ -3784,8 +3784,8 @@ static void Audio_MAL_IRQHandler(void)
  8001ca0:	20000018 	.word	0x20000018
  8001ca4:	2000001c 	.word	0x2000001c
  8001ca8:	20000010 	.word	0x20000010
- 8001cac:	2000076c 	.word	0x2000076c
- 8001cb0:	200007ac 	.word	0x200007ac
+ 8001cac:	20000580 	.word	0x20000580
+ 8001cb0:	200005c0 	.word	0x200005c0
 
 08001cb4 <DMA1_Stream7_IRQHandler>:
   * @brief  This function handles main I2S interrupt. 
@@ -4138,8 +4138,8 @@ void USART1_IRQHandler(void){
  8001e68:	46bd      	mov	sp, r7
  8001e6a:	bd80      	pop	{r7, pc}
  8001e6c:	40011000 	.word	0x40011000
- 8001e70:	20000720 	.word	0x20000720
- 8001e74:	200007e8 	.word	0x200007e8
+ 8001e70:	20000534 	.word	0x20000534
+ 8001e74:	200005fc 	.word	0x200005fc
 
 08001e78 <NVIC_SetPriority>:
 
@@ -4431,9 +4431,9 @@ void SysTick_Handler(void) {
  8001fee:	3708      	adds	r7, #8
  8001ff0:	46bd      	mov	sp, r7
  8001ff2:	bd80      	pop	{r7, pc}
- 8001ff4:	20000724 	.word	0x20000724
- 8001ff8:	20000728 	.word	0x20000728
- 8001ffc:	20000730 	.word	0x20000730
+ 8001ff4:	20000538 	.word	0x20000538
+ 8001ff8:	2000053c 	.word	0x2000053c
+ 8001ffc:	20000544 	.word	0x20000544
 
 08002000 <TM_DELAY_Init>:
 
@@ -4487,8 +4487,8 @@ void TM_DELAY_Init(void) {
  800203c:	20000020 	.word	0x20000020
  8002040:	10624dd3 	.word	0x10624dd3
  8002044:	02659117 	.word	0x02659117
- 8002048:	200007f8 	.word	0x200007f8
- 800204c:	2000072c 	.word	0x2000072c
+ 8002048:	2000060c 	.word	0x2000060c
+ 800204c:	20000540 	.word	0x20000540
 
 08002050 <TM_DISCO_LedInit>:
 #include "tm_stm32f4_disco.h"
@@ -4962,7 +4962,7 @@ void TM_GPIO_INT_Init(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, TM_GPIO_Mode_t GPI
  80022e6:	3710      	adds	r7, #16
  80022e8:	46bd      	mov	sp, r7
  80022ea:	bd80      	pop	{r7, pc}
- 80022ec:	20000748 	.word	0x20000748
+ 80022ec:	2000055c 	.word	0x2000055c
 
 080022f0 <TM_SPI_Send>:
  * @brief  Sends single byte over SPI
@@ -5101,7 +5101,7 @@ TM_LIS302DL_LIS3DSH_Device_t TM_LIS302DL_LIS3DSH_Detect(void) {
  80023a2:	3708      	adds	r7, #8
  80023a4:	46bd      	mov	sp, r7
  80023a6:	bd80      	pop	{r7, pc}
- 80023a8:	2000075e 	.word	0x2000075e
+ 80023a8:	20000572 	.word	0x20000572
 
 080023ac <TM_LIS302DL_LIS3DSH_Init>:
 
@@ -5168,7 +5168,7 @@ TM_LIS302DL_LIS3DSH_Device_t TM_LIS302DL_LIS3DSH_Init(TM_LIS302DL_LIS3DSH_Sensit
  8002402:	3708      	adds	r7, #8
  8002404:	46bd      	mov	sp, r7
  8002406:	bd80      	pop	{r7, pc}
- 8002408:	2000075e 	.word	0x2000075e
+ 8002408:	20000572 	.word	0x20000572
 
 0800240c <TM_LIS302DL_LIS3DSH_ReadAxes>:
 
@@ -5213,7 +5213,7 @@ TM_LIS302DL_LIS3DSH_Device_t TM_LIS302DL_LIS3DSH_ReadAxes(TM_LIS302DL_LIS3DSH_t*
  800243e:	46bd      	mov	sp, r7
  8002440:	bd80      	pop	{r7, pc}
  8002442:	bf00      	nop
- 8002444:	2000075e 	.word	0x2000075e
+ 8002444:	20000572 	.word	0x20000572
 
 08002448 <TM_LIS302DL_LIS3DSH_INT_InitPins>:
 
@@ -5295,7 +5295,7 @@ void TM_LIS302DL_LIS3DSH_INT_InitPins(void) {
  8002496:	46bd      	mov	sp, r7
  8002498:	bd80      	pop	{r7, pc}
  800249a:	bf00      	nop
- 800249c:	2000075f 	.word	0x2000075f
+ 800249c:	20000573 	.word	0x20000573
  80024a0:	40013000 	.word	0x40013000
  80024a4:	40021000 	.word	0x40021000
 
@@ -5357,7 +5357,7 @@ void TM_LIS302DL_LIS3DSH_INT_WriteSPI(uint8_t* data, uint8_t addr, uint8_t count
  80024f4:	46bd      	mov	sp, r7
  80024f6:	bd80      	pop	{r7, pc}
  80024f8:	40021000 	.word	0x40021000
- 80024fc:	2000075e 	.word	0x2000075e
+ 80024fc:	20000572 	.word	0x20000572
  8002500:	40013000 	.word	0x40013000
 
 08002504 <TM_LIS302DL_LIS3DSH_INT_ReadSPI>:
@@ -5600,7 +5600,7 @@ void TM_LIS302DL_LIS3DSH_INT_InitLIS3DSH(TM_LIS302DL_LIS3DSH_Sensitivity_t Sensi
  8002646:	46bd      	mov	sp, r7
  8002648:	bd80      	pop	{r7, pc}
  800264a:	bf00      	nop
- 800264c:	200007fc 	.word	0x200007fc
+ 800264c:	20000610 	.word	0x20000610
  8002650:	3d75c28f 	.word	0x3d75c28f
  8002654:	3df5c28f 	.word	0x3df5c28f
  8002658:	3e3851ec 	.word	0x3e3851ec
@@ -5769,7 +5769,7 @@ void TM_LIS302DL_LIS3DSH_INT_InitLIS302DL(TM_LIS302DL_LIS3DSH_Sensitivity_t Sens
  800274e:	46bd      	mov	sp, r7
  8002750:	bd80      	pop	{r7, pc}
  8002752:	bf00      	nop
- 8002754:	200007fc 	.word	0x200007fc
+ 8002754:	20000610 	.word	0x20000610
  8002758:	41900000 	.word	0x41900000
  800275c:	42900000 	.word	0x42900000
 
@@ -5905,7 +5905,7 @@ void TM_LIS3DSH_INT_ReadAxes(TM_LIS302DL_LIS3DSH_t *Axes_Data) {
  8002876:	3710      	adds	r7, #16
  8002878:	46bd      	mov	sp, r7
  800287a:	bd80      	pop	{r7, pc}
- 800287c:	200007fc 	.word	0x200007fc
+ 800287c:	20000610 	.word	0x20000610
 
 08002880 <TM_LIS302DL_INT_ReadAxes>:
 
@@ -6013,7 +6013,7 @@ void TM_LIS302DL_INT_ReadAxes(TM_LIS302DL_LIS3DSH_t* Axes_Data) {
  800294e:	46bd      	mov	sp, r7
  8002950:	bd80      	pop	{r7, pc}
  8002952:	bf00      	nop
- 8002954:	200007fc 	.word	0x200007fc
+ 8002954:	20000610 	.word	0x20000610
 
 08002958 <TM_LIS302DL_LIS3DSH_INT_Delay>:
 
@@ -7197,19 +7197,19 @@ LoopCopyDataInit:
   ldr  r0, =_sdata
  8002fd0:	20000000 	.word	0x20000000
   ldr  r3, =_edata
- 8002fd4:	20000704 	.word	0x20000704
+ 8002fd4:	20000518 	.word	0x20000518
   adds  r2, r0, r1
   cmp  r2, r3
   bcc  CopyDataInit
   ldr  r2, =_sbss
- 8002fd8:	20000704 	.word	0x20000704
+ 8002fd8:	20000518 	.word	0x20000518
 FillZerobss:
   movs  r3, #0
   str  r3, [r2], #4
     
 LoopFillZerobss:
   ldr  r3, = _ebss
- 8002fdc:	20000804 	.word	0x20000804
+ 8002fdc:	20000618 	.word	0x20000618
 
 08002fe0 <ADC_IRQHandler>:
  * @retval None       
@@ -7293,10 +7293,10 @@ caddr_t _sbrk(int32_t incr)
  8003036:	bc80      	pop	{r7}
  8003038:	4770      	bx	lr
  800303a:	bf00      	nop
- 800303c:	20000804 	.word	0x20000804
+ 800303c:	20000618 	.word	0x20000618
  8003040:	00005000 	.word	0x00005000
- 8003044:	20000760 	.word	0x20000760
- 8003048:	20000800 	.word	0x20000800
+ 8003044:	20000574 	.word	0x20000574
+ 8003048:	20000614 	.word	0x20000614
 
 0800304c <SystemInit>:
   *         SystemFrequency variable.
@@ -7557,10 +7557,10 @@ static void SetSysClock(void)
  8003198:	40023c00 	.word	0x40023c00
 
 0800319c <min>:
-// Light Down
-float lightDownX[39] = {-0.154500008, -0.219150007, -0.234405011, -0.248083502, -0.209658444, -0.167760909, -0.105432637, -0.139802843, -0.154861987, -0.0934033915, -0.0383823738, -0.0838676617, -0.160707369, -0.187495157, -0.176246613, -0.066372633, -0.0074608447, 0.00977740902, -0.0621558167, -0.0435090736, -0.0484563522, -0.0939194486, -0.0777436122, 0.185579479, 0.411905646, 0.366333961, 0.250433773, 0.370303631, 0.640212536, 0.673148751, 0.723204136, 0.713242888, 0.685270011, 0.659689009, 0.785782337, 0.817047656, 0.838933349, 0.914253354, 0.879977345};
-float lightDownY[39] = {-7.41149998, -7.58804989, -7.55863476, -7.50504446, -7.37453127, -7.18117189, -7.00082016, -6.88057423, -6.63740206, -6.37718153, -6.23102713, -6.1017189, -5.99620342, -5.80234241, -5.60963964, -5.38474798, -5.30232382, -5.1726265, -5.12083864, -5.05458689, -4.93321085, -4.84524775, -4.73867321, -4.56807137, -4.36765003, -4.28735495, -4.17714834, -3.89000392, -3.54800272, -3.37460184, -3.24122143, -3.06685495, -2.95079851, -2.83655882, -2.62159109, -2.53711367, -2.46597958, -2.41918564, -2.39242983};
-float lightDownZ[39] = {-5.6826663, -5.77186632, -5.88230658, -5.76761436, -5.54933023, -5.34553099, -5.22387171, -5.08471012, -4.98729706, -4.87110806, -4.8167758, -4.77574301, -4.86702013, -5.01791382, -5.18953991, -5.23767805, -5.57137442, -6.07496214, -6.61347342, -7.08943129, -7.4856019, -7.91892147, -8.14724541, -8.34307194, -8.70815086, -9.38370514, -9.69759369, -9.66531563, -9.80772114, -9.97640514, -10.1184835, -10.2149382, -10.267457, -10.4032202, -10.5402536, -10.7561779, -10.8443241, -11.0860271, -11.4982185};
+
+float lightDownY[23] = {-4.8463335, -4.85343361, -4.92740345, -4.84418249, -4.84292793, -4.76404953, -4.77183485, -4.6632843, -4.50629902, -4.24340916, -3.99038649, -3.77127051, -3.53688931, -3.24982238, -3.01587558, -2.91811299, -2.84667921, -2.75767541, -2.73137283, -2.65296102, -2.43907261, -2.41235089, -2.38764572};
+
+float lightDownZ[23] = {-7.07266665, -7.34786654, -7.21650648, -6.78555441, -6.49588823, -6.26612186, -6.09628534, -6.0223999, -6.07268, -6.38687611, -6.69681311, -7.02476931, -7.49433851, -8.3240366, -9.30682564, -10.042778, -10.5459442, -10.7631607, -10.8282127, -10.975749, -10.965024, -11.0175171, -10.9762621};
 
 float min(float a, float b) {
  800319c:	b580      	push	{r7, lr}
@@ -8735,7 +8735,7 @@ int knn(float inputX[], float inputY[], float inputZ[], int size) {
  8003a94:	cb0f      	ldmia	r3, {r0, r1, r2, r3}
  8003a96:	e884 000f 	stmia.w	r4, {r0, r1, r2, r3}
 
-	int sizes[NUMBER_OF_GESTURES] = {29, 43, 27, 39};
+	int sizes[NUMBER_OF_GESTURES] = {24, 29, 21, 23};
  8003a9a:	4b50      	ldr	r3, [pc, #320]	; (8003bdc <knn+0x184>)
  8003a9c:	f107 0410 	add.w	r4, r7, #16
  8003aa0:	cb0f      	ldmia	r3, {r0, r1, r2, r3}
@@ -8841,7 +8841,7 @@ int knn(float inputX[], float inputY[], float inputZ[], int size) {
  8003b84:	667b      	str	r3, [r7, #100]	; 0x64
 	float* pointersZ[NUMBER_OF_GESTURES] = {doorOpenZ, doorCloseZ, lightUpZ, lightDownZ};
 
-	int sizes[NUMBER_OF_GESTURES] = {29, 43, 27, 39};
+	int sizes[NUMBER_OF_GESTURES] = {24, 29, 21, 23};
 	int window = 4; // Does not matter for DTW1
 
 	for(int i = 0; i < NUMBER_OF_GESTURES; i++) {
@@ -9195,7 +9195,7 @@ __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_IPSR(void)
  8003d12:	bc80      	pop	{r7}
  8003d14:	4770      	bx	lr
  8003d16:	bf00      	nop
- 8003d18:	20000724 	.word	0x20000724
+ 8003d18:	20000538 	.word	0x20000538
  8003d1c:	e000e010 	.word	0xe000e010
 
 08003d20 <setup>:
@@ -9677,7 +9677,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  80040e0:	6818      	ldr	r0, [r3, #0]
  80040e2:	f000 b859 	b.w	8004198 <_malloc_r>
  80040e6:	bf00      	nop
- 80040e8:	200006fc 	.word	0x200006fc
+ 80040e8:	20000510 	.word	0x20000510
 
 080040ec <free>:
  80040ec:	4b02      	ldr	r3, [pc, #8]	; (80040f8 <free+0xc>)
@@ -9685,7 +9685,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  80040f0:	6818      	ldr	r0, [r3, #0]
  80040f2:	f000 b803 	b.w	80040fc <_free_r>
  80040f6:	bf00      	nop
- 80040f8:	200006fc 	.word	0x200006fc
+ 80040f8:	20000510 	.word	0x20000510
 
 080040fc <_free_r>:
  80040fc:	b538      	push	{r3, r4, r5, lr}
@@ -9760,7 +9760,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  800418a:	e8bd 4038 	ldmia.w	sp!, {r3, r4, r5, lr}
  800418e:	f000 b872 	b.w	8004276 <__malloc_unlock>
  8004192:	bd38      	pop	{r3, r4, r5, pc}
- 8004194:	20000768 	.word	0x20000768
+ 8004194:	2000057c 	.word	0x2000057c
 
 08004198 <_malloc_r>:
  8004198:	b570      	push	{r4, r5, r6, lr}
@@ -9843,8 +9843,8 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  8004246:	2000      	movs	r0, #0
  8004248:	bd70      	pop	{r4, r5, r6, pc}
  800424a:	bf00      	nop
- 800424c:	20000768 	.word	0x20000768
- 8004250:	20000764 	.word	0x20000764
+ 800424c:	2000057c 	.word	0x2000057c
+ 8004250:	20000578 	.word	0x20000578
 
 08004254 <_sbrk_r>:
  8004254:	b538      	push	{r3, r4, r5, lr}
@@ -9860,7 +9860,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  800426a:	b103      	cbz	r3, 800426e <_sbrk_r+0x1a>
  800426c:	602b      	str	r3, [r5, #0]
  800426e:	bd38      	pop	{r3, r4, r5, pc}
- 8004270:	20000800 	.word	0x20000800
+ 8004270:	20000614 	.word	0x20000614
 
 08004274 <__malloc_lock>:
  8004274:	4770      	bx	lr
@@ -10140,7 +10140,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  8004534:	3fe00000 	.word	0x3fe00000
  8004538:	c7efffff 	.word	0xc7efffff
  800453c:	7ff00000 	.word	0x7ff00000
- 8004540:	20000700 	.word	0x20000700
+ 8004540:	20000514 	.word	0x20000514
 
 08004544 <sqrt>:
  8004544:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -10206,7 +10206,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  80045e4:	4629      	mov	r1, r5
  80045e6:	b00b      	add	sp, #44	; 0x2c
  80045e8:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
- 80045ec:	20000700 	.word	0x20000700
+ 80045ec:	20000514 	.word	0x20000514
  80045f0:	08005436 	.word	0x08005436
  80045f4:	00000000 	.word	0x00000000
 
@@ -11464,7 +11464,7 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void){
  800535e:	6818      	ldr	r0, [r3, #0]
  8005360:	4770      	bx	lr
  8005362:	bf00      	nop
- 8005364:	200006fc 	.word	0x200006fc
+ 8005364:	20000510 	.word	0x20000510
 
 08005368 <_init>:
  8005368:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
