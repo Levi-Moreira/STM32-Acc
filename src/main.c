@@ -55,10 +55,10 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 	//	float x[100];
 	//	float y[100];
 	//	float z[100];
-	//	for(int i = 0; i < 200; i++) {
-	//		smoothX[i] = 666.666;
-	//		smoothY[i] = 666.666;
-	//		smoothZ[i] = 666.666;
+	//	for(int i = 0; i < 100; i++) {
+	//		x[i] = 666.666;
+	//		y[i] = 666.666;
+	//		z[i] = 666.666;
 	//	}
 
 	// Filling up the temporary raw signal arrays
@@ -76,16 +76,16 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 
 		if(klass == 0) { // Door Open
 			TM_DISCO_LedOn(LED_RED);
-			USART_puts(USART1, "0");
+//			USART_puts(USART1, "0");
 		} else if(klass == 1) { // Door Close
 			TM_DISCO_LedOn(LED_GREEN);
-			USART_puts(USART1, "1");
+//			USART_puts(USART1, "1");
 		} else if(klass == 2) { // Light Up
 			TM_DISCO_LedOn(LED_ORANGE);
-			USART_puts(USART1, "2");
+//			USART_puts(USART1, "2");
 		} else if(klass == 3) { // Light Down
 			TM_DISCO_LedOn(LED_BLUE);
-			USART_puts(USART1, "3");
+//			USART_puts(USART1, "3");
 		}
 
 		Delayms(500);
@@ -101,15 +101,14 @@ int main(void) {
 
 	init_USART1(9600);
 
-	//	testTimeOfDTW();
-
 	int count = 0;
 
-	// Raw signals
+	// Signals
 	LinkedList *signalX = newLinkedList();
 	LinkedList *signalY = newLinkedList();
 	LinkedList *signalZ = newLinkedList();
 
+	// Struct for holding the accelerometer data
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
 
 	float x, y, z;
@@ -143,14 +142,14 @@ int main(void) {
 
 	while(1) {
 
-		Delayms(SAMPLEPERIOD);
-
-		// Adding accelerometer values
+		// Getting accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
 
 		x = (float) Axes_Data.X;
 		y = (float) Axes_Data.Y;
 		z = (float) Axes_Data.Z;
+
+		Delayms(SAMPLEPERIOD);
 
 		// Calculating EWMA
 		ex[v] = EWMA_ALPHA * x + (1.0 - EWMA_ALPHA) * fx;
