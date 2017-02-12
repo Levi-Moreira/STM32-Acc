@@ -9064,9 +9064,9 @@ __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_IPSR(void)
 
 08003c18 <setup>:
 
-#define SIZE 10
+#define SIZE 10 //5 10
 #define AVG_SIZE 6
-#define OFFSET 8000 //1300 //1000
+#define OFFSET 5000//2500 //1300 //1000
 
 void setup() {
  8003c18:	b580      	push	{r7, lr}
@@ -9815,7 +9815,7 @@ int main(void) {
  8004284:	3fd33333 	.word	0x3fd33333
  8004288:	66666666 	.word	0x66666666
  800428c:	3fe66666 	.word	0x3fe66666
- 8004290:	45fa0000 	.word	0x45fa0000
+ 8004290:	459c4000 	.word	0x459c4000
  8004294:	2300      	movs	r3, #0
  8004296:	f8c7 3150 	str.w	r3, [r7, #336]	; 0x150
 			if(moving) {
@@ -9864,6 +9864,7 @@ int main(void) {
  800430e:	3301      	adds	r3, #1
  8004310:	f8c7 3184 	str.w	r3, [r7, #388]	; 0x184
  8004314:	e024      	b.n	8004360 <main+0x560>
+//				TM_DISCO_LedOn(LED_GREEN);
 			} else {
 				if(count > 10 && count < 100) {
  8004316:	f8d7 3184 	ldr.w	r3, [r7, #388]	; 0x184
@@ -9896,6 +9897,7 @@ int main(void) {
  800435a:	2300      	movs	r3, #0
  800435c:	f8c7 3184 	str.w	r3, [r7, #388]	; 0x184
 				}
+//				TM_DISCO_LedOff(LED_GREEN);
 			}
 
 			// Pushing guys left
@@ -9959,8 +9961,8 @@ int main(void) {
  8004406:	f853 1021 	ldr.w	r1, [r3, r1, lsl #2]
  800440a:	1d3b      	adds	r3, r7, #4
  800440c:	f843 1022 	str.w	r1, [r3, r2, lsl #2]
-					count = 0;
 				}
+//				TM_DISCO_LedOff(LED_GREEN);
 			}
 
 			// Pushing guys left

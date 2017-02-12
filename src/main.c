@@ -14,9 +14,9 @@
 #include "serial.h"
 #include "time.h"
 
-#define SIZE 10
+#define SIZE 10 //5 10
 #define AVG_SIZE 6
-#define OFFSET 8000 //1300 //1000
+#define OFFSET 5000//2500 //1300 //1000
 
 void setup() {
 	SystemInit();
@@ -184,6 +184,7 @@ int main(void) {
 				prependToLinkedList(signalY, ey[v] / ACCELEROMETER_DATA_DIVIDER);
 				prependToLinkedList(signalZ, ez[v] / ACCELEROMETER_DATA_DIVIDER);
 				count++;
+//				TM_DISCO_LedOn(LED_GREEN);
 			} else {
 				if(count > 10 && count < 100) {
 					recognizeGesture(signalX, signalY, signalZ, count);
@@ -194,6 +195,7 @@ int main(void) {
 					freeLinkedList(signalZ);
 					count = 0;
 				}
+//				TM_DISCO_LedOff(LED_GREEN);
 			}
 
 			// Pushing guys left
