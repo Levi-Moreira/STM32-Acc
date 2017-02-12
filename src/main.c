@@ -28,7 +28,7 @@ void testTimeOfDTW() {
 	for(int l = 0; l <= 120; l++) {
 		TM_DELAY_SetTime(0);
 		//		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
-		knn(ts1, ts2, ts3, l + 30);
+//		knn(ts1, ts2, ts3, l + 30);
 		ms[l] = TM_DELAY_Time();
 	}
 	ms[0] += 0; // Just to avoid the unused warning
@@ -105,9 +105,10 @@ int main(void) {
 	ewma(tempY, count, smoothY);
 	ewma(tempZ, count, smoothZ);
 
-	double klass = knn(smoothX, smoothY, smoothZ, count);
+	float dist;
+	double klass = knn(smoothX, smoothY, smoothZ, count, &dist);
 
-	if(klass != klass) { //NaN
+	if(klass != klass || dist > 22) { //NaN
 		TM_DISCO_LedOff(LED_GREEN | LED_RED | LED_ORANGE | LED_BLUE);
 		while(1);
 	} else {
@@ -117,17 +118,22 @@ int main(void) {
 		}
 		if(klass == 0) { // Door Open
 			TM_DISCO_LedOn(LED_RED);
-			USART_puts(USART1, "0");
+//			USART_puts(USART1, "0");
 		} else if(klass == 1) { // Door Close
 			TM_DISCO_LedOn(LED_GREEN);
-			USART_puts(USART1, "1");
+//			USART_puts(USART1, "1");
 		} else if(klass == 2) { // Light Up
 			TM_DISCO_LedOn(LED_ORANGE);
-			USART_puts(USART1, "2");
+//			USART_puts(USART1, "2");
 		} else if(klass == 3) { // Light Down
 			TM_DISCO_LedOn(LED_BLUE);
-			USART_puts(USART1, "3");
+//			USART_puts(USART1, "3");
 		}
+
+		char str[10];
+		sprintf(str, "%i", (int) dist);
+		USART_puts(USART1, str);
+
 	}
 
 	while(1);
