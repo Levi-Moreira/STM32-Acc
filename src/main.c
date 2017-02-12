@@ -139,17 +139,17 @@ int main(void) {
 void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size) {
 
 	// Allocating arrays for the smoothed signals
-	float *x = (float *) malloc(size * sizeof(float));
-	float *y = (float *) malloc(size * sizeof(float));
-	float *z = (float *) malloc(size * sizeof(float));
-	//	float x[100];
-	//	float y[100];
-	//	float z[100];
-	//	for(int i = 0; i < 100; i++) {
-	//		x[i] = 666.666;
-	//		y[i] = 666.666;
-	//		z[i] = 666.666;
-	//	}
+	//float *x = (float *) malloc(size * sizeof(float));
+	//float *y = (float *) malloc(size * sizeof(float));
+	//float *z = (float *) malloc(size * sizeof(float));
+		float x[size];
+		float y[size];
+		float z[size];
+		for(int i = 0; i < size; i++) {
+			x[i] = 666.666;
+			y[i] = 666.666;
+			z[i] = 666.666;
+		}
 
 	// Filling up the temporary raw signal arrays
 	arrayFromLinkedList(signalX, x, size);
@@ -160,7 +160,7 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 	double klass = knn(x, y, z, size, &dist);
 
 	// Checking for NaN and long distances
-	if(klass != klass || dist > 30) {
+	if(klass != klass || dist > MAX_DISTANCE) {
 		return;
 	}
 

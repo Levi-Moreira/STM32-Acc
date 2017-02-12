@@ -22,6 +22,6 @@
 #define SIZE 10 //5 10
 #define AVG_SIZE 6
 #define OFFSET 5000//2500 //1300 //1000
-#define MAX_DISTANCE 30
+#define MAX_DISTANCE 25
 
 #endif
