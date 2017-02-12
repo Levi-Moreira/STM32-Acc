@@ -108,7 +108,7 @@ int main(void) {
 				count++;
 				//				TM_DISCO_LedOn(LED_GREEN);
 			} else {
-				if(count > 10 && count < 100) {
+				if(count >= MIN_SAMPLES && count <= MAX_SAMPLES) {
 					recognizeGesture(signalX, signalY, signalZ, count);
 				}
 				if(count > 0) {
@@ -139,25 +139,17 @@ int main(void) {
 void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size) {
 
 	// Allocating arrays for the smoothed signals
-	//float *x = (float *) malloc(size * sizeof(float));
-	//float *y = (float *) malloc(size * sizeof(float));
-	//float *z = (float *) malloc(size * sizeof(float));
-		float x[size];
-		float y[size];
-		float z[size];
-		for(int i = 0; i < size; i++) {
-			x[i] = 666.666;
-			y[i] = 666.666;
-			z[i] = 666.666;
-		}
+	float x[size], y[size], z[size];
+	float dist;
+	int klass;
+
 
 	// Filling up the temporary raw signal arrays
 	arrayFromLinkedList(signalX, x, size);
 	arrayFromLinkedList(signalY, y, size);
 	arrayFromLinkedList(signalZ, z, size);
 
-	float dist;
-	double klass = knn(x, y, z, size, &dist);
+	klass = knn(x, y, z, size, &dist);
 
 	// Checking for NaN and long distances
 	if(klass != klass || dist > MAX_DISTANCE) {
@@ -178,11 +170,11 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 		//			USART_puts(USART1, "3");
 	}
 
-	char str[10];
-	sprintf(str, "%i", (int) dist);
-	USART_puts(USART1, str);
+//	char str[10];
+//	sprintf(str, "%i", (int) klass);
+//	USART_puts(USART1, str);
 
-	Delayms(500);
+	Delayms(100);
 	TM_DISCO_LedOff(LED_GREEN | LED_RED | LED_ORANGE | LED_BLUE);
 
 }

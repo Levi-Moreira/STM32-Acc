@@ -24,4 +24,7 @@
 #define OFFSET 5000//2500 //1300 //1000
 #define MAX_DISTANCE 25
 
+#define MIN_SAMPLES 10
+#define MAX_SAMPLES 100
+
 #endif
