@@ -38,6 +38,11 @@
 									<listOptionValue builtIn="false" value="../Libraries/Device/STM32F4xx/Include"/>
 									<listOptionValue builtIn="false" value="../Libraries/STM32F4xx_StdPeriph_Driver/inc"/>
 									<listOptionValue builtIn="false" value="../Utilities/STM32F4-Discovery"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/other}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/headers}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/ub_lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/ub_lib/irsnd_lolevel}&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.916956550" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
@@ -55,9 +60,11 @@
 									<listOptionValue builtIn="false" value="../Libraries/Device/STM32F4xx/Include"/>
 									<listOptionValue builtIn="false" value="../Libraries/STM32F4xx_StdPeriph_Driver/inc"/>
 									<listOptionValue builtIn="false" value="../Utilities/STM32F4-Discovery"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/headers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/other}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/headers}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/ub_lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/ub_lib/irsnd_lolevel}&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.1726700775" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.1009642327" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F407VG" valueType="enumerated"/>
@@ -130,6 +137,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="inc"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="other"/>
 						<entry excluding="fatfs/option/ccsbcs.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="ub_lib"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -176,6 +184,14 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Sampler/src/fatfs}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Sampler/src/fatfs/drivers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Sampler/src/fatfs/option}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc/infra}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc/ub_lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc/ub_lib/irsnd_lolevel}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/ub_lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/ub_lib/irsnd_lolevel}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/other}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/headers}&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.1166260610" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
@@ -197,6 +213,14 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Sampler/src/fatfs}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Sampler/src/fatfs/drivers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Sampler/src/fatfs/option}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc/infra}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc/ub_lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc/ub_lib/irsnd_lolevel}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/ub_lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/ub_lib/irsnd_lolevel}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/other}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/xForce/headers}&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.1033099982" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.533828685" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F407VG" valueType="enumerated"/>
