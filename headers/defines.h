@@ -21,11 +21,12 @@
 
 #define SIZE 6
 #define AVG_SIZE 6
-#define OFFSET 3800//5000//2500 //1300 //1000
+#define OFFSET 3600//5000//2500 //1300 //1000
 
-#define MAX_DISTANCE 25
+#define MAX_DISTANCE_LIGHT 30
+#define MAX_DISTANCE_DOOR 18
 
 #define MIN_SAMPLES 15
-#define MAX_SAMPLES 100
+#define MAX_SAMPLES 40
 
 #endif

@@ -102,21 +102,21 @@ int main(void) {
 			// Checking movement
 			moving = (vx[v] > OFFSET) || (vy[v] > OFFSET) || (vz[v] > OFFSET);
 			if(moving) {
-				//				prependToLinkedList(signalX, ex[v] / ACCELEROMETER_DATA_DIVIDER);
-				//				prependToLinkedList(signalY, ey[v] / ACCELEROMETER_DATA_DIVIDER);
-				//				prependToLinkedList(signalZ, ez[v] / ACCELEROMETER_DATA_DIVIDER);
+				prependToLinkedList(signalX, ex[v] / ACCELEROMETER_DATA_DIVIDER);
+				prependToLinkedList(signalY, ey[v] / ACCELEROMETER_DATA_DIVIDER);
+				prependToLinkedList(signalZ, ez[v] / ACCELEROMETER_DATA_DIVIDER);
 				count++;
-				TM_DISCO_LedOn(LED_GREEN);
+				//				TM_DISCO_LedOn(LED_GREEN);
 			} else {
-				//				if(count >= MIN_SAMPLES && count <= MAX_SAMPLES) {
-				//					recognizeGesture(signalX, signalY, signalZ, count);
-				//				}
+				if(count >= MIN_SAMPLES && count <= MAX_SAMPLES) {
+					recognizeGesture(signalX, signalY, signalZ, count);
+				}
 				if(count > 0) {
-					//					freeLinkedList(signalX);
-					//					freeLinkedList(signalY);
-					//					freeLinkedList(signalZ);
+					freeLinkedList(signalX);
+					freeLinkedList(signalY);
+					freeLinkedList(signalZ);
 					count = 0;
-					TM_DISCO_LedOff(LED_GREEN);
+					//					TM_DISCO_LedOff(LED_GREEN);
 				}
 			}
 
@@ -143,7 +143,6 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 	float dist;
 	int klass;
 
-
 	// Filling up the temporary raw signal arrays
 	arrayFromLinkedList(signalX, x, size);
 	arrayFromLinkedList(signalY, y, size);
@@ -151,8 +150,18 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 
 	klass = knn(x, y, z, size, &dist);
 
+	char str[10];
+	sprintf(str, "%i", (int) dist);
+	USART_puts(USART1, str);
+
 	// Checking for NaN and long distances
-	if(klass != klass || dist > MAX_DISTANCE) {
+	if(klass != klass) {
+		return;
+	}
+
+	if(klass < 2 && dist > MAX_DISTANCE_DOOR) {
+		return;
+	} else if(klass >= 2 && dist > MAX_DISTANCE_LIGHT) {
 		return;
 	}
 
