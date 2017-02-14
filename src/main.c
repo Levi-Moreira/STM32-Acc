@@ -102,22 +102,22 @@ int main(void) {
 			// Checking movement
 			moving = (vx[v] > OFFSET) || (vy[v] > OFFSET) || (vz[v] > OFFSET);
 			if(moving) {
-				prependToLinkedList(signalX, ex[v] / ACCELEROMETER_DATA_DIVIDER);
-				prependToLinkedList(signalY, ey[v] / ACCELEROMETER_DATA_DIVIDER);
-				prependToLinkedList(signalZ, ez[v] / ACCELEROMETER_DATA_DIVIDER);
+				//				prependToLinkedList(signalX, ex[v] / ACCELEROMETER_DATA_DIVIDER);
+				//				prependToLinkedList(signalY, ey[v] / ACCELEROMETER_DATA_DIVIDER);
+				//				prependToLinkedList(signalZ, ez[v] / ACCELEROMETER_DATA_DIVIDER);
 				count++;
-				//				TM_DISCO_LedOn(LED_GREEN);
+				TM_DISCO_LedOn(LED_GREEN);
 			} else {
-				if(count >= MIN_SAMPLES && count <= MAX_SAMPLES) {
-					recognizeGesture(signalX, signalY, signalZ, count);
-				}
+				//				if(count >= MIN_SAMPLES && count <= MAX_SAMPLES) {
+				//					recognizeGesture(signalX, signalY, signalZ, count);
+				//				}
 				if(count > 0) {
-					freeLinkedList(signalX);
-					freeLinkedList(signalY);
-					freeLinkedList(signalZ);
+					//					freeLinkedList(signalX);
+					//					freeLinkedList(signalY);
+					//					freeLinkedList(signalZ);
 					count = 0;
+					TM_DISCO_LedOff(LED_GREEN);
 				}
-				//				TM_DISCO_LedOff(LED_GREEN);
 			}
 
 			// Pushing guys left
@@ -170,10 +170,6 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 		//			USART_puts(USART1, "3");
 	}
 
-//	char str[10];
-//	sprintf(str, "%i", (int) klass);
-//	USART_puts(USART1, str);
-
 	Delayms(100);
 	TM_DISCO_LedOff(LED_GREEN | LED_RED | LED_ORANGE | LED_BLUE);
 
@@ -185,7 +181,7 @@ float variance(float *array, int begin, int end) {
 	for(int i = begin; i < end; i++) {
 		sum += pow(array[i] - avg, 2.0);
 	}
-	return sum / (end - begin);
+	return sum / ((end - begin)) ;
 }
 
 void setup() {

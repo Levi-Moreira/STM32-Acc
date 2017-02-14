@@ -19,12 +19,13 @@
 #define DTW_WINDOW_RATIO 0.6
 #define NUMBER_OF_GESTURES 4
 
-#define SIZE 10 //5 10
+#define SIZE 6
 #define AVG_SIZE 6
-#define OFFSET 5000//2500 //1300 //1000
+#define OFFSET 3800//5000//2500 //1300 //1000
+
 #define MAX_DISTANCE 25
 
-#define MIN_SAMPLES 10
+#define MIN_SAMPLES 15
 #define MAX_SAMPLES 100
 
 #endif
