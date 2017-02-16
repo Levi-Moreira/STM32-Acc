@@ -14,9 +14,12 @@
 #include "serial.h"
 #include "time.h"
 
+
 void setup();
 void testTimeOfDTW();
 void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size);
+
+
 float variance(float *array, int begin, int end);
 
 int main(void) {
@@ -63,6 +66,10 @@ int main(void) {
 	fz = average(az, 0, AVG_SIZE);
 
 	while(1) {
+
+		 while(!TM_DISCO_ButtonPressed());
+		    infraPair();
+
 
 		// Getting accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
@@ -199,6 +206,7 @@ void setup() {
 	TM_DISCO_LedInit();
 	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_2G, TM_LIS3DSH_Filter_50Hz);
 	TM_DISCO_ButtonInit();
+	initINFRA();
 	init_USART1(9600);
 }
 
@@ -212,6 +220,8 @@ void testTimeOfDTW() {
 	}
 	ms[0] += 0; // Just to avoid the unused warning
 }
+
+
 
 /*
  * Callback used by stm32f4_discovery_audio_codec.c.
