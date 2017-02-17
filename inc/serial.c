@@ -6,9 +6,10 @@
  */
 #include <stm32f4xx.h>
 #include "serial.h"
+#include <string.h>
 
 volatile char received_string[MAX_STRLEN+1]; // this will hold the recieved string
-
+int receivedDevice = 0;
 /* This funcion initializes the USART1 peripheral
  *
  * Arguments: baudrate --> the baudrate at which the USART is
@@ -120,13 +121,23 @@ void USART1_IRQHandler(void){
 		/* check if the received character is not the LF character (used to determine end of string)
 		 * or the if the maximum string length has been been reached
 		 */
-		if( (t != '\n') && (cnt < MAX_STRLEN) ){
+		if( (t != '\n') && (cnt < MAX_STRLEN)&&(t != '\r')&&(t != '%') ){
 			received_string[cnt] = t;
 			cnt++;
 		}
 		else{ // otherwise reset the character counter and print the received string
 			cnt = 0;
-			USART_puts(USART1, received_string);
+			int res = strncmp (received_string,"CMDD\0", MAX_STRLEN);
+			if(res==0)
+			{
+				receivedDevice = 1;
+				USART_puts(USART1, "CMDS%");
+			}
 		}
 	}
+}
+
+int listenBluetooth(void)
+{
+	return receivedDevice;
 }

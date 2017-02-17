@@ -19,6 +19,7 @@ void setup();
 void testTimeOfDTW();
 void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size);
 
+int isPaired = 0;
 
 float variance(float *array, int begin, int end);
 
@@ -67,9 +68,18 @@ int main(void) {
 
 	while(1) {
 
-		 while(!TM_DISCO_ButtonPressed());
-		    infraPair();
 
+		while(!isPaired)
+		{
+			USART_puts(USART1, "0");
+			infraPair();
+			isPaired = listenBluetooth();
+		}
+
+		while(isPaired)
+		{
+			TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
+		}
 
 		// Getting accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);

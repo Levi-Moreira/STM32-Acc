@@ -8,6 +8,7 @@
 
 #include "infra.h"
 #include "stm32_ub_irsnd.h"
+
 //will send an specified infrared package
 void sendInfraData(IRMP_DATA irData)
 {
@@ -16,17 +17,18 @@ void sendInfraData(IRMP_DATA irData)
 	{
 	   if(i%200==0)
 		   UB_IRSND_Write(&irData);
+	   Delayms(1);
 	}
 }
 
 
 
-void initINFRA()
+void initINFRA(void)
 {
 	UB_IRSND_Init();
 }
 
-int infraPair()
+int infraPair(void)
 {
 	IRMP_DATA myInfraData;
 
