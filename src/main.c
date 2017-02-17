@@ -72,8 +72,9 @@ int main(void) {
 		while(!isPaired)
 		{
 			USART_puts(USART1, "0");
-			infraPair();
-			isPaired = listenBluetooth();
+			//infraPair();
+			//isPaired = listenBluetooth();
+			Delayms(100);
 		}
 
 		while(isPaired)
@@ -216,7 +217,7 @@ void setup() {
 	TM_DISCO_LedInit();
 	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_2G, TM_LIS3DSH_Filter_50Hz);
 	TM_DISCO_ButtonInit();
-	initINFRA();
+	//initINFRA();
 	init_USART1(9600);
 }
 
