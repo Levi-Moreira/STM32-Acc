@@ -11,7 +11,7 @@
 #define MAX_STRLEN 5 // this is the maximum string length of our string in characters
 
 void init_USART1(uint32_t baudrate);
-void USART_puts(USART_TypeDef* USARTx, volatile char *s);
+void USART_puts(USART_TypeDef* USARTx, const unsigned char *s);
 int listenBluetooth(void);
 
 

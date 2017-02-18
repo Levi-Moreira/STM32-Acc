@@ -13,13 +13,17 @@
 #include "LinkedList.h"
 #include "serial.h"
 #include "time.h"
+#include "tm_stm32f4_usart.h"
 
 
 void setup();
 void testTimeOfDTW();
 void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size);
 
+int deviceID = -1;
 int isPaired = 0;
+int activeCommandDoor = 0;
+int activeCommandLight = 0;
 
 float variance(float *array, int begin, int end);
 
@@ -69,18 +73,33 @@ int main(void) {
 	while(1) {
 
 
-		while(!isPaired)
+		while(deviceID == -1)
 		{
-			USART_puts(USART1, "0");
-			//infraPair();
-			//isPaired = listenBluetooth();
+			USART_puts(USART1, "CMDI%");
+			infraPair();
+			deviceID = listenBluetooth();
 			Delayms(100);
+			isPaired = 1;
 		}
 
-		while(isPaired)
+		if(isPaired)
 		{
-			TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
+		 TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
+		 Delayms(1000);
+		 TM_DISCO_LedOff(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
+		 isPaired = 0;
+
+		 switch(deviceID)
+		 {
+			 case 1:
+				 activeCommandDoor = 1;
+				 break;
+			 case 2:
+				 activeCommandLight = 1;
+				 break;
+		 }
 		}
+
 
 		// Getting accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
@@ -170,7 +189,7 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 
 	char str[10];
 	sprintf(str, "%i", (int) dist);
-	USART_puts(USART1, str);
+	//USART_puts(USART1, str);
 
 	// Checking for NaN and long distances
 	if(klass != klass) {
@@ -185,16 +204,15 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 
 	if(klass == 0) { // Door Open
 		TM_DISCO_LedOn(LED_RED);
-		//			USART_puts(USART1, "0");
 	} else if(klass == 1) { // Door Close
 		TM_DISCO_LedOn(LED_GREEN);
-		//			USART_puts(USART1, "1");
+
 	} else if(klass == 2) { // Light Up
 		TM_DISCO_LedOn(LED_ORANGE);
-		//			USART_puts(USART1, "2");
+		if(activeCommandDoor) USART_puts(USART1, "CMD1%\n");
 	} else if(klass == 3) { // Light Down
 		TM_DISCO_LedOn(LED_BLUE);
-		//			USART_puts(USART1, "3");
+		if(activeCommandLight)USART_puts(USART1, "128\n");
 	}
 
 	Delayms(100);
@@ -217,7 +235,7 @@ void setup() {
 	TM_DISCO_LedInit();
 	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_2G, TM_LIS3DSH_Filter_50Hz);
 	TM_DISCO_ButtonInit();
-	//initINFRA();
+	initINFRA();
 	init_USART1(9600);
 }
 

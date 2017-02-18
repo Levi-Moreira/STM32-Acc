@@ -9,7 +9,7 @@
 #include <string.h>
 
 volatile char received_string[MAX_STRLEN+1]; // this will hold the recieved string
-int receivedDevice = 0;
+int receivedDevice = -1;
 /* This funcion initializes the USART1 peripheral
  *
  * Arguments: baudrate --> the baudrate at which the USART is
@@ -49,6 +49,11 @@ void init_USART1(uint32_t baudrate){
 	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;			// this defines the output type as push pull mode (as opposed to open drain)
 	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;			// this activates the pullup resistors on the IO pins
 	GPIO_Init(GPIOB, &GPIO_InitStruct);					// now all the values are passed to the GPIO_Init() function which sets the GPIO registers
+
+
+
+	// Enable clock for GPIOA
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
 	/* The RX and TX pins are now connected to their AF
 	 * so that the USART1 can take over control of the
@@ -99,12 +104,12 @@ void init_USART1(uint32_t baudrate){
  * Note 2: At the moment it takes a volatile char because the received_string variable
  * 		   declared as volatile char --> otherwise the compiler will spit out warnings
  * */
-void USART_puts(USART_TypeDef* USARTx, volatile char *s){
+void USART_puts(USART_TypeDef* USARTx, const unsigned char *s){
 
 	while(*s){
 		// wait until data register is empty
 		while( !(USARTx->SR & 0x00000040) );
-		USART_SendData(USARTx, *s);
+		USART_SendData(USARTx, (uint16_t) *s);
 		*s++;
 	}
 }
@@ -121,7 +126,7 @@ void USART1_IRQHandler(void){
 		/* check if the received character is not the LF character (used to determine end of string)
 		 * or the if the maximum string length has been been reached
 		 */
-		if( (t != '\n') && (cnt < MAX_STRLEN)&&(t != '\r')&&(t != '%') ){
+		if( (t != '\n') && (cnt < MAX_STRLEN)&&(t != '%') ){
 			received_string[cnt] = t;
 			cnt++;
 		}
@@ -131,8 +136,8 @@ void USART1_IRQHandler(void){
 			if(res==0)
 			{
 				receivedDevice = 1;
-				USART_puts(USART1, "CMDS%");
 			}
+			received_string[0] = "";
 		}
 	}
 }
