@@ -137,6 +137,14 @@ void USART1_IRQHandler(void){
 			{
 				receivedDevice = 1;
 			}
+			else
+			{
+				res = strncmp (received_string,"CMDL\0", MAX_STRLEN);
+				if(res == 0)
+				{
+					receivedDevice = 2;
+				}
+			}
 			received_string[0] = "";
 		}
 	}

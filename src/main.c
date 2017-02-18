@@ -20,9 +20,16 @@ void setup();
 void testTimeOfDTW();
 void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size);
 
+//holds the connected module ID 1-Door 2-Lights
 int deviceID = -1;
+
+//if a pairing happened
 int isPaired = 0;
+
+//Should allow door gestures
 int activeCommandDoor = 0;
+
+//Should allow light gestures
 int activeCommandLight = 0;
 
 float variance(float *array, int begin, int end);
@@ -72,32 +79,40 @@ int main(void) {
 
 	while(1) {
 
-
+		//While device hasnt been identified asks for ID
 		while(deviceID == -1)
 		{
 			USART_puts(USART1, "CMDI%");
+			//Keeps sending infr packages until it pairs
 			infraPair();
+
 			deviceID = listenBluetooth();
 			Delayms(100);
+
+			//to when it exits the loop
 			isPaired = 1;
+
 		}
 
+		//Execute once per pairing
 		if(isPaired)
 		{
-		 TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
-		 Delayms(1000);
-		 TM_DISCO_LedOff(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
-		 isPaired = 0;
+			//Flashes LEDS to indicate pairing is finished
+			TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
+			Delayms(500);
+			TM_DISCO_LedOff(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
+			isPaired = 0;
 
-		 switch(deviceID)
-		 {
-			 case 1:
-				 activeCommandDoor = 1;
-				 break;
-			 case 2:
-				 activeCommandLight = 1;
-				 break;
-		 }
+			//Allow certain commands to work
+			 switch(deviceID)
+			 {
+				 case 1:
+					 activeCommandDoor = 1;
+					 break;
+				 case 2:
+					 activeCommandLight = 1;
+					 break;
+			 }
 		}
 
 
@@ -206,7 +221,6 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 		TM_DISCO_LedOn(LED_RED);
 	} else if(klass == 1) { // Door Close
 		TM_DISCO_LedOn(LED_GREEN);
-
 	} else if(klass == 2) { // Light Up
 		TM_DISCO_LedOn(LED_ORANGE);
 		if(activeCommandDoor) USART_puts(USART1, "CMD1%\n");
