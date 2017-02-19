@@ -219,11 +219,13 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 
 	if(klass == 0) { // Door Open
 		TM_DISCO_LedOn(LED_RED);
+		if(activeCommandDoor) USART_puts(USART1, "CMD1%\n");
 	} else if(klass == 1) { // Door Close
 		TM_DISCO_LedOn(LED_GREEN);
+		if(activeCommandDoor) USART_puts(USART1, "CMD0%\n");
 	} else if(klass == 2) { // Light Up
 		TM_DISCO_LedOn(LED_ORANGE);
-		if(activeCommandDoor) USART_puts(USART1, "CMD1%\n");
+		if(activeCommandLight)USART_puts(USART1, "0\n");
 	} else if(klass == 3) { // Light Down
 		TM_DISCO_LedOn(LED_BLUE);
 		if(activeCommandLight)USART_puts(USART1, "128\n");
