@@ -14,6 +14,7 @@
 #include "serial.h"
 #include "time.h"
 #include "tm_stm32f4_usart.h"
+#include "tm_stm32f4_watchdog.h"
 
 
 void setup();
@@ -37,6 +38,8 @@ float variance(float *array, int begin, int end);
 int main(void) {
 
 	setup();
+
+	USART_puts(USART1, "CMDR%");
 
 	int count = 0;
 
@@ -91,6 +94,7 @@ int main(void) {
 
 			//to when it exits the loop
 			isPaired = 1;
+			TM_WATCHDOG_Reset();
 
 		}
 
@@ -113,6 +117,7 @@ int main(void) {
 					 activeCommandLight = 1;
 					 break;
 			 }
+			 TM_WATCHDOG_Reset();
 		}
 
 
@@ -219,15 +224,19 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 
 	if(klass == 0) { // Door Open
 		TM_DISCO_LedOn(LED_RED);
+		TM_WATCHDOG_Reset();
 		if(activeCommandDoor) USART_puts(USART1, "CMD1%\n");
 	} else if(klass == 1) { // Door Close
 		TM_DISCO_LedOn(LED_GREEN);
+		TM_WATCHDOG_Reset();
 		if(activeCommandDoor) USART_puts(USART1, "CMD0%\n");
 	} else if(klass == 2) { // Light Up
 		TM_DISCO_LedOn(LED_ORANGE);
+		TM_WATCHDOG_Reset();
 		if(activeCommandLight)USART_puts(USART1, "0\n");
 	} else if(klass == 3) { // Light Down
 		TM_DISCO_LedOn(LED_BLUE);
+		TM_WATCHDOG_Reset();
 		if(activeCommandLight)USART_puts(USART1, "128\n");
 	}
 
@@ -253,6 +262,7 @@ void setup() {
 	TM_DISCO_ButtonInit();
 	initINFRA();
 	init_USART1(9600);
+	TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_32s);
 }
 
 void testTimeOfDTW() {
