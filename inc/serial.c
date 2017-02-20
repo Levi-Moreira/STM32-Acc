@@ -10,6 +10,7 @@
 
 volatile char received_string[MAX_STRLEN+1]; // this will hold the recieved string
 int receivedDevice = -1;
+int receivedLightSteps= -1;
 /* This funcion initializes the USART1 peripheral
  *
  * Arguments: baudrate --> the baudrate at which the USART is
@@ -143,7 +144,19 @@ void USART1_IRQHandler(void){
 				if(res == 0)
 				{
 					receivedDevice = 2;
+				}else
+				{
+					char *cmd;
+					cmd = strstr(received_string,"S");
+					cmd++;
+					int res = atoi(cmd);
+
+					if(res>0)
+					{
+						receivedLightSteps = res;
+					}
 				}
+
 			}
 			received_string[0] = "";
 		}
@@ -153,4 +166,9 @@ void USART1_IRQHandler(void){
 int listenBluetooth(void)
 {
 	return receivedDevice;
+}
+
+int queryLightSteps(void)
+{
+	return receivedLightSteps;
 }

@@ -33,6 +33,9 @@ int activeCommandDoor = 0;
 //Should allow light gestures
 int activeCommandLight = 0;
 
+//Count the lgiht steps
+int lightSteps = -1;
+
 float variance(float *array, int begin, int end);
 
 int main(void) {
@@ -96,6 +99,14 @@ int main(void) {
 			isPaired = 1;
 			TM_WATCHDOG_Reset();
 
+		}
+
+		while(lightSteps == -1 && deviceID==2)
+		{
+			USART_puts(USART1, "CMDS%");
+			lightSteps = queryLightSteps();
+			Delayms(100);
+			TM_WATCHDOG_Reset();
 		}
 
 		//Execute once per pairing
@@ -233,11 +244,21 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 	} else if(klass == 2) { // Light Up
 		TM_DISCO_LedOn(LED_ORANGE);
 		TM_WATCHDOG_Reset();
-		if(activeCommandLight)USART_puts(USART1, "0\n");
+		if(activeCommandLight)
+		{
+			lightSteps+=16;
+			if(lightSteps>128) lightSteps = 128;
+			sendLightCommand(lightSteps);
+		}
 	} else if(klass == 3) { // Light Down
 		TM_DISCO_LedOn(LED_BLUE);
 		TM_WATCHDOG_Reset();
-		if(activeCommandLight)USART_puts(USART1, "128\n");
+		if(activeCommandLight)
+		{
+			lightSteps+=16;
+			if(lightSteps>128) lightSteps = 128;
+			sendLightCommand(lightSteps);
+		}
 	}
 
 	Delayms(100);
@@ -276,6 +297,12 @@ void testTimeOfDTW() {
 	ms[0] += 0; // Just to avoid the unused warning
 }
 
+void sendLightCommand(int lightStep)
+{
+	char buf[8];
+	sprintf(buf,"CMD%d%\n",lightStep);
+	USART_puts(USART1, buf);
+}
 
 
 /*
