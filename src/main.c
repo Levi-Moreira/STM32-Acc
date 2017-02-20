@@ -85,7 +85,7 @@ int main(void) {
 
 	while(1) {
 
-		//While device hasnt been identified asks for ID
+		//While device hasn't been identified asks for ID
 		while(deviceID == -1)
 		{
 			USART_puts(USART1, "CMDI%");
@@ -97,26 +97,29 @@ int main(void) {
 
 			//to when it exits the loop
 			isPaired = 1;
+
+			//Careful with the watchdog
 			TM_WATCHDOG_Reset();
 
 		}
 
+		//If the device is the lights, ask for the last dim state so it can continue from there
 		while(lightSteps == -1 && deviceID==2)
 		{
+			//Command that asks for step
 			USART_puts(USART1, "CMDS%");
+
+			//See if it responds
 			lightSteps = queryLightSteps();
 			Delayms(100);
+
+			//Careful with the watchdog
 			TM_WATCHDOG_Reset();
 		}
 
 		//Execute once per pairing
 		if(isPaired)
 		{
-			//Flashes LEDS to indicate pairing is finished
-			TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
-			Delayms(500);
-			TM_DISCO_LedOff(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
-			isPaired = 0;
 
 			//Allow certain commands to work
 			 switch(deviceID)
@@ -128,7 +131,15 @@ int main(void) {
 					 activeCommandLight = 1;
 					 break;
 			 }
-			 TM_WATCHDOG_Reset();
+
+			 //Flashes LEDS to indicate pairing is finished
+			TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
+			Delayms(500);
+			TM_DISCO_LedOff(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
+			isPaired = 0;
+
+			//Careful with the watchdog
+			TM_WATCHDOG_Reset();
 		}
 
 
@@ -235,28 +246,42 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 
 	if(klass == 0) { // Door Open
 		TM_DISCO_LedOn(LED_RED);
+		//Gesture made, reset watchdog
 		TM_WATCHDOG_Reset();
 		if(activeCommandDoor) USART_puts(USART1, "CMD1%\n");
 	} else if(klass == 1) { // Door Close
 		TM_DISCO_LedOn(LED_GREEN);
+		//Gesture made, reset watchdog
 		TM_WATCHDOG_Reset();
 		if(activeCommandDoor) USART_puts(USART1, "CMD0%\n");
 	} else if(klass == 2) { // Light Up
 		TM_DISCO_LedOn(LED_ORANGE);
+		//Gesture made, reset watchdog
 		TM_WATCHDOG_Reset();
 		if(activeCommandLight)
 		{
-			lightSteps+=16;
-			if(lightSteps>128) lightSteps = 128;
+			//Walking towards zero, light all the way up taking steps of size 16
+			lightSteps-=16;
+
+			//Don't let it underflow
+			if(lightSteps<1) lightSteps = 1;
+
+			//Send command
 			sendLightCommand(lightSteps);
 		}
 	} else if(klass == 3) { // Light Down
 		TM_DISCO_LedOn(LED_BLUE);
+		//Gesture made, reset watchdog
 		TM_WATCHDOG_Reset();
 		if(activeCommandLight)
 		{
+			//Walking towards 128, light all the way down taking steps of size 16
 			lightSteps+=16;
+
+			//Don't let it overflow
 			if(lightSteps>128) lightSteps = 128;
+
+			//Send command
 			sendLightCommand(lightSteps);
 		}
 	}
@@ -297,6 +322,10 @@ void testTimeOfDTW() {
 	ms[0] += 0; // Just to avoid the unused warning
 }
 
+/**
+ * Formats a number to send a light command, the format Should be CMD+number+%
+ * param lightStep the number to be transformed into a command
+ */
 void sendLightCommand(int lightStep)
 {
 	char buf[8];

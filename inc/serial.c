@@ -133,6 +133,9 @@ void USART1_IRQHandler(void){
 		}
 		else{ // otherwise reset the character counter and print the received string
 			cnt = 0;
+
+			//Check the command received
+			//If received the door command
 			int res = strncmp (received_string,"CMDD\0", MAX_STRLEN);
 			if(res==0)
 			{
@@ -140,12 +143,14 @@ void USART1_IRQHandler(void){
 			}
 			else
 			{
+				//If received the light commands
 				res = strncmp (received_string,"CMDL\0", MAX_STRLEN);
 				if(res == 0)
 				{
 					receivedDevice = 2;
 				}else
 				{
+					//If received a step command
 					char *cmd;
 					cmd = strstr(received_string,"S");
 					cmd++;
