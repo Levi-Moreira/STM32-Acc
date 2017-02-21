@@ -9617,7 +9617,7 @@ int main(void) {
  8004164:	3fd33333 	.word	0x3fd33333
  8004168:	66666666 	.word	0x66666666
  800416c:	3fe66666 	.word	0x3fe66666
- 8004170:	45610000 	.word	0x45610000
+ 8004170:	455ac000 	.word	0x455ac000
  8004174:	2300      	movs	r3, #0
  8004176:	f8c7 30f0 	str.w	r3, [r7, #240]	; 0xf0
 			if(moving) {
@@ -10040,7 +10040,7 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
  80044ee:	bf00      	nop
  80044f0:	08005fe0 	.word	0x08005fe0
  80044f4:	40011000 	.word	0x40011000
- 80044f8:	41900000 	.word	0x41900000
+ 80044f8:	41b00000 	.word	0x41b00000
  80044fc:	41f00000 	.word	0x41f00000
  8004500:	40020c00 	.word	0x40020c00
 
