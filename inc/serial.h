@@ -12,7 +12,9 @@
 
 void init_USART1(uint32_t baudrate);
 void USART_puts(USART_TypeDef* USARTx, const unsigned char *s);
+
 int listenBluetooth(void);
+int queryLightSteps(void);
 
 
 #endif /* SERIAL_H_ */

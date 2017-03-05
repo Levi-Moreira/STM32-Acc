@@ -8,17 +8,20 @@
 #include <stdio.h>
 #include <string.h>
 #include "tm_stm32f4_lis302dl_lis3dsh.h"
-#include "TestSeries.h"
 #include "DTW.h"
 #include "LinkedList.h"
 #include "serial.h"
+#include "infra.h"
 #include "time.h"
 #include "tm_stm32f4_usart.h"
 #include "tm_stm32f4_watchdog.h"
 
-
 void setup();
-void testTimeOfDTW();
+/**
+ * Formats a number to send a light command, the format Should be CMD+number+%
+ * param lightStep the number to be transformed into a command
+ */
+void sendLightCommand(int lightStep);
 void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size);
 
 //holds the connected module ID 1-Door 2-Lights
@@ -36,13 +39,34 @@ int activeCommandLight = 0;
 //Count the lgiht steps
 int lightSteps = -1;
 
+// Commands
+const unsigned char BL_CMD_ASK_FOR_IDENTIFICATION[5] = "CMDI%";
+const unsigned char BL_CMD_RESET[5] = "CMDR%";
+const unsigned char BL_CMD_LAMP_GET_STEP[5] = "CMDS%";
+const unsigned char BL_CMD_DOOR_OPEN[6] = "CMD1%\n";
+const unsigned char BL_CMD_DOOR_CLOSE[6] = "CMD0%\n";
+char BL_CMD_LAMP_STEP[7] = "CMD%d%\n";
+
+// Gestures
+#define GESTURE_DOOR_OPEN 0
+#define GESTURE_DOOR_CLOSE 1
+#define GESTURE_LIGHT_UP 2
+#define GESTURE_LIGHT_DOWN 3
+
+#define LIGHT_STEP_DELTA 16
+#define LIGHT_STEP_MIN 1
+#define LIGHT_STEP_MAX 128
+
+#define BL_DEVICE_DOOR 1
+#define BL_DEVICE_LAMP 2
+
 float variance(float *array, int begin, int end);
 
 int main(void) {
 
 	setup();
 
-	USART_puts(USART1, "CMDR%");
+	USART_puts(USART1, BL_CMD_RESET);
 
 	int count = 0;
 
@@ -51,7 +75,7 @@ int main(void) {
 	LinkedList *signalY = newLinkedList();
 	LinkedList *signalZ = newLinkedList();
 
-	// Struct for holding the accelerometer data
+	// Structure for holding the accelerometer data
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
 
 	float x, y, z;
@@ -86,9 +110,11 @@ int main(void) {
 	while(1) {
 
 		//While device hasn't been identified asks for ID
-		while(deviceID == -1)
-		{
-			USART_puts(USART1, "CMDI%");
+		while(deviceID == -1) {
+
+			// Asks for the connected bluetooth's id
+			USART_puts(USART1, BL_CMD_ASK_FOR_IDENTIFICATION);
+
 			//Keeps sending infr packages until it pairs
 			infraPair();
 
@@ -104,10 +130,10 @@ int main(void) {
 		}
 
 		//If the device is the lights, ask for the last dim state so it can continue from there
-		while(lightSteps == -1 && deviceID==2)
+		while(lightSteps == -1 && deviceID == BL_DEVICE_LAMP)
 		{
 			//Command that asks for step
-			USART_puts(USART1, "CMDS%");
+			USART_puts(USART1, BL_CMD_LAMP_GET_STEP);
 
 			//See if it responds
 			lightSteps = queryLightSteps();
@@ -122,17 +148,17 @@ int main(void) {
 		{
 
 			//Allow certain commands to work
-			 switch(deviceID)
-			 {
-				 case 1:
-					 activeCommandDoor = 1;
-					 break;
-				 case 2:
-					 activeCommandLight = 1;
-					 break;
-			 }
+			switch(deviceID)
+			{
+			case BL_DEVICE_DOOR:
+				activeCommandDoor = 1;
+				break;
+			case BL_DEVICE_LAMP:
+				activeCommandLight = 1;
+				break;
+			}
 
-			 //Flashes LEDS to indicate pairing is finished
+			//Flashes LEDS to indicate pairing is finished
 			TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
 			Delayms(500);
 			TM_DISCO_LedOff(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
@@ -142,6 +168,8 @@ int main(void) {
 			TM_WATCHDOG_Reset();
 		}
 
+
+		/******************************************************************************************/
 
 		// Getting accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
@@ -185,7 +213,6 @@ int main(void) {
 				prependToLinkedList(signalY, ey[v] / ACCELEROMETER_DATA_DIVIDER);
 				prependToLinkedList(signalZ, ez[v] / ACCELEROMETER_DATA_DIVIDER);
 				count++;
-				//				TM_DISCO_LedOn(LED_GREEN);
 			} else {
 				if(count >= MIN_SAMPLES && count <= MAX_SAMPLES) {
 					recognizeGesture(signalX, signalY, signalZ, count);
@@ -195,7 +222,6 @@ int main(void) {
 					freeLinkedList(signalY);
 					freeLinkedList(signalZ);
 					count = 0;
-					//					TM_DISCO_LedOff(LED_GREEN);
 				}
 			}
 
@@ -229,10 +255,6 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 
 	klass = knn(x, y, z, size, &dist);
 
-	char str[10];
-	sprintf(str, "%i", (int) dist);
-	//USART_puts(USART1, str);
-
 	// Checking for NaN and long distances
 	if(klass != klass) {
 		return;
@@ -244,46 +266,52 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 		return;
 	}
 
-	if(klass == 0) { // Door Open
+	if(klass == GESTURE_DOOR_OPEN) { // Door Open
+
 		TM_DISCO_LedOn(LED_RED);
-		//Gesture made, reset watchdog
-		TM_WATCHDOG_Reset();
-		if(activeCommandDoor) USART_puts(USART1, "CMD1%\n");
-	} else if(klass == 1) { // Door Close
+		TM_WATCHDOG_Reset(); // Gesture made, reset watchdog
+		if(activeCommandDoor) { USART_puts(USART1, BL_CMD_DOOR_OPEN); }
+
+	} else if(klass == GESTURE_DOOR_CLOSE) { // Door Close
+
 		TM_DISCO_LedOn(LED_GREEN);
-		//Gesture made, reset watchdog
-		TM_WATCHDOG_Reset();
-		if(activeCommandDoor) USART_puts(USART1, "CMD0%\n");
-	} else if(klass == 2) { // Light Up
+		TM_WATCHDOG_Reset(); //Gesture made, reset watchdog
+		if(activeCommandDoor) { USART_puts(USART1, BL_CMD_DOOR_CLOSE); }
+
+	} else if(klass == GESTURE_LIGHT_UP) { // Light Up
+
 		TM_DISCO_LedOn(LED_ORANGE);
-		//Gesture made, reset watchdog
-		TM_WATCHDOG_Reset();
-		if(activeCommandLight)
-		{
-			//Walking towards zero, light all the way up taking steps of size 16
-			lightSteps-=16;
+		TM_WATCHDOG_Reset(); //Gesture made, reset watchdog
+		if(activeCommandLight) {
 
-			//Don't let it underflow
-			if(lightSteps<1) lightSteps = 1;
+			// Walking towards zero, light all the way up taking steps of size 16
+			lightSteps -= LIGHT_STEP_DELTA;
 
-			//Send command
+			// Don't let it underflow
+			if(lightSteps < LIGHT_STEP_MIN) lightSteps = LIGHT_STEP_MIN;
+
+			// Send command
 			sendLightCommand(lightSteps);
+
 		}
-	} else if(klass == 3) { // Light Down
+
+	} else if(klass == GESTURE_LIGHT_DOWN) { // Light Down
+
 		TM_DISCO_LedOn(LED_BLUE);
-		//Gesture made, reset watchdog
-		TM_WATCHDOG_Reset();
-		if(activeCommandLight)
-		{
-			//Walking towards 128, light all the way down taking steps of size 16
-			lightSteps+=16;
+		TM_WATCHDOG_Reset(); //Gesture made, reset watchdog
+		if(activeCommandLight) {
 
-			//Don't let it overflow
-			if(lightSteps>128) lightSteps = 128;
+			// Walking towards 128, light all the way down taking steps of size 16
+			lightSteps += LIGHT_STEP_DELTA;
 
-			//Send command
+			// Don't let it overflow
+			if(lightSteps > LIGHT_STEP_MAX) lightSteps = LIGHT_STEP_MAX;
+
+			// Send command
 			sendLightCommand(lightSteps);
+
 		}
+
 	}
 
 	Delayms(100);
@@ -311,26 +339,11 @@ void setup() {
 	TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_32s);
 }
 
-void testTimeOfDTW() {
-	int ms[121];
-	for(int l = 0; l <= 120; l++) {
-		TM_DELAY_SetTime(0);
-		//		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
-		//		knn(ts1, ts2, ts3, l + 30);
-		ms[l] = TM_DELAY_Time();
-	}
-	ms[0] += 0; // Just to avoid the unused warning
-}
-
-/**
- * Formats a number to send a light command, the format Should be CMD+number+%
- * param lightStep the number to be transformed into a command
- */
 void sendLightCommand(int lightStep)
 {
 	char buf[8];
-	sprintf(buf,"CMD%d%\n",lightStep);
-	USART_puts(USART1, buf);
+	sprintf(buf, BL_CMD_LAMP_STEP, lightStep);
+	USART_puts(USART1, (unsigned char *) buf); // Check this out
 }
 
 

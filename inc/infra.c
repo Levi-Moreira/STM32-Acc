@@ -9,7 +9,10 @@
 #include "infra.h"
 #include "stm32_ub_irsnd.h"
 
-//will send an specified infrared package
+/**
+ * Sends five InfraRed packages, so its more likely to work.
+ * Sometimes the packages just does not get there.
+ * */
 void sendInfraData(IRMP_DATA irData)
 {
 	int i;
