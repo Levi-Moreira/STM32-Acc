@@ -16,30 +16,20 @@
 #include "tm_stm32f4_usart.h"
 #include "tm_stm32f4_watchdog.h"
 
-void setup();
 /**
- * Formats a number to send a light command, the format Should be CMD+number+%
- * param lightStep the number to be transformed into a command
- */
-void sendLightCommand(int lightStep);
-void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size);
+ * ########## Control variables ##########
+ * */
 
-//holds the connected module ID 1-Door 2-Lights
-int deviceID = -1;
+int deviceID = -1; // Holds the connected module ID 1-Door 2-Lights
+int isPaired = 0; // If a pairing happened
+int activeCommandDoor = 0; // Should allow door gestures
+int activeCommandLight = 0; // Should allow light gestures
+int lightSteps = -1; //Count the lgiht steps
 
-//if a pairing happened
-int isPaired = 0;
+/**
+ * ########## Bluetooth Commands ##########
+ * */
 
-//Should allow door gestures
-int activeCommandDoor = 0;
-
-//Should allow light gestures
-int activeCommandLight = 0;
-
-//Count the lgiht steps
-int lightSteps = -1;
-
-// Commands
 const unsigned char BL_CMD_ASK_FOR_IDENTIFICATION[5] = "CMDI%";
 const unsigned char BL_CMD_RESET[5] = "CMDR%";
 const unsigned char BL_CMD_LAMP_GET_STEP[5] = "CMDS%";
@@ -47,20 +37,33 @@ const unsigned char BL_CMD_DOOR_OPEN[6] = "CMD1%\n";
 const unsigned char BL_CMD_DOOR_CLOSE[6] = "CMD0%\n";
 char BL_CMD_LAMP_STEP[7] = "CMD%d%\n";
 
-// Gestures
-#define GESTURE_DOOR_OPEN 0
-#define GESTURE_DOOR_CLOSE 1
-#define GESTURE_LIGHT_UP 2
-#define GESTURE_LIGHT_DOWN 3
 
-#define LIGHT_STEP_DELTA 16
-#define LIGHT_STEP_MIN 1
-#define LIGHT_STEP_MAX 128
-
-#define BL_DEVICE_DOOR 1
-#define BL_DEVICE_LAMP 2
+/**
+ * ########## Functions Declarations ##########
+ * */
 
 float variance(float *array, int begin, int end);
+
+/**
+ * Inits the infrared, USART and so on.
+ * */
+void setup();
+
+/**
+ * Formats a number to send a light command, the format Should be CMD+number+%
+ * param lightStep the number to be transformed into a command
+ */
+void sendLightCommand(int lightStep);
+
+/**
+ * Recognizes a gesture based on the input signal arrays.
+ * */
+void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *signalZ, int size);
+
+
+/**
+ * ########## Functions Implementations ##########
+ * */
 
 int main(void) {
 
@@ -78,20 +81,27 @@ int main(void) {
 	// Structure for holding the accelerometer data
 	TM_LIS302DL_LIS3DSH_t Axes_Data;
 
-	float x, y, z;
-	float ax[AVG_SIZE], ay[AVG_SIZE], az[AVG_SIZE];
-	float ex[SIZE], ey[SIZE], ez[SIZE];
-	float vx[SIZE], vy[SIZE], vz[SIZE];
-	int moving = 0;
+	float x, y, z; // Hold the values read from the accelerometer
+	float ax[AVG_SIZE], ay[AVG_SIZE], az[AVG_SIZE]; // Hold the values for initial average
+	float ex[SIZE], ey[SIZE], ez[SIZE]; // Hold the smoothed values for the accelerations
+	float vx[SIZE], vy[SIZE], vz[SIZE]; // Hold the smoothed variance values
+	int moving = 0; // Indicates whether or not the wrist band is moving
 
-	float fx, fy, fz;
-	float fvx, fvy, fvz;
+	float fx, fy, fz; // Forecasted values for smoothed accelerations
+	float fvx, fvy, fvz; // Forecasted values for the variances
 
+	// Set the forecasted variances initial values
 	fvx = 1;
 	fvy = 1;
 	fvz = 1;
 
 	int v = 0;
+
+	/**
+	 * ######################################
+	 * ########## Initial averages ##########
+	 * ######################################
+	 * */
 
 	// Getting values for the initial average
 	for(int i = 0; i < AVG_SIZE; i++) {
@@ -107,47 +117,55 @@ int main(void) {
 	fy = average(ay, 0, AVG_SIZE);
 	fz = average(az, 0, AVG_SIZE);
 
+
+	/**
+	 * ####################################################
+	 * ########## Infrared and Bluetooth pairing ##########
+	 * ####################################################
+	 *  */
+
 	while(1) {
 
-		//While device hasn't been identified asks for ID
+		// While device hasn't been identified asks for ID
 		while(deviceID == -1) {
 
 			// Asks for the connected bluetooth's id
 			USART_puts(USART1, BL_CMD_ASK_FOR_IDENTIFICATION);
 
-			//Keeps sending infr packages until it pairs
+			// Keeps sending infra packages until it pairs
 			infraPair();
 
+			// Tries to get a Bluetooth id, if a device is connected.
 			deviceID = listenBluetooth();
 			Delayms(100);
 
-			//to when it exits the loop
+			// To when it exits the loop
 			isPaired = 1;
 
-			//Careful with the watchdog
+			// Careful with the watchdog
 			TM_WATCHDOG_Reset();
 
 		}
 
-		//If the device is the lights, ask for the last dim state so it can continue from there
+		// If the device is the lights, ask for the last dim state so it can continue from there
 		while(lightSteps == -1 && deviceID == BL_DEVICE_LAMP)
 		{
-			//Command that asks for step
+			// Command that asks for step
 			USART_puts(USART1, BL_CMD_LAMP_GET_STEP);
 
-			//See if it responds
+			// See if it responds
 			lightSteps = queryLightSteps();
 			Delayms(100);
 
-			//Careful with the watchdog
+			// Careful with the watchdog
 			TM_WATCHDOG_Reset();
 		}
 
-		//Execute once per pairing
+		// Execute once per pairing
 		if(isPaired)
 		{
 
-			//Allow certain commands to work
+			// Allow certain commands to work
 			switch(deviceID)
 			{
 			case BL_DEVICE_DOOR:
@@ -158,18 +176,22 @@ int main(void) {
 				break;
 			}
 
-			//Flashes LEDS to indicate pairing is finished
+			// Flashes LEDS to indicate pairing is finished
 			TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
 			Delayms(500);
 			TM_DISCO_LedOff(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
 			isPaired = 0;
 
-			//Careful with the watchdog
+			// Careful with the watchdog
 			TM_WATCHDOG_Reset();
 		}
 
 
-		/******************************************************************************************/
+		/**
+		 * ##############################################################
+		 * ########## Motion detection and gesture recognition ##########
+		 * ##############################################################
+		 * */
 
 		// Getting accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
@@ -225,7 +247,7 @@ int main(void) {
 				}
 			}
 
-			// Pushing guys left
+			// Pushing the values left in order to open room for new values
 			for(int i = 1; i < SIZE; i++) {
 				ex[i - 1] = ex[i];
 				ey[i - 1] = ey[i];
@@ -318,6 +340,7 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
 	TM_DISCO_LedOff(LED_GREEN | LED_RED | LED_ORANGE | LED_BLUE);
 
 }
+
 
 float variance(float *array, int begin, int end) {
 	float avg = average(array, begin, end);

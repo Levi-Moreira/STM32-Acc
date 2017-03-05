@@ -29,4 +29,19 @@
 #define MIN_SAMPLES 15
 #define MAX_SAMPLES 40
 
+// Gestures
+#define GESTURE_DOOR_OPEN 0
+#define GESTURE_DOOR_CLOSE 1
+#define GESTURE_LIGHT_UP 2
+#define GESTURE_LIGHT_DOWN 3
+
+// The amount to add or subtract to the light steps
+#define LIGHT_STEP_DELTA 16
+#define LIGHT_STEP_MIN 1
+#define LIGHT_STEP_MAX 128
+
+// Selected devices
+#define BL_DEVICE_DOOR 1
+#define BL_DEVICE_LAMP 2
+
 #endif

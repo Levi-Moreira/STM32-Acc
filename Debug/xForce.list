@@ -23,21 +23,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 0000002a  00000000  00000000  00020790  2**0
                   CONTENTS, READONLY
- 10 .debug_info   0000cf4f  00000000  00000000  000207ba  2**0
+ 10 .debug_info   0000cf59  00000000  00000000  000207ba  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_abbrev 0000259f  00000000  00000000  0002d709  2**0
+ 11 .debug_abbrev 00002576  00000000  00000000  0002d713  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_aranges 00000f68  00000000  00000000  0002fca8  2**3
+ 12 .debug_aranges 00000f68  00000000  00000000  0002fc90  2**3
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000df8  00000000  00000000  00030c10  2**3
+ 13 .debug_ranges 00000df8  00000000  00000000  00030bf8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_line   00005989  00000000  00000000  00031a08  2**0
+ 14 .debug_line   00005990  00000000  00000000  000319f0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    000048bb  00000000  00000000  00037391  2**0
+ 15 .debug_str    000048bb  00000000  00000000  00037380  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .comment      0000007e  00000000  00000000  0003bc4c  2**0
+ 16 .comment      0000007e  00000000  00000000  0003bc3b  2**0
                   CONTENTS, READONLY
- 17 .debug_frame  00004784  00000000  00000000  0003bccc  2**2
+ 17 .debug_frame  00004784  00000000  00000000  0003bcbc  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -10584,10 +10584,10 @@ __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_IPSR(void)
  80043ec:	e000e010 	.word	0xe000e010
 
 080043f0 <main>:
-const unsigned char BL_CMD_DOOR_CLOSE[6] = "CMD0%\n";
-char BL_CMD_LAMP_STEP[7] = "CMD%d%\n";
 
-float variance(float *array, int begin, int end);
+/**
+ * ########## Functions Implementations ##########
+ * */
 
 int main(void) {
  80043f0:	b5b0      	push	{r4, r5, r7, lr}
@@ -10617,17 +10617,18 @@ int main(void) {
  8004418:	f7ff ff4c 	bl	80042b4 <newLinkedList>
  800441c:	f8c7 00f4 	str.w	r0, [r7, #244]	; 0xf4
 
-	float x, y, z;
-	float ax[AVG_SIZE], ay[AVG_SIZE], az[AVG_SIZE];
-	float ex[SIZE], ey[SIZE], ez[SIZE];
-	float vx[SIZE], vy[SIZE], vz[SIZE];
-	int moving = 0;
+	float x, y, z; // Hold the values read from the accelerometer
+	float ax[AVG_SIZE], ay[AVG_SIZE], az[AVG_SIZE]; // Hold the values for initial average
+	float ex[SIZE], ey[SIZE], ez[SIZE]; // Hold the smoothed values for the accelerations
+	float vx[SIZE], vy[SIZE], vz[SIZE]; // Hold the smoothed variance values
+	int moving = 0; // Indicates whether or not the wrist band is moving
  8004420:	2300      	movs	r3, #0
  8004422:	f8c7 30f0 	str.w	r3, [r7, #240]	; 0xf0
 
-	float fx, fy, fz;
-	float fvx, fvy, fvz;
+	float fx, fy, fz; // Forecasted values for smoothed accelerations
+	float fvx, fvy, fvz; // Forecasted values for the variances
 
+	// Set the forecasted variances initial values
 	fvx = 1;
  8004426:	f04f 537e 	mov.w	r3, #1065353216	; 0x3f800000
  800442a:	f8c7 3114 	str.w	r3, [r7, #276]	; 0x114
@@ -10641,6 +10642,9 @@ int main(void) {
 	int v = 0;
  800443e:	2300      	movs	r3, #0
  8004440:	f8c7 3108 	str.w	r3, [r7, #264]	; 0x108
+	 * ########## Initial averages ##########
+	 * ######################################
+	 * */
 
 	// Getting values for the initial average
 	for(int i = 0; i < AVG_SIZE; i++) {
@@ -10684,9 +10688,9 @@ int main(void) {
 		Delayms(SAMPLEPERIOD);
  80044aa:	2014      	movs	r0, #20
  80044ac:	f7ff ff74 	bl	8004398 <Delayms>
-	fvz = 1;
-
-	int v = 0;
+	 * ########## Initial averages ##########
+	 * ######################################
+	 * */
 
 	// Getting values for the initial average
 	for(int i = 0; i < AVG_SIZE; i++) {
@@ -10722,21 +10726,25 @@ int main(void) {
  80044ee:	4618      	mov	r0, r3
  80044f0:	f7ff fac0 	bl	8003a74 <average>
  80044f4:	f8c7 0118 	str.w	r0, [r7, #280]	; 0x118
+	 *  */
 
 	while(1) {
 
-		//While device hasn't been identified asks for ID
-		while(deviceID == -1)
+		// While device hasn't been identified asks for ID
+		while(deviceID == -1) {
  80044f8:	e014      	b.n	8004524 <main+0x134>
-		{
+
+			// Asks for the connected bluetooth's id
 			USART_puts(USART1, BL_CMD_ASK_FOR_IDENTIFICATION);
  80044fa:	4923      	ldr	r1, [pc, #140]	; (8004588 <main+0x198>)
  80044fc:	4821      	ldr	r0, [pc, #132]	; (8004584 <main+0x194>)
  80044fe:	f7fd ff6d 	bl	80023dc <USART_puts>
-			//Keeps sending infr packages until it pairs
+
+			// Keeps sending infra packages until it pairs
 			infraPair();
  8004502:	f7fd fef5 	bl	80022f0 <infraPair>
 
+			// Tries to get a Bluetooth id, if a device is connected.
 			deviceID = listenBluetooth();
  8004506:	f7fd fff7 	bl	80024f8 <listenBluetooth>
  800450a:	4602      	mov	r2, r0
@@ -10746,23 +10754,23 @@ int main(void) {
  8004510:	2064      	movs	r0, #100	; 0x64
  8004512:	f7ff ff41 	bl	8004398 <Delayms>
 
-			//to when it exits the loop
+			// To when it exits the loop
 			isPaired = 1;
  8004516:	4b1e      	ldr	r3, [pc, #120]	; (8004590 <main+0x1a0>)
  8004518:	2201      	movs	r2, #1
  800451a:	601a      	str	r2, [r3, #0]
 
-			//Careful with the watchdog
+			// Careful with the watchdog
 			TM_WATCHDOG_Reset();
  800451c:	4b1d      	ldr	r3, [pc, #116]	; (8004594 <main+0x1a4>)
  800451e:	f64a 22aa 	movw	r2, #43690	; 0xaaaa
  8004522:	601a      	str	r2, [r3, #0]
-	fz = average(az, 0, AVG_SIZE);
+	 *  */
 
 	while(1) {
 
-		//While device hasn't been identified asks for ID
-		while(deviceID == -1)
+		// While device hasn't been identified asks for ID
+		while(deviceID == -1) {
  8004524:	4b19      	ldr	r3, [pc, #100]	; (800458c <main+0x19c>)
  8004526:	681b      	ldr	r3, [r3, #0]
  8004528:	f1b3 3fff 	cmp.w	r3, #4294967295
@@ -10771,17 +10779,17 @@ int main(void) {
 
 		}
 
-		//If the device is the lights, ask for the last dim state so it can continue from there
-		while(lightSteps == -1 && deviceID==2)
+		// If the device is the lights, ask for the last dim state so it can continue from there
+		while(lightSteps == -1 && deviceID == BL_DEVICE_LAMP)
  800452e:	e00f      	b.n	8004550 <main+0x160>
 		{
-			//Command that asks for step
+			// Command that asks for step
 			USART_puts(USART1, BL_CMD_LAMP_GET_STEP);
  8004530:	4919      	ldr	r1, [pc, #100]	; (8004598 <main+0x1a8>)
  8004532:	4814      	ldr	r0, [pc, #80]	; (8004584 <main+0x194>)
  8004534:	f7fd ff52 	bl	80023dc <USART_puts>
 
-			//See if it responds
+			// See if it responds
 			lightSteps = queryLightSteps();
  8004538:	f7fd ffe8 	bl	800250c <queryLightSteps>
  800453c:	4602      	mov	r2, r0
@@ -10791,7 +10799,7 @@ int main(void) {
  8004542:	2064      	movs	r0, #100	; 0x64
  8004544:	f7ff ff28 	bl	8004398 <Delayms>
 
-			//Careful with the watchdog
+			// Careful with the watchdog
 			TM_WATCHDOG_Reset();
  8004548:	4b12      	ldr	r3, [pc, #72]	; (8004594 <main+0x1a4>)
  800454a:	f64a 22aa 	movw	r2, #43690	; 0xaaaa
@@ -10800,8 +10808,8 @@ int main(void) {
 
 		}
 
-		//If the device is the lights, ask for the last dim state so it can continue from there
-		while(lightSteps == -1 && deviceID==2)
+		// If the device is the lights, ask for the last dim state so it can continue from there
+		while(lightSteps == -1 && deviceID == BL_DEVICE_LAMP)
  8004550:	4b12      	ldr	r3, [pc, #72]	; (800459c <main+0x1ac>)
  8004552:	681b      	ldr	r3, [r3, #0]
  8004554:	f1b3 3fff 	cmp.w	r3, #4294967295
@@ -10810,11 +10818,11 @@ int main(void) {
  800455c:	681b      	ldr	r3, [r3, #0]
  800455e:	2b02      	cmp	r3, #2
  8004560:	d0e6      	beq.n	8004530 <main+0x140>
-			//Careful with the watchdog
+			// Careful with the watchdog
 			TM_WATCHDOG_Reset();
 		}
 
-		//Execute once per pairing
+		// Execute once per pairing
 		if(isPaired)
  8004562:	4b0b      	ldr	r3, [pc, #44]	; (8004590 <main+0x1a0>)
  8004564:	681b      	ldr	r3, [r3, #0]
@@ -10822,7 +10830,7 @@ int main(void) {
  8004568:	d033      	beq.n	80045d2 <main+0x1e2>
 		{
 
-			//Allow certain commands to work
+			// Allow certain commands to work
 			switch(deviceID)
  800456a:	4b08      	ldr	r3, [pc, #32]	; (800458c <main+0x19c>)
  800456c:	681b      	ldr	r3, [r3, #0]
@@ -10832,7 +10840,7 @@ int main(void) {
  8004574:	d016      	beq.n	80045a4 <main+0x1b4>
  8004576:	e019      	b.n	80045ac <main+0x1bc>
 			{
-			case 1:
+			case BL_DEVICE_DOOR:
 				activeCommandDoor = 1;
  8004578:	4b09      	ldr	r3, [pc, #36]	; (80045a0 <main+0x1b0>)
  800457a:	2201      	movs	r2, #1
@@ -10848,7 +10856,7 @@ int main(void) {
  8004598:	080078c4 	.word	0x080078c4
  800459c:	20000714 	.word	0x20000714
  80045a0:	200007f4 	.word	0x200007f4
-			case 2:
+			case BL_DEVICE_LAMP:
 				activeCommandLight = 1;
  80045a4:	4be0      	ldr	r3, [pc, #896]	; (8004928 <main+0x538>)
  80045a6:	2201      	movs	r2, #1
@@ -10857,7 +10865,7 @@ int main(void) {
  80045aa:	bf00      	nop
 			}
 
-			//Flashes LEDS to indicate pairing is finished
+			// Flashes LEDS to indicate pairing is finished
 			TM_DISCO_LedOn(LED_GREEN|LED_BLUE|LED_RED|LED_ORANGE);
  80045ac:	4bdf      	ldr	r3, [pc, #892]	; (800492c <main+0x53c>)
  80045ae:	f44f 4270 	mov.w	r2, #61440	; 0xf000
@@ -10874,14 +10882,14 @@ int main(void) {
  80045c6:	2200      	movs	r2, #0
  80045c8:	601a      	str	r2, [r3, #0]
 
-			//Careful with the watchdog
+			// Careful with the watchdog
 			TM_WATCHDOG_Reset();
  80045ca:	4bda      	ldr	r3, [pc, #872]	; (8004934 <main+0x544>)
  80045cc:	f64a 22aa 	movw	r2, #43690	; 0xaaaa
  80045d0:	601a      	str	r2, [r3, #0]
-
-
-		/******************************************************************************************/
+		 * ########## Motion detection and gesture recognition ##########
+		 * ##############################################################
+		 * */
 
 		// Getting accelerometer values
 		TM_LIS302DL_LIS3DSH_ReadAxes(&Axes_Data);
@@ -11324,7 +11332,7 @@ int main(void) {
 				}
 			}
 
-			// Pushing guys left
+			// Pushing the values left in order to open room for new values
 			for(int i = 1; i < SIZE; i++) {
  8004a5c:	2301      	movs	r3, #1
  8004a5e:	f8c7 3100 	str.w	r3, [r7, #256]	; 0x100
@@ -11397,7 +11405,7 @@ int main(void) {
 				}
 			}
 
-			// Pushing guys left
+			// Pushing the values left in order to open room for new values
 			for(int i = 1; i < SIZE; i++) {
  8004b1c:	f8d7 3100 	ldr.w	r3, [r7, #256]	; 0x100
  8004b20:	3301      	adds	r3, #1
@@ -11586,10 +11594,11 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
  8004c8a:	e070      	b.n	8004d6e <recognizeGesture+0x236>
 	}
 
-	if(klass == 0) { // Door Open
+	if(klass == GESTURE_DOOR_OPEN) { // Door Open
  8004c8c:	6b7b      	ldr	r3, [r7, #52]	; 0x34
  8004c8e:	2b00      	cmp	r3, #0
  8004c90:	d110      	bne.n	8004cb4 <recognizeGesture+0x17c>
+
 		TM_DISCO_LedOn(LED_RED);
  8004c92:	4b3c      	ldr	r3, [pc, #240]	; (8004d84 <recognizeGesture+0x24c>)
  8004c94:	f44f 4280 	mov.w	r2, #16384	; 0x4000
@@ -11607,10 +11616,12 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
  8004cac:	4839      	ldr	r0, [pc, #228]	; (8004d94 <recognizeGesture+0x25c>)
  8004cae:	f7fd fb95 	bl	80023dc <USART_puts>
  8004cb2:	e054      	b.n	8004d5e <recognizeGesture+0x226>
-	} else if(klass == 1) { // Door Close
+
+	} else if(klass == GESTURE_DOOR_CLOSE) { // Door Close
  8004cb4:	6b7b      	ldr	r3, [r7, #52]	; 0x34
  8004cb6:	2b01      	cmp	r3, #1
  8004cb8:	d110      	bne.n	8004cdc <recognizeGesture+0x1a4>
+
 		TM_DISCO_LedOn(LED_GREEN);
  8004cba:	4b32      	ldr	r3, [pc, #200]	; (8004d84 <recognizeGesture+0x24c>)
  8004cbc:	f44f 5280 	mov.w	r2, #4096	; 0x1000
@@ -11628,10 +11639,12 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
  8004cd4:	482f      	ldr	r0, [pc, #188]	; (8004d94 <recognizeGesture+0x25c>)
  8004cd6:	f7fd fb81 	bl	80023dc <USART_puts>
  8004cda:	e040      	b.n	8004d5e <recognizeGesture+0x226>
-	} else if(klass == 2) { // Light Up
+
+	} else if(klass == GESTURE_LIGHT_UP) { // Light Up
  8004cdc:	6b7b      	ldr	r3, [r7, #52]	; 0x34
  8004cde:	2b02      	cmp	r3, #2
  8004ce0:	d11d      	bne.n	8004d1e <recognizeGesture+0x1e6>
+
 		TM_DISCO_LedOn(LED_ORANGE);
  8004ce2:	4b28      	ldr	r3, [pc, #160]	; (8004d84 <recognizeGesture+0x24c>)
  8004ce4:	f44f 5200 	mov.w	r2, #8192	; 0x2000
@@ -11640,22 +11653,22 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
  8004cea:	4b27      	ldr	r3, [pc, #156]	; (8004d88 <recognizeGesture+0x250>)
  8004cec:	f64a 22aa 	movw	r2, #43690	; 0xaaaa
  8004cf0:	601a      	str	r2, [r3, #0]
-		if(activeCommandLight)
+		if(activeCommandLight) {
  8004cf2:	4b2a      	ldr	r3, [pc, #168]	; (8004d9c <recognizeGesture+0x264>)
  8004cf4:	681b      	ldr	r3, [r3, #0]
  8004cf6:	2b00      	cmp	r3, #0
  8004cf8:	d031      	beq.n	8004d5e <recognizeGesture+0x226>
-		{
-			//Walking towards zero, light all the way up taking steps of size 16
-			lightSteps-=16;
+
+			// Walking towards zero, light all the way up taking steps of size 16
+			lightSteps -= LIGHT_STEP_DELTA;
  8004cfa:	4b29      	ldr	r3, [pc, #164]	; (8004da0 <recognizeGesture+0x268>)
  8004cfc:	681b      	ldr	r3, [r3, #0]
  8004cfe:	3b10      	subs	r3, #16
  8004d00:	4a27      	ldr	r2, [pc, #156]	; (8004da0 <recognizeGesture+0x268>)
  8004d02:	6013      	str	r3, [r2, #0]
 
-			//Don't let it underflow
-			if(lightSteps<1) lightSteps = 1;
+			// Don't let it underflow
+			if(lightSteps < LIGHT_STEP_MIN) lightSteps = LIGHT_STEP_MIN;
  8004d04:	4b26      	ldr	r3, [pc, #152]	; (8004da0 <recognizeGesture+0x268>)
  8004d06:	681b      	ldr	r3, [r3, #0]
  8004d08:	2b00      	cmp	r3, #0
@@ -11664,43 +11677,45 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
  8004d0e:	2201      	movs	r2, #1
  8004d10:	601a      	str	r2, [r3, #0]
 
-			//Send command
+			// Send command
 			sendLightCommand(lightSteps);
  8004d12:	4b23      	ldr	r3, [pc, #140]	; (8004da0 <recognizeGesture+0x268>)
  8004d14:	681b      	ldr	r3, [r3, #0]
  8004d16:	4618      	mov	r0, r3
  8004d18:	f000 f8ac 	bl	8004e74 <sendLightCommand>
  8004d1c:	e01f      	b.n	8004d5e <recognizeGesture+0x226>
+
 		}
-	} else if(klass == 3) { // Light Down
+
+	} else if(klass == GESTURE_LIGHT_DOWN) { // Light Down
  8004d1e:	6b7b      	ldr	r3, [r7, #52]	; 0x34
  8004d20:	2b03      	cmp	r3, #3
  8004d22:	d11c      	bne.n	8004d5e <recognizeGesture+0x226>
+
 		TM_DISCO_LedOn(LED_BLUE);
  8004d24:	4b17      	ldr	r3, [pc, #92]	; (8004d84 <recognizeGesture+0x24c>)
  8004d26:	f44f 4200 	mov.w	r2, #32768	; 0x8000
  8004d2a:	831a      	strh	r2, [r3, #24]
-		//Gesture made, reset watchdog
-		TM_WATCHDOG_Reset();
+		TM_WATCHDOG_Reset(); //Gesture made, reset watchdog
  8004d2c:	4b16      	ldr	r3, [pc, #88]	; (8004d88 <recognizeGesture+0x250>)
  8004d2e:	f64a 22aa 	movw	r2, #43690	; 0xaaaa
  8004d32:	601a      	str	r2, [r3, #0]
-		if(activeCommandLight)
+		if(activeCommandLight) {
  8004d34:	4b19      	ldr	r3, [pc, #100]	; (8004d9c <recognizeGesture+0x264>)
  8004d36:	681b      	ldr	r3, [r3, #0]
  8004d38:	2b00      	cmp	r3, #0
  8004d3a:	d010      	beq.n	8004d5e <recognizeGesture+0x226>
-		{
-			//Walking towards 128, light all the way down taking steps of size 16
-			lightSteps+=16;
+
+			// Walking towards 128, light all the way down taking steps of size 16
+			lightSteps += LIGHT_STEP_DELTA;
  8004d3c:	4b18      	ldr	r3, [pc, #96]	; (8004da0 <recognizeGesture+0x268>)
  8004d3e:	681b      	ldr	r3, [r3, #0]
  8004d40:	3310      	adds	r3, #16
  8004d42:	4a17      	ldr	r2, [pc, #92]	; (8004da0 <recognizeGesture+0x268>)
  8004d44:	6013      	str	r3, [r2, #0]
 
-			//Don't let it overflow
-			if(lightSteps>128) lightSteps = 128;
+			// Don't let it overflow
+			if(lightSteps > LIGHT_STEP_MAX) lightSteps = LIGHT_STEP_MAX;
  8004d46:	4b16      	ldr	r3, [pc, #88]	; (8004da0 <recognizeGesture+0x268>)
  8004d48:	681b      	ldr	r3, [r3, #0]
  8004d4a:	2b80      	cmp	r3, #128	; 0x80
@@ -11709,13 +11724,15 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
  8004d50:	2280      	movs	r2, #128	; 0x80
  8004d52:	601a      	str	r2, [r3, #0]
 
-			//Send command
+			// Send command
 			sendLightCommand(lightSteps);
  8004d54:	4b12      	ldr	r3, [pc, #72]	; (8004da0 <recognizeGesture+0x268>)
  8004d56:	681b      	ldr	r3, [r3, #0]
  8004d58:	4618      	mov	r0, r3
  8004d5a:	f000 f88b 	bl	8004e74 <sendLightCommand>
+
 		}
+
 	}
 
 	Delayms(100);
@@ -11745,6 +11762,7 @@ void recognizeGesture(LinkedList *signalX, LinkedList *signalY, LinkedList *sign
  8004da0:	20000714 	.word	0x20000714
 
 08004da4 <variance>:
+
 
 float variance(float *array, int begin, int end) {
  8004da4:	b5b0      	push	{r4, r5, r7, lr}
@@ -11795,7 +11813,7 @@ float variance(float *array, int begin, int end) {
  8004e08:	f7fb fe9a 	bl	8000b40 <__aeabi_d2f>
  8004e0c:	4603      	mov	r3, r0
  8004e0e:	61fb      	str	r3, [r7, #28]
-}
+
 
 float variance(float *array, int begin, int end) {
 	float avg = average(array, begin, end);
