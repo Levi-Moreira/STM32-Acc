@@ -17,7 +17,7 @@ void testTimeOfDTW() {
 	float dist;
 	for(int l = 0; l <= 120; l++) {
 		TM_DELAY_SetTime(0);
-		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50, (l + 50) * DTW_WINDOW_RATIO);
+		dtwDistance(ts1, ts1, ts1, l+50, ts2, ts2, ts2, l+50);
 		knn(ts1, ts2, ts3, l + 30, &dist);
 		ms[l] = TM_DELAY_Time();
 	}

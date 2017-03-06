@@ -4,30 +4,21 @@
 //tell compiler which board is being used
 #define TM_DISCO_STM32F4_DISCOVERY
 
-//sample period in ms
-#define SAMPLEPERIOD 20
-//total amount of samples
-#define SAMPLEAMOUNT 148
+#define SAMPLEPERIOD 20 // Sample period in miliseconds
+#define ACCELEROMETER_DATA_DIVIDER 100.0 // The amount to divide the accelerometer data by in order to turn the data into doubles
 
-//sample total time in ms
-#define SAMPLETOTALTIME SAMPLEAMOUNT * SAMPLEPERIOD
-
-// The amount to divide the accelerometer data by in order to turn the data into doubles
-#define ACCELEROMETER_DATA_DIVIDER 100.0
-
-#define EWMA_ALPHA 0.3
-#define DTW_WINDOW_RATIO 0.6
+#define EWMA_ALPHA 0.3 // A parameter required for the EWMA
 #define NUMBER_OF_GESTURES 4
 
-#define SIZE 6
-#define AVG_SIZE 6
-#define OFFSET 3500//5000//2500 //1300 //1000
+#define SIZE 6 // The size of the values to take in consideration to calculate the variances in motion detection
+#define AVG_SIZE 6 // The size of the array which is used to calculate the first average necessary in EWMA
+#define OFFSET 3500 // The variance threshold for motion detection
 
-#define MAX_DISTANCE_LIGHT 30
-#define MAX_DISTANCE_DOOR 22
+#define MAX_DISTANCE_LIGHT 30 // The threshold for the DTW distance of a light gesture
+#define MAX_DISTANCE_DOOR 22 // The threshold for the DTW distance of a door gesture
 
-#define MIN_SAMPLES 15
-#define MAX_SAMPLES 40
+#define MIN_SAMPLES 15 // The minimum amout of samples in a gesture
+#define MAX_SAMPLES 40 // The maximum amount of samples in a gesture
 
 // Gestures
 #define GESTURE_DOOR_OPEN 0
